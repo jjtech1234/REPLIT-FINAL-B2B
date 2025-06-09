@@ -49,9 +49,11 @@ export default function Home() {
                 <p>Sell your Business at a Global Level, to a Global Audience & Gain Global Visibility</p>
                 <p>Want Global Attention for your Business? You can now get it with B2B MARKET.</p>
               </div>
-              <button className="b2b-button-primary mt-6 text-lg">
-                Get Started Now
-              </button>
+              <a href="/sell-business">
+                <button className="b2b-button-primary mt-6 text-lg">
+                  Get Started Now
+                </button>
+              </a>
             </div>
             <div>
               <img 

@@ -50,7 +50,7 @@ export default function Header() {
               <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Buy a Franchise
               </a>
-              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+              <a href="/sell-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Sell Your Business
               </a>
               <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
