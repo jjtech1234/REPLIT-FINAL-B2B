@@ -84,11 +84,11 @@ export default function Header() {
           {isMobileMenuOpen && (
             <div className="lg:hidden border-t border-gray-200 py-4">
               <nav className="flex flex-col space-y-4">
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                <a href="/" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Home
                 </a>
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
-                  Buy a Franchise
+                <a href="/buy-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Buy a Business
                 </a>
                 <a href="/sell-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Sell Your Business
