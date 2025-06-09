@@ -5,6 +5,8 @@ import {
   type Business, type InsertBusiness,
   type Advertisement, type InsertAdvertisement
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -33,6 +35,130 @@ export interface IStorage {
   
   getAllAdvertisements(): Promise<Advertisement[]>;
   createAdvertisement(ad: InsertAdvertisement): Promise<Advertisement>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getAllFranchises(): Promise<Franchise[]> {
+    return await db.select().from(franchises).where(eq(franchises.isActive, true));
+  }
+
+  async getFranchiseById(id: number): Promise<Franchise | undefined> {
+    const [franchise] = await db.select().from(franchises).where(eq(franchises.id, id));
+    return franchise || undefined;
+  }
+
+  async searchFranchises(filters: {
+    category?: string;
+    country?: string;
+    state?: string;
+    priceRange?: string;
+  }): Promise<Franchise[]> {
+    let query = db.select().from(franchises).where(eq(franchises.isActive, true));
+    
+    // Note: For a production app, you would add proper WHERE clauses for filtering
+    // This is a simplified implementation
+    const allFranchises = await query;
+    
+    return allFranchises.filter(franchise => {
+      if (filters.category && filters.category !== "All Business Categories" && franchise.category !== filters.category) {
+        return false;
+      }
+      if (filters.country && filters.country !== "Any Country" && franchise.country !== filters.country) {
+        return false;
+      }
+      if (filters.state && filters.state !== "Any State" && franchise.state !== filters.state) {
+        return false;
+      }
+      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.priceRange !== filters.priceRange) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  async createFranchise(insertFranchise: InsertFranchise): Promise<Franchise> {
+    const [franchise] = await db
+      .insert(franchises)
+      .values(insertFranchise)
+      .returning();
+    return franchise;
+  }
+
+  async getAllBusinesses(): Promise<Business[]> {
+    return await db.select().from(businesses).where(eq(businesses.isActive, true));
+  }
+
+  async getBusinessById(id: number): Promise<Business | undefined> {
+    const [business] = await db.select().from(businesses).where(eq(businesses.id, id));
+    return business || undefined;
+  }
+
+  async searchBusinesses(filters: {
+    category?: string;
+    country?: string;
+    state?: string;
+    maxPrice?: number;
+  }): Promise<Business[]> {
+    let query = db.select().from(businesses).where(eq(businesses.isActive, true));
+    
+    // Note: For a production app, you would add proper WHERE clauses for filtering
+    // This is a simplified implementation
+    const allBusinesses = await query;
+    
+    return allBusinesses.filter(business => {
+      if (filters.category && filters.category !== "All Business Categories" && business.category !== filters.category) {
+        return false;
+      }
+      if (filters.country && filters.country !== "Any Country" && business.country !== filters.country) {
+        return false;
+      }
+      if (filters.state && filters.state !== "Any State" && business.state !== filters.state) {
+        return false;
+      }
+      if (filters.maxPrice && business.price && business.price > filters.maxPrice) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  async createBusiness(insertBusiness: InsertBusiness): Promise<Business> {
+    const [business] = await db
+      .insert(businesses)
+      .values(insertBusiness)
+      .returning();
+    return business;
+  }
+
+  async getAllAdvertisements(): Promise<Advertisement[]> {
+    return await db.select().from(advertisements).where(eq(advertisements.isActive, true));
+  }
+
+  async createAdvertisement(insertAd: InsertAdvertisement): Promise<Advertisement> {
+    const [ad] = await db
+      .insert(advertisements)
+      .values(insertAd)
+      .returning();
+    return ad;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -312,4 +438,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
