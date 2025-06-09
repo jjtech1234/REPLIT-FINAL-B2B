@@ -110,6 +110,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Franchise inquiry endpoint
+  app.post("/api/franchises/:id/inquire", async (req, res) => {
+    try {
+      const franchiseId = parseInt(req.params.id);
+      const { name, email, phone, message, investmentCapacity, location } = req.body;
+      
+      // In a real application, you would save this inquiry to a database
+      // For now, we'll just log it and return success
+      console.log(`Franchise inquiry received for franchise ${franchiseId}:`, {
+        name, email, phone, message, investmentCapacity, location
+      });
+      
+      res.json({ 
+        success: true, 
+        message: "Inquiry submitted successfully. We will contact you within 24 hours." 
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to submit inquiry" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

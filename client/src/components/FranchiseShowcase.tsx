@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLocation } from "wouter";
 import type { Franchise } from "@shared/schema";
 
 export default function FranchiseShowcase() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [, setLocation] = useLocation();
 
   const { data: franchises, isLoading } = useQuery<Franchise[]>({
     queryKey: ["/api/franchises"],
@@ -21,7 +23,7 @@ export default function FranchiseShowcase() {
   };
 
   const handleFranchiseClick = (franchise: Franchise) => {
-    alert(`Enquiring about ${franchise.name} franchise. Investment: $${franchise.investmentMin?.toLocaleString()} - $${franchise.investmentMax?.toLocaleString()}`);
+    setLocation(`/franchise/${franchise.id}`);
   };
 
   if (isLoading) {
