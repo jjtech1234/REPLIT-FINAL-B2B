@@ -44,11 +44,11 @@ export default function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
-              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+              <a href="/" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Home
               </a>
-              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
-                Buy a Franchise
+              <a href="/buy-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Buy a Business
               </a>
               <a href="/sell-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Sell Your Business
