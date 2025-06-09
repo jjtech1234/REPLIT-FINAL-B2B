@@ -1,0 +1,130 @@
+import { useState } from "react";
+import { Menu, X, Phone, Mail, HandHeart } from "lucide-react";
+
+export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <>
+      {/* Top Contact Bar */}
+      <div className="b2b-cyan-bg text-white py-2 px-4">
+        <div className="container mx-auto flex justify-between items-center text-sm">
+          <div className="flex items-center space-x-4">
+            <span className="flex items-center">
+              <Phone className="w-4 h-4 mr-2" />
+              214-310-7674
+            </span>
+            <span className="flex items-center">
+              <Mail className="w-4 h-4 mr-2" />
+              btwobmarket@gmail.com
+            </span>
+          </div>
+          <div>
+            <button className="b2b-button-primary py-1 px-4 text-sm">
+              Sign In/Up
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Header */}
+      <header className="bg-white shadow-md">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            {/* Logo */}
+            <div className="flex items-center">
+              <div className="bg-[hsl(var(--b2b-orange))] rounded-full p-2 mr-3">
+                <HandHeart className="text-white text-xl w-6 h-6" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-800">B2B MARKET</h1>
+                <p className="text-sm text-gray-600">Bringing People and Business Together!</p>
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Home
+              </a>
+              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Buy a Franchise
+              </a>
+              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Sell Your Business
+              </a>
+              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Post An Ad
+              </a>
+              <div className="relative group">
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium flex items-center transition-colors">
+                  Services
+                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </a>
+              </div>
+              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Contact
+              </a>
+              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                About
+              </a>
+            </nav>
+
+            {/* Mobile Menu Button */}
+            <button 
+              className="lg:hidden text-gray-700"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden border-t border-gray-200 py-4">
+              <nav className="flex flex-col space-y-4">
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Home
+                </a>
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Buy a Franchise
+                </a>
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Sell Your Business
+                </a>
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Post An Ad
+                </a>
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Services
+                </a>
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Contact
+                </a>
+                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  About
+                </a>
+              </nav>
+            </div>
+          )}
+
+          {/* Tagline */}
+          <div className="text-center pb-4">
+            <p className="text-[hsl(var(--b2b-blue))] font-medium">
+              <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              A Single Unified International Platform for !
+            </p>
+          </div>
+        </div>
+      </header>
+    </>
+  );
+}

@@ -1,0 +1,315 @@
+import { 
+  users, franchises, businesses, advertisements,
+  type User, type InsertUser,
+  type Franchise, type InsertFranchise,
+  type Business, type InsertBusiness,
+  type Advertisement, type InsertAdvertisement
+} from "@shared/schema";
+
+export interface IStorage {
+  getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  
+  getAllFranchises(): Promise<Franchise[]>;
+  getFranchiseById(id: number): Promise<Franchise | undefined>;
+  searchFranchises(filters: {
+    category?: string;
+    country?: string;
+    state?: string;
+    priceRange?: string;
+  }): Promise<Franchise[]>;
+  createFranchise(franchise: InsertFranchise): Promise<Franchise>;
+  
+  getAllBusinesses(): Promise<Business[]>;
+  getBusinessById(id: number): Promise<Business | undefined>;
+  searchBusinesses(filters: {
+    category?: string;
+    country?: string;
+    state?: string;
+    maxPrice?: number;
+  }): Promise<Business[]>;
+  createBusiness(business: InsertBusiness): Promise<Business>;
+  
+  getAllAdvertisements(): Promise<Advertisement[]>;
+  createAdvertisement(ad: InsertAdvertisement): Promise<Advertisement>;
+}
+
+export class MemStorage implements IStorage {
+  private users: Map<number, User>;
+  private franchises: Map<number, Franchise>;
+  private businesses: Map<number, Business>;
+  private advertisements: Map<number, Advertisement>;
+  private currentUserId: number;
+  private currentFranchiseId: number;
+  private currentBusinessId: number;
+  private currentAdId: number;
+
+  constructor() {
+    this.users = new Map();
+    this.franchises = new Map();
+    this.businesses = new Map();
+    this.advertisements = new Map();
+    this.currentUserId = 1;
+    this.currentFranchiseId = 1;
+    this.currentBusinessId = 1;
+    this.currentAdId = 1;
+    
+    // Initialize with sample data
+    this.initializeSampleData();
+  }
+
+  private initializeSampleData() {
+    // Sample franchises
+    const sampleFranchises: InsertFranchise[] = [
+      {
+        name: "MILKSTER",
+        description: "Premium coffee franchise with specialty drinks",
+        category: "Coffee",
+        country: "USA",
+        state: "California",
+        priceRange: "$50K-$100K",
+        imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 50000,
+        investmentMax: 100000,
+        isActive: true,
+      },
+      {
+        name: "BrightStar Care",
+        description: "Healthcare and senior care services",
+        category: "Health, Beauty & Nutrition",
+        country: "USA",
+        state: "Texas",
+        priceRange: "$250K-$500K",
+        imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 1421257,
+        investmentMax: 1497104,
+        isActive: true,
+      },
+      {
+        name: "College Hunks Hauling Junk and Moving",
+        description: "Professional moving and junk removal services",
+        category: "Moving Services",
+        country: "USA",
+        state: "Florida",
+        priceRange: "$100K-$250K",
+        imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 100000,
+        investmentMax: 250000,
+        isActive: true,
+      },
+      {
+        name: "Home Team Inspection Service",
+        description: "Professional home inspection services",
+        category: "Real Estate",
+        country: "USA",
+        state: "New York",
+        priceRange: "$50K-$100K",
+        imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 50000,
+        investmentMax: 100000,
+        isActive: true,
+      },
+      {
+        name: "Mr. Handyman",
+        description: "Home repair and maintenance services",
+        category: "Maintenance",
+        country: "USA",
+        state: "Illinois",
+        priceRange: "$100K-$250K",
+        imageUrl: "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 100000,
+        investmentMax: 250000,
+        isActive: true,
+      },
+      {
+        name: "Mr. Rooter Plumbing",
+        description: "Professional plumbing services",
+        category: "Repair & Restoration",
+        country: "USA",
+        state: "Ohio",
+        priceRange: "$100K-$250K",
+        imageUrl: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 100000,
+        investmentMax: 250000,
+        isActive: true,
+      },
+      {
+        name: "My Salon Suite",
+        description: "Upscale salon suites for beauty professionals",
+        category: "Health, Beauty & Nutrition",
+        country: "USA",
+        state: "Georgia",
+        priceRange: "$250K-$500K",
+        imageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 250000,
+        investmentMax: 500000,
+        isActive: true,
+      },
+      {
+        name: "Sport Clips",
+        description: "Sports-themed hair salon franchise",
+        category: "Hairstyling",
+        country: "USA",
+        state: "Arizona",
+        priceRange: "$250K-$500K",
+        imageUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        investmentMin: 250000,
+        investmentMax: 500000,
+        isActive: true,
+      },
+    ];
+
+    sampleFranchises.forEach(franchise => {
+      this.createFranchise(franchise);
+    });
+
+    // Sample advertisements
+    const sampleAds: InsertAdvertisement[] = [
+      {
+        title: "Business Meeting Solutions",
+        imageUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        targetUrl: "#",
+        isActive: true,
+      },
+      {
+        title: "Corporate Partnership Opportunities",
+        imageUrl: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        targetUrl: "#",
+        isActive: true,
+      },
+      {
+        title: "Business Strategy Consulting",
+        imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        targetUrl: "#",
+        isActive: true,
+      },
+    ];
+
+    sampleAds.forEach(ad => {
+      this.createAdvertisement(ad);
+    });
+  }
+
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const id = this.currentUserId++;
+    const user: User = { ...insertUser, id };
+    this.users.set(id, user);
+    return user;
+  }
+
+  async getAllFranchises(): Promise<Franchise[]> {
+    return Array.from(this.franchises.values()).filter(f => f.isActive);
+  }
+
+  async getFranchiseById(id: number): Promise<Franchise | undefined> {
+    return this.franchises.get(id);
+  }
+
+  async searchFranchises(filters: {
+    category?: string;
+    country?: string;
+    state?: string;
+    priceRange?: string;
+  }): Promise<Franchise[]> {
+    const allFranchises = await this.getAllFranchises();
+    
+    return allFranchises.filter(franchise => {
+      if (filters.category && filters.category !== "All Business Categories" && franchise.category !== filters.category) {
+        return false;
+      }
+      if (filters.country && filters.country !== "Any Country" && franchise.country !== filters.country) {
+        return false;
+      }
+      if (filters.state && filters.state !== "Any State" && franchise.state !== filters.state) {
+        return false;
+      }
+      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.priceRange !== filters.priceRange) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  async createFranchise(insertFranchise: InsertFranchise): Promise<Franchise> {
+    const id = this.currentFranchiseId++;
+    const franchise: Franchise = {
+      ...insertFranchise,
+      id,
+      createdAt: new Date(),
+    };
+    this.franchises.set(id, franchise);
+    return franchise;
+  }
+
+  async getAllBusinesses(): Promise<Business[]> {
+    return Array.from(this.businesses.values()).filter(b => b.isActive);
+  }
+
+  async getBusinessById(id: number): Promise<Business | undefined> {
+    return this.businesses.get(id);
+  }
+
+  async searchBusinesses(filters: {
+    category?: string;
+    country?: string;
+    state?: string;
+    maxPrice?: number;
+  }): Promise<Business[]> {
+    const allBusinesses = await this.getAllBusinesses();
+    
+    return allBusinesses.filter(business => {
+      if (filters.category && filters.category !== "All Business Categories" && business.category !== filters.category) {
+        return false;
+      }
+      if (filters.country && filters.country !== "Any Country" && business.country !== filters.country) {
+        return false;
+      }
+      if (filters.state && filters.state !== "Any State" && business.state !== filters.state) {
+        return false;
+      }
+      if (filters.maxPrice && business.price && business.price > filters.maxPrice) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  async createBusiness(insertBusiness: InsertBusiness): Promise<Business> {
+    const id = this.currentBusinessId++;
+    const business: Business = {
+      ...insertBusiness,
+      id,
+      createdAt: new Date(),
+    };
+    this.businesses.set(id, business);
+    return business;
+  }
+
+  async getAllAdvertisements(): Promise<Advertisement[]> {
+    return Array.from(this.advertisements.values()).filter(a => a.isActive);
+  }
+
+  async createAdvertisement(insertAd: InsertAdvertisement): Promise<Advertisement> {
+    const id = this.currentAdId++;
+    const ad: Advertisement = {
+      ...insertAd,
+      id,
+      createdAt: new Date(),
+    };
+    this.advertisements.set(id, ad);
+    return ad;
+  }
+}
+
+export const storage = new MemStorage();
