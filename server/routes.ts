@@ -131,6 +131,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Contact form endpoint
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { name, email, phone, subject, message, inquiryType } = req.body;
+      
+      console.log("Contact form submission:", {
+        name, email, phone, subject, message, inquiryType
+      });
+      
+      res.json({ 
+        success: true, 
+        message: "Message sent successfully. We will respond within 24 hours." 
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send message" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

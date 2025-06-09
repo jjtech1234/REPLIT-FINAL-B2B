@@ -1,0 +1,238 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Users, Globe, TrendingUp, Award, Target, Heart } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
+export default function About() {
+  const stats = [
+    { number: "10,000+", label: "Businesses Listed" },
+    { number: "50+", label: "Countries Served" },
+    { number: "5,000+", label: "Successful Transactions" },
+    { number: "15+", label: "Years Experience" }
+  ];
+
+  const team = [
+    {
+      name: "Michael Chen",
+      role: "CEO & Founder",
+      description: "15+ years in business brokerage and M&A",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
+    },
+    {
+      name: "Sarah Johnson",
+      role: "Head of Operations",
+      description: "Expert in franchise development and consulting",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b332c73b?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
+    },
+    {
+      name: "David Rodriguez",
+      role: "Business Development Director",
+      description: "International business expansion specialist",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
+    },
+    {
+      name: "Lisa Wang",
+      role: "Client Relations Manager",
+      description: "Dedicated to exceptional customer service",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
+    }
+  ];
+
+  const values = [
+    {
+      icon: Target,
+      title: "Mission",
+      description: "To create the world's most trusted platform for business transactions, connecting entrepreneurs globally."
+    },
+    {
+      icon: Heart,
+      title: "Vision",
+      description: "A world where every business owner can easily find the right buyer, seller, or franchise partner."
+    },
+    {
+      icon: Award,
+      title: "Values",
+      description: "Integrity, transparency, and excellence in every business relationship we facilitate."
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-8">
+        <Button 
+          variant="outline" 
+          className="mb-6"
+          onClick={() => window.history.back()}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Home
+        </Button>
+
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">About B2B Market</h1>
+          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            We are the world's leading global marketplace for buying, selling, and franchising businesses. 
+            Our platform brings together entrepreneurs, investors, and business owners from around the world 
+            to create successful business partnerships and transactions.
+          </p>
+        </div>
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+          {stats.map((stat, index) => (
+            <div key={index} className="text-center bg-white rounded-lg p-6 shadow-lg">
+              <div className="text-3xl font-bold text-[hsl(var(--b2b-blue))] mb-2">{stat.number}</div>
+              <div className="text-gray-600">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Our Story */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Story</h2>
+            <div className="space-y-4 text-gray-600">
+              <p>
+                Founded in 2010, B2B Market began with a simple vision: to create a unified global platform 
+                where business owners could connect with qualified buyers and franchise opportunities worldwide.
+              </p>
+              <p>
+                What started as a small team with big dreams has grown into the world's most trusted business 
+                marketplace, serving over 50 countries and facilitating billions of dollars in business transactions.
+              </p>
+              <p>
+                Today, we continue to innovate and expand our services, always keeping our core mission at heart: 
+                bringing people and businesses together to create lasting partnerships and successful ventures.
+              </p>
+            </div>
+          </div>
+          <div>
+            <img 
+              src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
+              alt="Business meeting" 
+              className="rounded-lg shadow-lg w-full"
+            />
+          </div>
+        </div>
+
+        {/* Mission, Vision, Values */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">Our Mission, Vision & Values</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {values.map((value, index) => {
+              const IconComponent = value.icon;
+              return (
+                <Card key={index} className="text-center">
+                  <CardHeader>
+                    <div className="bg-[hsl(var(--b2b-blue))] rounded-full p-4 w-16 h-16 mx-auto mb-4">
+                      <IconComponent className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl text-gray-800">{value.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600">{value.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* What Makes Us Different */}
+        <div className="bg-white rounded-lg p-8 mb-16">
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">What Makes Us Different</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-[hsl(var(--b2b-orange))] rounded-full p-4 w-16 h-16 mx-auto mb-4">
+                <Globe className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">Global Reach</h3>
+              <p className="text-gray-600">The largest international network of business buyers and sellers</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-[hsl(var(--b2b-orange))] rounded-full p-4 w-16 h-16 mx-auto mb-4">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">Expert Support</h3>
+              <p className="text-gray-600">Dedicated team of business transaction specialists</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-[hsl(var(--b2b-orange))] rounded-full p-4 w-16 h-16 mx-auto mb-4">
+                <TrendingUp className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">Proven Results</h3>
+              <p className="text-gray-600">Thousands of successful business transactions completed</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Our Team */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">Meet Our Leadership Team</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {team.map((member, index) => (
+              <Card key={index} className="text-center">
+                <CardHeader>
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                  />
+                  <CardTitle className="text-lg text-gray-800">{member.name}</CardTitle>
+                  <p className="text-[hsl(var(--b2b-blue))] font-medium">{member.role}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600">{member.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Awards & Recognition */}
+        <div className="bg-gradient-to-r from-[hsl(var(--b2b-blue))] to-[hsl(var(--b2b-blue-dark))] rounded-lg p-8 text-white mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8">Awards & Recognition</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="text-4xl mb-2">🏆</div>
+              <h3 className="font-semibold mb-2">Best Business Platform 2023</h3>
+              <p className="text-sm opacity-90">International Business Awards</p>
+            </div>
+            <div>
+              <div className="text-4xl mb-2">⭐</div>
+              <h3 className="font-semibold mb-2">Top Franchise Platform</h3>
+              <p className="text-sm opacity-90">Global Franchise Review</p>
+            </div>
+            <div>
+              <div className="text-4xl mb-2">🌟</div>
+              <h3 className="font-semibold mb-2">Excellence in Service</h3>
+              <p className="text-sm opacity-90">Customer Choice Awards</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact CTA */}
+        <div className="text-center bg-white rounded-lg p-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Ready to Work With Us?</h2>
+          <p className="text-xl text-gray-600 mb-6">
+            Join thousands of successful business owners who trust B2B Market for their business transactions.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button className="b2b-button-primary px-8 py-3">
+              Start Selling
+            </Button>
+            <Button variant="outline" className="px-8 py-3">
+              Browse Opportunities
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}

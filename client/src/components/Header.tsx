@@ -53,21 +53,16 @@ export default function Header() {
               <a href="/sell-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Sell Your Business
               </a>
-              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+              <a href="/post-ad" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Post An Ad
               </a>
-              <div className="relative group">
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium flex items-center transition-colors">
-                  Services
-                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </a>
-              </div>
-              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+              <a href="/services" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Services
+              </a>
+              <a href="/contact" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Contact
               </a>
-              <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+              <a href="/about" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 About
               </a>
             </nav>
@@ -95,19 +90,19 @@ export default function Header() {
                 <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Buy a Franchise
                 </a>
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                <a href="/sell-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Sell Your Business
                 </a>
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                <a href="/post-ad" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Post An Ad
                 </a>
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                <a href="/services" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Services
                 </a>
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                <a href="/contact" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Contact
                 </a>
-                <a href="#" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                <a href="/about" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   About
                 </a>
               </nav>
