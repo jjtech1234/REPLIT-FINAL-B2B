@@ -4,49 +4,20 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { MapPin, DollarSign, Building, Users } from "lucide-react";
-import type { Business } from "@shared/schema";
+import { MapPin, Building } from "lucide-react";
 
 export default function BuyBusiness() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState("");
-  const [location, setLocation] = useState("");
-  const [priceRange, setPriceRange] = useState("");
 
-  const { data: businesses = [], isLoading } = useQuery<Business[]>({
+  const { data: businesses = [], isLoading } = useQuery({
     queryKey: ["/api/businesses"],
   });
 
-  const filteredBusinesses = businesses.filter(business => {
-    const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (business.description && business.description.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = !category || business.category === category;
-    const businessLocation = `${business.country}${business.state ? ', ' + business.state : ''}`;
-    const matchesLocation = !location || businessLocation.toLowerCase().includes(location.toLowerCase());
-    
-    let matchesPrice = true;
-    if (priceRange && business.price) {
-      const price = business.price;
-      switch (priceRange) {
-        case "under-100k":
-          matchesPrice = price < 100000;
-          break;
-        case "100k-500k":
-          matchesPrice = price >= 100000 && price < 500000;
-          break;
-        case "500k-1m":
-          matchesPrice = price >= 500000 && price < 1000000;
-          break;
-        case "over-1m":
-          matchesPrice = price >= 1000000;
-          break;
-      }
-    }
-    
-    return matchesSearch && matchesCategory && matchesLocation && matchesPrice;
+  const filteredBusinesses = (businesses as any[]).filter((business: any) => {
+    if (!searchTerm) return true;
+    return business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (business.description && business.description.toLowerCase().includes(searchTerm.toLowerCase()));
   });
 
   return (
@@ -70,62 +41,16 @@ export default function BuyBusiness() {
         </div>
       </section>
 
-      {/* Search Filters */}
+      {/* Search Section */}
       <section className="py-8 bg-white shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="max-w-md mx-auto">
             <Input
               placeholder="Search businesses..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full"
             />
-            
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
-                <SelectItem value="restaurant">Restaurant</SelectItem>
-                <SelectItem value="retail">Retail</SelectItem>
-                <SelectItem value="technology">Technology</SelectItem>
-                <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                <SelectItem value="services">Services</SelectItem>
-                <SelectItem value="healthcare">Healthcare</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Input
-              placeholder="Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-
-            <Select value={priceRange} onValueChange={setPriceRange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Price Range" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Prices</SelectItem>
-                <SelectItem value="under-100k">Under $100K</SelectItem>
-                <SelectItem value="100k-500k">$100K - $500K</SelectItem>
-                <SelectItem value="500k-1m">$500K - $1M</SelectItem>
-                <SelectItem value="over-1m">Over $1M</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button 
-              onClick={() => {
-                setSearchTerm("");
-                setCategory("");
-                setLocation("");
-                setPriceRange("");
-              }}
-              variant="outline"
-            >
-              Clear Filters
-            </Button>
           </div>
         </div>
       </section>
@@ -154,23 +79,22 @@ export default function BuyBusiness() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredBusinesses.map((business) => (
+              {filteredBusinesses.map((business: any) => (
                 <Card key={business.id} className="overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="h-48 bg-gradient-to-br from-blue-100 to-orange-100 flex items-center justify-center">
                     <Building className="h-16 w-16 text-gray-400" />
                   </div>
                   <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-xl">{business.name}</CardTitle>
-                      <Badge variant="secondary">{business.category}</Badge>
-                    </div>
+                    <CardTitle className="text-xl">{business.name}</CardTitle>
                     <CardDescription className="flex items-center text-gray-600">
                       <MapPin className="h-4 w-4 mr-1" />
                       {business.country}{business.state ? `, ${business.state}` : ''}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-700 mb-4 line-clamp-3">{business.description || 'No description available'}</p>
+                    <p className="text-gray-700 mb-4 line-clamp-3">
+                      {business.description || 'No description available'}
+                    </p>
                     
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center justify-between">
