@@ -32,16 +32,16 @@ export default function Footer() {
             <h5 className="font-bold mb-4">Quick Links</h5>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-white transition-colors">Home</a>
+                <a href="/" className="hover:text-white transition-colors">Home</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">Buy a Franchise</a>
+                <a href="/buy-business" className="hover:text-white transition-colors">Buy a Business</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">Sell Your Business</a>
+                <a href="/sell-business" className="hover:text-white transition-colors">Sell Your Business</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">Post An Ad</a>
+                <a href="/post-ad" className="hover:text-white transition-colors">Post An Ad</a>
               </li>
             </ul>
           </div>
@@ -51,16 +51,16 @@ export default function Footer() {
             <h5 className="font-bold mb-4">Services</h5>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-white transition-colors">Business Valuation</a>
+                <a href="/services" className="hover:text-white transition-colors">Business Valuation</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">Franchise Consulting</a>
+                <a href="/services" className="hover:text-white transition-colors">Franchise Consulting</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">Legal Services</a>
+                <a href="/services" className="hover:text-white transition-colors">Legal Services</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">Marketing Support</a>
+                <a href="/contact" className="hover:text-white transition-colors">Contact Us</a>
               </li>
             </ul>
           </div>

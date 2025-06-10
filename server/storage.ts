@@ -290,6 +290,74 @@ export class MemStorage implements IStorage {
       this.createFranchise(franchise);
     });
 
+    // Sample businesses
+    const sampleBusinesses: InsertBusiness[] = [
+      {
+        name: "TechFlow Solutions",
+        description: "Established software development company specializing in web applications and mobile solutions. Strong client base and recurring revenue.",
+        category: "technology",
+        country: "USA",
+        state: "California",
+        price: 850000,
+        contactEmail: "seller@techflow.com",
+        isActive: true,
+      },
+      {
+        name: "Golden Gate Restaurant",
+        description: "Popular family restaurant in prime location. Fully equipped kitchen, established customer base, and excellent reviews.",
+        category: "restaurant",
+        country: "USA",
+        state: "California",
+        price: 450000,
+        contactEmail: "owner@goldengate.com",
+        isActive: true,
+      },
+      {
+        name: "Metro Fitness Center",
+        description: "Well-equipped gym with modern facilities, personal training services, and loyal membership base of 800+ members.",
+        category: "services",
+        country: "USA",
+        state: "New York",
+        price: 320000,
+        contactEmail: "manager@metrofitness.com",
+        isActive: true,
+      },
+      {
+        name: "Sunshine Medical Clinic",
+        description: "Family practice clinic with established patient base. Modern equipment and prime location in growing community.",
+        category: "healthcare",
+        country: "USA",
+        state: "Florida",
+        price: 1200000,
+        contactEmail: "admin@sunshinemedical.com",
+        isActive: true,
+      },
+      {
+        name: "Downtown Auto Repair",
+        description: "Full-service automotive repair shop with loyal customer base. All equipment included, excellent reputation.",
+        category: "services",
+        country: "USA",
+        state: "Texas",
+        price: 275000,
+        contactEmail: "owner@downtownauto.com",
+        isActive: true,
+      },
+      {
+        name: "Fresh Market Grocery",
+        description: "Neighborhood grocery store with steady revenue. Prime location, established supplier relationships, and growth potential.",
+        category: "retail",
+        country: "USA",
+        state: "Colorado",
+        price: 680000,
+        contactEmail: "manager@freshmarket.com",
+        isActive: true,
+      },
+    ];
+
+    sampleBusinesses.forEach(business => {
+      this.createBusiness(business);
+    });
+
     // Sample advertisements
     const sampleAds: InsertAdvertisement[] = [
       {

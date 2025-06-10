@@ -38,6 +38,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* YouTube Video Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-gray-800 mb-4">Watch Our Introduction</h3>
+            <p className="text-lg text-gray-600">Learn how B2B Market connects businesses worldwide</p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-lg shadow-xl">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                title="B2B Market Introduction"
+                frameBorder="0"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Sell Your Business Section */}
       <section className="py-16 bg-gradient-to-r from-gray-100 to-gray-200">
         <div className="container mx-auto px-4">
