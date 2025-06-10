@@ -7,14 +7,37 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Building } from "lucide-react";
 
+interface Business {
+  id: number;
+  name: string;
+  description: string | null;
+  category: string;
+  country: string;
+  state: string | null;
+  price: number | null;
+  contactEmail: string | null;
+}
+
 export default function BuyBusiness() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: businesses = [], isLoading } = useQuery({
+  const { data: businesses = [], isLoading, error } = useQuery<Business[]>({
     queryKey: ["/api/businesses"],
   });
 
-  const filteredBusinesses = (businesses as any[]).filter((business: any) => {
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-16 text-center">
+          <p className="text-red-600">Error loading businesses. Please try again.</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  const filteredBusinesses = businesses.filter((business: Business) => {
     if (!searchTerm) return true;
     return business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
            (business.description && business.description.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -23,6 +46,15 @@ export default function BuyBusiness() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      
+      {/* Debug Info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="bg-yellow-100 p-2 text-xs">
+          Loading: {isLoading ? 'true' : 'false'} | 
+          Businesses: {businesses.length} | 
+          Filtered: {filteredBusinesses.length}
+        </div>
+      )}
       
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-[hsl(var(--b2b-blue))] to-blue-600 text-white py-16">
@@ -79,7 +111,7 @@ export default function BuyBusiness() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredBusinesses.map((business: any) => (
+              {filteredBusinesses.map((business: Business) => (
                 <Card key={business.id} className="overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="h-48 bg-gradient-to-br from-blue-100 to-orange-100 flex items-center justify-center">
                     <Building className="h-16 w-16 text-gray-400" />
