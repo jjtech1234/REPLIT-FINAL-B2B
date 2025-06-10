@@ -6,42 +6,44 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Building } from "lucide-react";
 
-interface Business {
+interface Franchise {
   id: number;
   name: string;
   description: string | null;
   category: string;
   country: string;
   state: string | null;
-  price: number | null;
+  investmentRange: string | null;
   contactEmail: string | null;
+  imageUrl: string | null;
+  isActive: boolean;
 }
 
 export default function BuyBusiness() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [franchises, setFranchises] = useState<Franchise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchBusinesses() {
+    async function fetchFranchises() {
       try {
-        const response = await fetch('/api/businesses');
+        const response = await fetch('/api/franchises');
         const data = await response.json();
-        setBusinesses(data);
+        setFranchises(data);
       } catch (error) {
-        console.error('Error fetching businesses:', error);
+        console.error('Error fetching franchises:', error);
       } finally {
         setIsLoading(false);
       }
     }
     
-    fetchBusinesses();
+    fetchFranchises();
   }, []);
 
-  const filteredBusinesses = businesses.filter((business) => {
+  const filteredFranchises = franchises.filter((franchise) => {
     if (!searchTerm) return true;
-    return business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           (business.description && business.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    return franchise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (franchise.description && franchise.description.toLowerCase().includes(searchTerm.toLowerCase()));
   });
 
   return (
@@ -84,7 +86,7 @@ export default function BuyBusiness() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-800">
-              Available Businesses ({filteredBusinesses.length})
+              Available Businesses ({filteredFranchises.length})
             </h2>
           </div>
 
@@ -94,40 +96,48 @@ export default function BuyBusiness() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredBusinesses.map((business) => (
-                <Card key={business.id} className="overflow-hidden hover:shadow-xl transition-shadow">
+              {filteredFranchises.map((franchise) => (
+                <Card key={franchise.id} className="overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="h-48 bg-gradient-to-br from-blue-100 to-orange-100 flex items-center justify-center">
-                    <Building className="h-16 w-16 text-gray-400" />
+                    {franchise.imageUrl ? (
+                      <img 
+                        src={franchise.imageUrl} 
+                        alt={franchise.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Building className="h-16 w-16 text-gray-400" />
+                    )}
                   </div>
                   <CardHeader>
-                    <CardTitle className="text-xl">{business.name}</CardTitle>
+                    <CardTitle className="text-xl">{franchise.name}</CardTitle>
                     <CardDescription className="flex items-center text-gray-600">
                       <MapPin className="h-4 w-4 mr-1" />
-                      {business.country}{business.state ? `, ${business.state}` : ''}
+                      {franchise.country}{franchise.state ? `, ${franchise.state}` : ''}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-700 mb-4 line-clamp-3">
-                      {business.description || 'No description available'}
+                      {franchise.description || 'No description available'}
                     </p>
                     
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Price:</span>
+                        <span className="text-sm text-gray-600">Investment:</span>
                         <span className="font-semibold text-[hsl(var(--b2b-blue))]">
-                          {business.price ? `$${business.price.toLocaleString()}` : 'Contact for price'}
+                          {franchise.investmentRange || 'Contact for details'}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Category:</span>
                         <span className="font-semibold">
-                          {business.category}
+                          {franchise.category}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Contact:</span>
                         <span className="font-semibold text-sm">
-                          {business.contactEmail || 'Available on inquiry'}
+                          {franchise.contactEmail || 'Available on inquiry'}
                         </span>
                       </div>
                     </div>
