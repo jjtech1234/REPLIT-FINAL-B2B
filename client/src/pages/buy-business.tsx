@@ -156,7 +156,7 @@ export default function BuyBusiness() {
             </div>
           )}
 
-          {!isLoading && filteredBusinesses.length === 0 && (
+          {!isLoading && filteredFranchises.length === 0 && (
             <div className="text-center py-12">
               <Building className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No businesses found</h3>
