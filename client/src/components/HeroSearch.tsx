@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import type { Franchise } from "@shared/schema";
 
 interface SearchFilters {
   category: string;
@@ -11,7 +9,11 @@ interface SearchFilters {
   priceRange: string;
 }
 
-export default function HeroSearch() {
+interface HeroSearchProps {
+  onSearch?: (filters: SearchFilters, type: "franchise" | "business") => void;
+}
+
+export default function HeroSearch({ onSearch }: HeroSearchProps) {
   const [activeTab, setActiveTab] = useState<"franchise" | "business">("franchise");
   const [filters, setFilters] = useState<SearchFilters>({
     category: "",
@@ -20,17 +22,9 @@ export default function HeroSearch() {
     priceRange: "",
   });
 
-  const { data: searchResults, refetch } = useQuery<Franchise[]>({
-    queryKey: ["/api/franchises/search", filters],
-    enabled: false,
-  });
-
   const handleSearch = () => {
-    if (activeTab === "franchise") {
-      refetch();
-    } else {
-      // For business search, would query different endpoint
-      console.log("Searching businesses with filters:", filters);
+    if (onSearch) {
+      onSearch(filters, activeTab);
     }
   };
 
@@ -197,24 +191,7 @@ export default function HeroSearch() {
             </Button>
           </div>
 
-          {/* Search Results */}
-          {searchResults && searchResults.length > 0 && (
-            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Search Results ({searchResults.length} found)
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {searchResults.map((franchise) => (
-                  <div key={franchise.id} className="bg-white p-4 rounded-lg shadow">
-                    <h4 className="font-bold text-gray-800">{franchise.name}</h4>
-                    <p className="text-sm text-gray-600">{franchise.category}</p>
-                    <p className="text-sm text-gray-500">{franchise.country}, {franchise.state}</p>
-                    <p className="text-sm font-semibold text-[hsl(var(--b2b-blue))]">{franchise.priceRange}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
     </section>

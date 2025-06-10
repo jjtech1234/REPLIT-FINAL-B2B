@@ -1,14 +1,30 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import HeroSearch from "@/components/HeroSearch";
 import FranchiseShowcase from "@/components/FranchiseShowcase";
 import Footer from "@/components/Footer";
 
+interface SearchFilters {
+  category: string;
+  country: string;
+  state: string;
+  priceRange: string;
+}
+
 export default function Home() {
+  const [searchFilters, setSearchFilters] = useState<SearchFilters | undefined>(undefined);
+  const [searchType, setSearchType] = useState<"franchise" | "business">("franchise");
+
+  const handleSearch = (filters: SearchFilters, type: "franchise" | "business") => {
+    setSearchFilters(filters);
+    setSearchType(type);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <HeroSearch />
-      <FranchiseShowcase />
+      <HeroSearch onSearch={handleSearch} />
+      <FranchiseShowcase searchFilters={searchFilters} searchType={searchType} />
       
       {/* Advertisements Section */}
       <section className="py-12 bg-white">

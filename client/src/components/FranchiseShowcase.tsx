@@ -1,15 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 import type { Franchise } from "@shared/schema";
 
-export default function FranchiseShowcase() {
+interface SearchFilters {
+  category: string;
+  country: string;
+  state: string;
+  priceRange: string;
+}
+
+interface FranchiseShowcaseProps {
+  searchFilters?: SearchFilters;
+  searchType?: "franchise" | "business";
+}
+
+export default function FranchiseShowcase({ searchFilters, searchType }: FranchiseShowcaseProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [, setLocation] = useLocation();
 
+  // Build query key and URL based on whether we're searching or not
+  const hasSearchFilters = searchFilters && (
+    (searchFilters.category && searchFilters.category !== "All Business Categories") || 
+    (searchFilters.country && searchFilters.country !== "Any Country") || 
+    (searchFilters.state && searchFilters.state !== "Any State") || 
+    (searchFilters.priceRange && searchFilters.priceRange !== "Price Range")
+  );
+
   const { data: franchises, isLoading } = useQuery<Franchise[]>({
-    queryKey: ["/api/franchises"],
+    queryKey: hasSearchFilters 
+      ? ["/api/franchises/search", searchFilters]
+      : ["/api/franchises"],
+    queryFn: async () => {
+      if (hasSearchFilters) {
+        const params = new URLSearchParams();
+        if (searchFilters!.category && searchFilters!.category !== "All Business Categories") {
+          params.append('category', searchFilters!.category);
+        }
+        if (searchFilters!.country && searchFilters!.country !== "Any Country") {
+          params.append('country', searchFilters!.country);
+        }
+        if (searchFilters!.state && searchFilters!.state !== "Any State") {
+          params.append('state', searchFilters!.state);
+        }
+        if (searchFilters!.priceRange && searchFilters!.priceRange !== "Price Range") {
+          params.append('priceRange', searchFilters!.priceRange);
+        }
+        
+        const response = await fetch(`/api/franchises/search?${params.toString()}`);
+        if (!response.ok) throw new Error('Failed to search franchises');
+        return response.json();
+      } else {
+        const response = await fetch('/api/franchises');
+        if (!response.ok) throw new Error('Failed to fetch franchises');
+        return response.json();
+      }
+    }
   });
 
   const handlePrevSlide = () => {
