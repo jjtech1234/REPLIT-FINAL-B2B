@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertFranchiseSchema, insertBusinessSchema } from "@shared/schema";
+import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Franchise routes
@@ -110,21 +110,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Inquiry routes
+  app.get("/api/inquiries", async (req, res) => {
+    try {
+      const inquiries = await storage.getAllInquiries();
+      res.json(inquiries);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch inquiries" });
+    }
+  });
+
+  app.post("/api/inquiries", async (req, res) => {
+    try {
+      const validatedData = insertInquirySchema.parse(req.body);
+      const inquiry = await storage.createInquiry(validatedData);
+      res.status(201).json(inquiry);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid inquiry data" });
+    }
+  });
+
+  app.get("/api/inquiries/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const inquiry = await storage.getInquiryById(id);
+      if (!inquiry) {
+        return res.status(404).json({ error: "Inquiry not found" });
+      }
+      res.json(inquiry);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch inquiry" });
+    }
+  });
+
   // Franchise inquiry endpoint
   app.post("/api/franchises/:id/inquire", async (req, res) => {
     try {
       const franchiseId = parseInt(req.params.id);
-      const { name, email, phone, message, investmentCapacity, location } = req.body;
+      const { name, email, phone, message } = req.body;
       
-      // In a real application, you would save this inquiry to a database
-      // For now, we'll just log it and return success
-      console.log(`Franchise inquiry received for franchise ${franchiseId}:`, {
-        name, email, phone, message, investmentCapacity, location
+      const inquiry = await storage.createInquiry({
+        name,
+        email,
+        phone,
+        subject: "Franchise Inquiry",
+        message,
+        franchiseId,
+        status: "pending"
       });
       
       res.json({ 
         success: true, 
-        message: "Inquiry submitted successfully. We will contact you within 24 hours." 
+        message: "Inquiry submitted successfully. We will contact you within 24 hours.",
+        inquiryId: inquiry.id
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to submit inquiry" });
+    }
+  });
+
+  // Business inquiry endpoint
+  app.post("/api/businesses/:id/inquire", async (req, res) => {
+    try {
+      const businessId = parseInt(req.params.id);
+      const { name, email, phone, message } = req.body;
+      
+      const inquiry = await storage.createInquiry({
+        name,
+        email,
+        phone,
+        subject: "Business Inquiry",
+        message,
+        businessId,
+        status: "pending"
+      });
+      
+      res.json({ 
+        success: true, 
+        message: "Inquiry submitted successfully. We will contact you within 24 hours.",
+        inquiryId: inquiry.id
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to submit inquiry" });
@@ -134,15 +198,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     try {
-      const { name, email, phone, subject, message, inquiryType } = req.body;
+      const { name, email, phone, subject, message } = req.body;
       
-      console.log("Contact form submission:", {
-        name, email, phone, subject, message, inquiryType
+      const inquiry = await storage.createInquiry({
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        status: "pending"
       });
       
       res.json({ 
         success: true, 
-        message: "Message sent successfully. We will respond within 24 hours." 
+        message: "Message sent successfully. We will respond within 24 hours.",
+        inquiryId: inquiry.id
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to send message" });

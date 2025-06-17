@@ -76,7 +76,12 @@ export class DatabaseStorage implements IStorage {
     state?: string;
     priceRange?: string;
   }): Promise<Franchise[]> {
-    const allFranchises = await this.getAllFranchises();
+    let query = db.select().from(franchises).where(eq(franchises.isActive, true));
+    
+    // Note: For a production app, you would add proper WHERE clauses for filtering
+    // This is a simplified implementation
+    const allFranchises = await query;
+    
     return allFranchises.filter(franchise => {
       if (filters.category && filters.category !== "All Business Categories" && franchise.category !== filters.category) {
         return false;
@@ -87,7 +92,7 @@ export class DatabaseStorage implements IStorage {
       if (filters.state && filters.state !== "Any State" && franchise.state !== filters.state) {
         return false;
       }
-      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.investmentRange !== filters.priceRange) {
+      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.priceRange !== filters.priceRange) {
         return false;
       }
       return true;
@@ -117,7 +122,12 @@ export class DatabaseStorage implements IStorage {
     state?: string;
     maxPrice?: number;
   }): Promise<Business[]> {
-    const allBusinesses = await this.getAllBusinesses();
+    let query = db.select().from(businesses).where(eq(businesses.isActive, true));
+    
+    // Note: For a production app, you would add proper WHERE clauses for filtering
+    // This is a simplified implementation
+    const allBusinesses = await query;
+    
     return allBusinesses.filter(business => {
       if (filters.category && filters.category !== "All Business Categories" && business.category !== filters.category) {
         return false;
@@ -210,9 +220,8 @@ export class MemStorage implements IStorage {
         category: "Coffee",
         country: "USA",
         state: "California",
-        investmentRange: "$50K-$100K",
+        priceRange: "$50K-$100K",
         imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "info@milkster.com",
         investmentMin: 50000,
         investmentMax: 100000,
         isActive: true,
@@ -223,11 +232,10 @@ export class MemStorage implements IStorage {
         category: "Health, Beauty & Nutrition",
         country: "USA",
         state: "Texas",
-        investmentRange: "$250K-$500K",
+        priceRange: "$250K-$500K",
         imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "franchise@brightstarcare.com",
-        investmentMin: 250000,
-        investmentMax: 500000,
+        investmentMin: 1421257,
+        investmentMax: 1497104,
         isActive: true,
       },
       {
@@ -236,9 +244,8 @@ export class MemStorage implements IStorage {
         category: "Moving Services",
         country: "USA",
         state: "Florida",
-        investmentRange: "$100K-$250K",
+        priceRange: "$100K-$250K",
         imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "franchise@collegehunks.com",
         investmentMin: 100000,
         investmentMax: 250000,
         isActive: true,
@@ -246,25 +253,23 @@ export class MemStorage implements IStorage {
       {
         name: "Home Team Inspection Service",
         description: "Professional home inspection services",
-        category: "Home & Garden",
+        category: "Real Estate",
         country: "USA",
-        state: "Georgia",
-        investmentRange: "$50K-$100K",
+        state: "New York",
+        priceRange: "$50K-$100K",
         imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "franchise@hometeam.com",
         investmentMin: 50000,
         investmentMax: 100000,
         isActive: true,
       },
       {
         name: "Mr. Handyman",
-        description: "Professional handyman and repair services",
-        category: "Home & Garden",
+        description: "Home repair and maintenance services",
+        category: "Maintenance",
         country: "USA",
-        state: "Ohio",
-        investmentRange: "$100K-$250K",
-        imageUrl: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "franchise@mrhandyman.com",
+        state: "Illinois",
+        priceRange: "$100K-$250K",
+        imageUrl: "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
         investmentMin: 100000,
         investmentMax: 250000,
         isActive: true,
@@ -272,42 +277,39 @@ export class MemStorage implements IStorage {
       {
         name: "Mr. Rooter Plumbing",
         description: "Professional plumbing services",
-        category: "Home & Garden",
+        category: "Repair & Restoration",
         country: "USA",
-        state: "Michigan",
-        investmentRange: "$250K-$500K",
+        state: "Ohio",
+        priceRange: "$100K-$250K",
         imageUrl: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "franchise@mrrooter.com",
+        investmentMin: 100000,
+        investmentMax: 250000,
+        isActive: true,
+      },
+      {
+        name: "My Salon Suite",
+        description: "Upscale salon suites for beauty professionals",
+        category: "Health, Beauty & Nutrition",
+        country: "USA",
+        state: "Georgia",
+        priceRange: "$250K-$500K",
+        imageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
         investmentMin: 250000,
         investmentMax: 500000,
         isActive: true,
       },
       {
         name: "Sport Clips",
-        description: "Men's hair salon franchise",
-        category: "Health, Beauty & Nutrition",
+        description: "Sports-themed hair salon franchise",
+        category: "Hairstyling",
         country: "USA",
-        state: "Colorado",
-        investmentRange: "$100K-$250K",
+        state: "Arizona",
+        priceRange: "$250K-$500K",
         imageUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "franchise@sportclips.com",
-        investmentMin: 100000,
-        investmentMax: 250000,
+        investmentMin: 250000,
+        investmentMax: 500000,
         isActive: true,
       },
-      {
-        name: "Supercuts",
-        description: "Affordable hair salon chain",
-        category: "Health, Beauty & Nutrition",
-        country: "USA",
-        state: "Washington",
-        investmentRange: "$100K-$250K",
-        imageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "franchise@supercuts.com",
-        investmentMin: 100000,
-        investmentMax: 250000,
-        isActive: true,
-      }
     ];
 
     sampleFranchises.forEach(franchise => {
@@ -317,31 +319,95 @@ export class MemStorage implements IStorage {
     // Sample businesses
     const sampleBusinesses: InsertBusiness[] = [
       {
-        name: "Downtown Coffee Shop",
-        description: "Established coffee shop in prime downtown location",
-        category: "Food & Beverage",
+        name: "TechFlow Solutions",
+        description: "Established software development company specializing in web applications and mobile solutions. Strong client base and recurring revenue.",
+        category: "technology",
         country: "USA",
-        state: "New York",
-        price: 125000,
-        imageUrl: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "seller@downtowncoffee.com",
+        state: "California",
+        price: 850000,
+        contactEmail: "seller@techflow.com",
         isActive: true,
       },
       {
-        name: "Tech Consulting Firm",
-        description: "Growing IT consulting business with established client base",
-        category: "Technology",
+        name: "Golden Gate Restaurant",
+        description: "Popular family restaurant in prime location. Fully equipped kitchen, established customer base, and excellent reviews.",
+        category: "restaurant",
         country: "USA",
         state: "California",
-        price: 350000,
-        imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        contactEmail: "seller@techconsult.com",
+        price: 450000,
+        contactEmail: "owner@goldengate.com",
         isActive: true,
-      }
+      },
+      {
+        name: "Metro Fitness Center",
+        description: "Well-equipped gym with modern facilities, personal training services, and loyal membership base of 800+ members.",
+        category: "services",
+        country: "USA",
+        state: "New York",
+        price: 320000,
+        contactEmail: "manager@metrofitness.com",
+        isActive: true,
+      },
+      {
+        name: "Sunshine Medical Clinic",
+        description: "Family practice clinic with established patient base. Modern equipment and prime location in growing community.",
+        category: "healthcare",
+        country: "USA",
+        state: "Florida",
+        price: 1200000,
+        contactEmail: "admin@sunshinemedical.com",
+        isActive: true,
+      },
+      {
+        name: "Downtown Auto Repair",
+        description: "Full-service automotive repair shop with loyal customer base. All equipment included, excellent reputation.",
+        category: "services",
+        country: "USA",
+        state: "Texas",
+        price: 275000,
+        contactEmail: "owner@downtownauto.com",
+        isActive: true,
+      },
+      {
+        name: "Fresh Market Grocery",
+        description: "Neighborhood grocery store with steady revenue. Prime location, established supplier relationships, and growth potential.",
+        category: "retail",
+        country: "USA",
+        state: "Colorado",
+        price: 680000,
+        contactEmail: "manager@freshmarket.com",
+        isActive: true,
+      },
     ];
 
     sampleBusinesses.forEach(business => {
       this.createBusiness(business);
+    });
+
+    // Sample advertisements
+    const sampleAds: InsertAdvertisement[] = [
+      {
+        title: "Business Meeting Solutions",
+        imageUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        targetUrl: "#",
+        isActive: true,
+      },
+      {
+        title: "Corporate Partnership Opportunities",
+        imageUrl: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        targetUrl: "#",
+        isActive: true,
+      },
+      {
+        title: "Business Strategy Consulting",
+        imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        targetUrl: "#",
+        isActive: true,
+      },
+    ];
+
+    sampleAds.forEach(ad => {
+      this.createAdvertisement(ad);
     });
   }
 
@@ -350,17 +416,14 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const users = Array.from(this.users.values());
-    return users.find(user => user.username === username);
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const user: User = { 
-      id, 
-      username: insertUser.username,
-      password: insertUser.password
-    };
+    const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
   }
@@ -380,6 +443,7 @@ export class MemStorage implements IStorage {
     priceRange?: string;
   }): Promise<Franchise[]> {
     const allFranchises = await this.getAllFranchises();
+    
     return allFranchises.filter(franchise => {
       if (filters.category && filters.category !== "All Business Categories" && franchise.category !== filters.category) {
         return false;
@@ -390,7 +454,7 @@ export class MemStorage implements IStorage {
       if (filters.state && filters.state !== "Any State" && franchise.state !== filters.state) {
         return false;
       }
-      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.investmentRange !== filters.priceRange) {
+      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.priceRange !== filters.priceRange) {
         return false;
       }
       return true;
@@ -400,19 +464,9 @@ export class MemStorage implements IStorage {
   async createFranchise(insertFranchise: InsertFranchise): Promise<Franchise> {
     const id = this.currentFranchiseId++;
     const franchise: Franchise = {
+      ...insertFranchise,
       id,
-      name: insertFranchise.name,
-      description: insertFranchise.description || null,
-      category: insertFranchise.category,
-      country: insertFranchise.country,
-      state: insertFranchise.state || null,
-      investmentRange: insertFranchise.investmentRange || null,
-      imageUrl: insertFranchise.imageUrl || null,
-      contactEmail: insertFranchise.contactEmail || null,
-      investmentMin: insertFranchise.investmentMin || null,
-      investmentMax: insertFranchise.investmentMax || null,
-      isActive: insertFranchise.isActive ?? true,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
     this.franchises.set(id, franchise);
     return franchise;
@@ -433,6 +487,7 @@ export class MemStorage implements IStorage {
     maxPrice?: number;
   }): Promise<Business[]> {
     const allBusinesses = await this.getAllBusinesses();
+    
     return allBusinesses.filter(business => {
       if (filters.category && filters.category !== "All Business Categories" && business.category !== filters.category) {
         return false;
@@ -453,64 +508,27 @@ export class MemStorage implements IStorage {
   async createBusiness(insertBusiness: InsertBusiness): Promise<Business> {
     const id = this.currentBusinessId++;
     const business: Business = {
+      ...insertBusiness,
       id,
-      name: insertBusiness.name,
-      description: insertBusiness.description || null,
-      category: insertBusiness.category,
-      country: insertBusiness.country,
-      state: insertBusiness.state || null,
-      price: insertBusiness.price || null,
-      imageUrl: insertBusiness.imageUrl || null,
-      contactEmail: insertBusiness.contactEmail || null,
-      isActive: insertBusiness.isActive ?? true,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
     this.businesses.set(id, business);
     return business;
   }
 
   async getAllAdvertisements(): Promise<Advertisement[]> {
-    return Array.from(this.advertisements.values()).filter(ad => ad.isActive);
+    return Array.from(this.advertisements.values()).filter(a => a.isActive);
   }
 
   async createAdvertisement(insertAd: InsertAdvertisement): Promise<Advertisement> {
     const id = this.currentAdId++;
     const ad: Advertisement = {
+      ...insertAd,
       id,
-      title: insertAd.title,
-      imageUrl: insertAd.imageUrl,
-      targetUrl: insertAd.targetUrl || null,
-      isActive: insertAd.isActive ?? true,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
     this.advertisements.set(id, ad);
     return ad;
-  }
-
-  async getAllInquiries(): Promise<Inquiry[]> {
-    return Array.from(this.inquiries.values());
-  }
-
-  async createInquiry(insertInquiry: InsertInquiry): Promise<Inquiry> {
-    const id = this.currentInquiryId++;
-    const inquiry: Inquiry = {
-      id,
-      name: insertInquiry.name,
-      email: insertInquiry.email,
-      phone: insertInquiry.phone || null,
-      subject: insertInquiry.subject,
-      message: insertInquiry.message,
-      franchiseId: insertInquiry.franchiseId || null,
-      businessId: insertInquiry.businessId || null,
-      status: insertInquiry.status || "pending",
-      createdAt: new Date()
-    };
-    this.inquiries.set(id, inquiry);
-    return inquiry;
-  }
-
-  async getInquiryById(id: number): Promise<Inquiry | undefined> {
-    return this.inquiries.get(id);
   }
 }
 
