@@ -75,9 +75,9 @@ export default function About() {
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">About B2B Market</h1>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            We are the world's leading global marketplace for buying, selling, and franchising businesses. 
-            Our platform brings together entrepreneurs, investors, and business owners from around the world 
-            to create successful business partnerships and transactions.
+            B2B Market has a large inventory of businesses and franchises for sale on an International Platform.
+            A large Internet marketplace for our B2B Audience, B2B Market provides a platform for prospective franchise owners, 
+            prospective buyers and sellers looking to buy and sell businesses, franchises and those looking to post ads to market their businesses.
           </p>
         </div>
 
@@ -97,16 +97,17 @@ export default function About() {
             <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Story</h2>
             <div className="space-y-4 text-gray-600">
               <p>
-                Founded in 2010, B2B Market began with a simple vision: to create a unified global platform 
-                where business owners could connect with qualified buyers and franchise opportunities worldwide.
+                B2B Market provides many offerings such as franchise opportunities, Businesses for sale and it provides 
+                a platform for businesses and people to expand their operations globally at no additional cost.
               </p>
               <p>
-                What started as a small team with big dreams has grown into the world's most trusted business 
-                marketplace, serving over 50 countries and facilitating billions of dollars in business transactions.
+                Bringing people and business together on an international platform, B2B Market has established itself 
+                as a comprehensive marketplace serving a global B2B audience.
               </p>
               <p>
-                Today, we continue to innovate and expand our services, always keeping our core mission at heart: 
-                bringing people and businesses together to create lasting partnerships and successful ventures.
+                Our platform connects prospective franchise owners with established franchise systems, enables business 
+                buyers and sellers to find each other, and provides advertising opportunities for businesses looking 
+                to market their services internationally.
               </p>
             </div>
           </div>

@@ -31,7 +31,7 @@ export default function InquiryModal({ isOpen, onClose, item, type }: InquiryMod
       const endpoint = type === "franchise" 
         ? `/api/franchises/${item?.id}/inquire`
         : `/api/businesses/${item?.id}/inquire`;
-      return apiRequest("POST", endpoint, data);
+      return apiRequest("POST", endpoint, { ...data, phone: null });
     },
     onSuccess: () => {
       toast({
@@ -114,8 +114,6 @@ export default function InquiryModal({ isOpen, onClose, item, type }: InquiryMod
               required
             />
           </div>
-
-
 
           <div>
             <Label htmlFor="inquiry-message" className="flex items-center text-sm font-medium">
