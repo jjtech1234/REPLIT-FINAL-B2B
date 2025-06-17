@@ -12,6 +12,7 @@ import PostAd from "@/pages/post-ad";
 import Services from "@/pages/services";
 import Contact from "@/pages/contact";
 import About from "@/pages/about";
+import Admin from "@/pages/admin";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );

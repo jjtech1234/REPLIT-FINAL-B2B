@@ -1,0 +1,252 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import { Mail, Calendar, User, MessageSquare, Search, Filter } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import type { Inquiry } from "@shared/schema";
+
+export default function Admin() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+
+  const { data: inquiries = [], isLoading } = useQuery<Inquiry[]>({
+    queryKey: ['/api/inquiries'],
+  });
+
+  const filteredInquiries = inquiries.filter(inquiry => {
+    const matchesSearch = inquiry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         inquiry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         inquiry.subject.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === "all" || inquiry.status === statusFilter;
+    
+    const matchesType = typeFilter === "all" || 
+                       (typeFilter === "franchise" && inquiry.franchiseId) ||
+                       (typeFilter === "business" && inquiry.businessId) ||
+                       (typeFilter === "general" && !inquiry.franchiseId && !inquiry.businessId);
+    
+    return matchesSearch && matchesStatus && matchesType;
+  });
+
+  const getInquiryType = (inquiry: Inquiry) => {
+    if (inquiry.franchiseId) return "Franchise";
+    if (inquiry.businessId) return "Business";
+    return "General";
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending": return "bg-yellow-100 text-yellow-800";
+      case "replied": return "bg-green-100 text-green-800";
+      case "closed": return "bg-gray-100 text-gray-800";
+      default: return "bg-blue-100 text-blue-800";
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">Loading inquiries...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
+          <p className="text-gray-600">Manage business inquiries and customer messages</p>
+        </div>
+
+        {/* Filters */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Filter className="w-5 h-5" />
+              Filters
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Search</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    placeholder="Search name, email, or subject..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">Status</label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="replied">Replied</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">Type</label>
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="franchise">Franchise</SelectItem>
+                    <SelectItem value="business">Business</SelectItem>
+                    <SelectItem value="general">General</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-[hsl(var(--b2b-blue))]">{inquiries.length}</div>
+              <div className="text-sm text-gray-600">Total Inquiries</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-yellow-600">
+                {inquiries.filter(i => i.status === "pending").length}
+              </div>
+              <div className="text-sm text-gray-600">Pending</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-green-600">
+                {inquiries.filter(i => i.status === "replied").length}
+              </div>
+              <div className="text-sm text-gray-600">Replied</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-gray-600">
+                {inquiries.filter(i => i.status === "closed").length}
+              </div>
+              <div className="text-sm text-gray-600">Closed</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Inquiries List */}
+        <div className="space-y-4">
+          {filteredInquiries.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-600 mb-2">No inquiries found</h3>
+                <p className="text-gray-500">No inquiries match your current filters.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            filteredInquiries.map((inquiry) => (
+              <Card key={inquiry.id} className="hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{inquiry.subject}</CardTitle>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <User className="w-4 h-4" />
+                          {inquiry.name}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Mail className="w-4 h-4" />
+                          {inquiry.email}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(inquiry.createdAt!).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Badge className={getStatusColor(inquiry.status || "pending")}>
+                        {inquiry.status || "pending"}
+                      </Badge>
+                      <Badge variant="outline">
+                        {getInquiryType(inquiry)}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                    <p className="text-gray-700 whitespace-pre-wrap">{inquiry.message}</p>
+                  </div>
+                  
+                  {inquiry.phone && (
+                    <div className="text-sm text-gray-600 mb-2">
+                      <strong>Phone:</strong> {inquiry.phone}
+                    </div>
+                  )}
+                  
+                  {(inquiry.franchiseId || inquiry.businessId) && (
+                    <div className="text-sm text-gray-600 mb-4">
+                      <strong>Reference ID:</strong> {inquiry.franchiseId ? `Franchise #${inquiry.franchiseId}` : `Business #${inquiry.businessId}`}
+                    </div>
+                  )}
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      className="bg-[hsl(var(--b2b-blue))] hover:bg-[hsl(var(--b2b-blue-dark))]"
+                      onClick={() => window.open(`mailto:${inquiry.email}?subject=Re: ${inquiry.subject}`)}
+                    >
+                      Reply via Email
+                    </Button>
+                    <Button size="sm" variant="outline">
+                      Mark as Replied
+                    </Button>
+                    <Button size="sm" variant="outline">
+                      Mark as Closed
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      </div>
+      
+      <Footer />
+    </div>
+  );
+}

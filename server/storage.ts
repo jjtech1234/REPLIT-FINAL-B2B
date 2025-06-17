@@ -40,6 +40,7 @@ export interface IStorage {
   getAllInquiries(): Promise<Inquiry[]>;
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
   getInquiryById(id: number): Promise<Inquiry | undefined>;
+  updateInquiryStatus(id: number, status: string): Promise<Inquiry | undefined>;
 }
 
 function parsePriceRange(priceRange: string): { min: number; max: number } | null {

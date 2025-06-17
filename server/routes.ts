@@ -143,6 +143,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/inquiries/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!["pending", "replied", "closed"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
+      
+      const inquiry = await storage.updateInquiryStatus(id, status);
+      if (!inquiry) {
+        return res.status(404).json({ error: "Inquiry not found" });
+      }
+      res.json(inquiry);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update inquiry status" });
+    }
+  });
+
   // Franchise inquiry endpoint
   app.post("/api/franchises/:id/inquire", async (req, res) => {
     try {
