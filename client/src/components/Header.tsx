@@ -101,6 +101,9 @@ export default function Header() {
                 <a href="/about" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   About
                 </a>
+                <a href="/admin" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Admin
+                </a>
               </nav>
             </div>
           )}

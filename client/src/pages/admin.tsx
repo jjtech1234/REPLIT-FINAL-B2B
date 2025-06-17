@@ -1,23 +1,51 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 import { Mail, Calendar, User, MessageSquare, Search, Filter } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import type { Inquiry } from "@shared/schema";
 
 export default function Admin() {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
 
   const { data: inquiries = [], isLoading } = useQuery<Inquiry[]>({
     queryKey: ['/api/inquiries'],
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const response = await fetch(`/api/inquiries/${id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) throw new Error('Failed to update status');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Status Updated",
+        description: "Inquiry status has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/inquiries'] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update inquiry status.",
+        variant: "destructive",
+      });
+    },
   });
 
   const filteredInquiries = inquiries.filter(inquiry => {
@@ -232,10 +260,20 @@ export default function Admin() {
                     >
                       Reply via Email
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => updateStatusMutation.mutate({ id: inquiry.id, status: 'replied' })}
+                      disabled={updateStatusMutation.isPending}
+                    >
                       Mark as Replied
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => updateStatusMutation.mutate({ id: inquiry.id, status: 'closed' })}
+                      disabled={updateStatusMutation.isPending}
+                    >
                       Mark as Closed
                     </Button>
                   </div>

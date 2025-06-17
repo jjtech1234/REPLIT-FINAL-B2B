@@ -201,6 +201,15 @@ export class DatabaseStorage implements IStorage {
     const [inquiry] = await db.select().from(inquiries).where(eq(inquiries.id, id));
     return inquiry || undefined;
   }
+
+  async updateInquiryStatus(id: number, status: string): Promise<Inquiry | undefined> {
+    const [inquiry] = await db
+      .update(inquiries)
+      .set({ status })
+      .where(eq(inquiries.id, id))
+      .returning();
+    return inquiry || undefined;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -548,6 +557,16 @@ export class MemStorage implements IStorage {
 
   async getInquiryById(id: number): Promise<Inquiry | undefined> {
     return this.inquiries.get(id);
+  }
+
+  async updateInquiryStatus(id: number, status: string): Promise<Inquiry | undefined> {
+    const inquiry = this.inquiries.get(id);
+    if (inquiry) {
+      inquiry.status = status;
+      this.inquiries.set(id, inquiry);
+      return inquiry;
+    }
+    return undefined;
   }
 }
 
