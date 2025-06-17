@@ -17,7 +17,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-400 mb-4">
-              Bringing People and Business Together across the globe.
+              Bringing people and business together on an international platform
             </p>
             <div className="flex space-x-4">
               <Facebook className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />

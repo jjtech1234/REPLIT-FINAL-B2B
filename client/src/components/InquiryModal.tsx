@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Send, User, Mail, Phone, MessageSquare } from "lucide-react";
+import { Send, User, Mail, MessageSquare } from "lucide-react";
 import type { Franchise, Business } from "@shared/schema";
 
 interface InquiryModalProps {
@@ -23,7 +23,6 @@ export default function InquiryModal({ isOpen, onClose, item, type }: InquiryMod
   const [inquiryForm, setInquiryForm] = useState({
     name: "",
     email: "",
-    phone: "",
     message: ""
   });
 
@@ -39,7 +38,7 @@ export default function InquiryModal({ isOpen, onClose, item, type }: InquiryMod
         title: "Inquiry Sent Successfully",
         description: "Thank you for your interest. We will contact you within 24 hours.",
       });
-      setInquiryForm({ name: "", email: "", phone: "", message: "" });
+      setInquiryForm({ name: "", email: "", message: "" });
       onClose();
     },
     onError: () => {
@@ -116,19 +115,7 @@ export default function InquiryModal({ isOpen, onClose, item, type }: InquiryMod
             />
           </div>
 
-          <div>
-            <Label htmlFor="inquiry-phone" className="flex items-center text-sm font-medium">
-              <Phone className="w-4 h-4 mr-2" />
-              Phone Number
-            </Label>
-            <Input
-              id="inquiry-phone"
-              type="tel"
-              value={inquiryForm.phone}
-              onChange={(e) => setInquiryForm(prev => ({ ...prev, phone: e.target.value }))}
-              placeholder="Enter your phone number"
-            />
-          </div>
+
 
           <div>
             <Label htmlFor="inquiry-message" className="flex items-center text-sm font-medium">
