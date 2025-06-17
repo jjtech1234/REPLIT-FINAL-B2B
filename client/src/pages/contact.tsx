@@ -18,7 +18,6 @@ export default function Contact() {
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
-    phone: "",
     subject: "",
     message: "",
     inquiryType: ""
@@ -47,7 +46,6 @@ export default function Contact() {
       setContactForm({
         name: "",
         email: "",
-        phone: "",
         subject: "",
         message: "",
         inquiryType: ""
