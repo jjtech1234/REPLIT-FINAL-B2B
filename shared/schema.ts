@@ -41,8 +41,14 @@ export const businesses = pgTable("businesses", {
 export const advertisements = pgTable("advertisements", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
+  description: text("description"),
   imageUrl: text("image_url").notNull(),
   targetUrl: text("target_url"),
+  package: text("package"),
+  company: text("company"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  budget: text("budget"),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });

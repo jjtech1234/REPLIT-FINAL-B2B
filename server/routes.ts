@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema } from "@shared/schema";
+import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Franchise routes
@@ -107,6 +107,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(ads);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch advertisements" });
+    }
+  });
+
+  app.post("/api/advertisements", async (req, res) => {
+    try {
+      const validatedData = insertAdvertisementSchema.parse(req.body);
+      const advertisement = await storage.createAdvertisement(validatedData);
+      res.status(201).json(advertisement);
+    } catch (error) {
+      console.error("Advertisement creation error:", error);
+      res.status(400).json({ error: "Invalid advertisement data" });
     }
   });
 
