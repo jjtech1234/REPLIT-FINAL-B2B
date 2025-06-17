@@ -164,6 +164,23 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return ad;
   }
+
+  async getAllInquiries(): Promise<Inquiry[]> {
+    return await db.select().from(inquiries);
+  }
+
+  async createInquiry(insertInquiry: InsertInquiry): Promise<Inquiry> {
+    const [inquiry] = await db
+      .insert(inquiries)
+      .values(insertInquiry)
+      .returning();
+    return inquiry;
+  }
+
+  async getInquiryById(id: number): Promise<Inquiry | undefined> {
+    const [inquiry] = await db.select().from(inquiries).where(eq(inquiries.id, id));
+    return inquiry || undefined;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -171,20 +188,24 @@ export class MemStorage implements IStorage {
   private franchises: Map<number, Franchise>;
   private businesses: Map<number, Business>;
   private advertisements: Map<number, Advertisement>;
+  private inquiries: Map<number, Inquiry>;
   private currentUserId: number;
   private currentFranchiseId: number;
   private currentBusinessId: number;
   private currentAdId: number;
+  private currentInquiryId: number;
 
   constructor() {
     this.users = new Map();
     this.franchises = new Map();
     this.businesses = new Map();
     this.advertisements = new Map();
+    this.inquiries = new Map();
     this.currentUserId = 1;
     this.currentFranchiseId = 1;
     this.currentBusinessId = 1;
     this.currentAdId = 1;
+    this.currentInquiryId = 1;
     
     // Initialize with sample data
     this.initializeSampleData();
