@@ -42,25 +42,6 @@ export interface IStorage {
   getInquiryById(id: number): Promise<Inquiry | undefined>;
 }
 
-function parsePriceRange(priceRange: string): { min: number; max: number } | null {
-  // Handle price ranges like "$10K-$50K", "$100K-$250K", "$1M-$5M"
-  const [minStr, maxStr] = priceRange.split('-');
-  if (!minStr || !maxStr) return null;
-  
-  const parseAmount = (str: string): number => {
-    const numStr = str.replace(/[^0-9]/g, '');
-    const num = parseInt(numStr);
-    if (str.includes('K')) return num * 1000;
-    if (str.includes('M')) return num * 1000000;
-    return num;
-  };
-  
-  return {
-    min: parseAmount(minStr),
-    max: parseAmount(maxStr)
-  };
-}
-
 export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
@@ -106,18 +87,8 @@ export class DatabaseStorage implements IStorage {
       if (filters.state && filters.state !== "Any State" && franchise.state !== filters.state) {
         return false;
       }
-      if (filters.priceRange && filters.priceRange !== "Price Range") {
-        const selectedRange = parsePriceRange(filters.priceRange);
-        if (selectedRange && franchise.investmentMin && franchise.investmentMax) {
-          // Check if franchise investment range overlaps with selected range
-          const franchiseMin = franchise.investmentMin;
-          const franchiseMax = franchise.investmentMax;
-          
-          // Overlaps if: franchise_min <= selected_max AND franchise_max >= selected_min
-          if (!(franchiseMin <= selectedRange.max && franchiseMax >= selectedRange.min)) {
-            return false;
-          }
-        }
+      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.investmentRange !== filters.priceRange) {
+        return false;
       }
       return true;
     });
@@ -226,10 +197,12 @@ export class MemStorage implements IStorage {
     this.currentAdId = 1;
     this.currentInquiryId = 1;
     
+    // Initialize with sample data
     this.initializeSampleData();
   }
 
   private initializeSampleData() {
+    // Sample franchises
     const sampleFranchises: InsertFranchise[] = [
       {
         name: "MILKSTER",
@@ -341,6 +314,7 @@ export class MemStorage implements IStorage {
       this.createFranchise(franchise);
     });
 
+    // Sample businesses
     const sampleBusinesses: InsertBusiness[] = [
       {
         name: "Downtown Coffee Shop",
@@ -416,18 +390,8 @@ export class MemStorage implements IStorage {
       if (filters.state && filters.state !== "Any State" && franchise.state !== filters.state) {
         return false;
       }
-      if (filters.priceRange && filters.priceRange !== "Price Range") {
-        const selectedRange = parsePriceRange(filters.priceRange);
-        if (selectedRange && franchise.investmentMin && franchise.investmentMax) {
-          // Check if franchise investment range overlaps with selected range
-          const franchiseMin = franchise.investmentMin;
-          const franchiseMax = franchise.investmentMax;
-          
-          // Overlaps if: franchise_min <= selected_max AND franchise_max >= selected_min
-          if (!(franchiseMin <= selectedRange.max && franchiseMax >= selectedRange.min)) {
-            return false;
-          }
-        }
+      if (filters.priceRange && filters.priceRange !== "Price Range" && franchise.investmentRange !== filters.priceRange) {
+        return false;
       }
       return true;
     });

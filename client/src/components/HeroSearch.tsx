@@ -46,13 +46,11 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
 
   const countries = [
     "Any Country",
-    "Australia",
-    "Canada",
-    "China",
-    "Germany",
+    "USA",
+    "Australia", 
     "India",
     "UK",
-    "USA"
+    "Europe"
   ];
 
   const states = [
@@ -121,9 +119,9 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
         </div>
 
         {/* Search Form */}
-        <div className="bg-white bg-opacity-95 rounded-lg p-8 max-w-4xl mx-auto shadow-2xl">
+        <div className="bg-white bg-opacity-95 rounded-lg p-8 max-w-5xl mx-auto shadow-2xl">
           <form 
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
             onSubmit={(e) => {
               e.preventDefault();
               handleSearch();
@@ -150,6 +148,19 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
                 {countries.map((country) => (
                   <SelectItem key={country} value={country}>
                     {country}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filters.priceRange} onValueChange={(value) => setFilters(prev => ({ ...prev, priceRange: value }))}>
+              <SelectTrigger className="search-select">
+                <SelectValue placeholder="Price Range" />
+              </SelectTrigger>
+              <SelectContent>
+                {priceRanges.map((range) => (
+                  <SelectItem key={range} value={range}>
+                    {range}
                   </SelectItem>
                 ))}
               </SelectContent>
