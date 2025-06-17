@@ -35,7 +35,9 @@ export interface IStorage {
   createBusiness(business: InsertBusiness): Promise<Business>;
   
   getAllAdvertisements(): Promise<Advertisement[]>;
+  getAllAdvertisementsForAdmin(): Promise<Advertisement[]>;
   createAdvertisement(ad: InsertAdvertisement): Promise<Advertisement>;
+  updateAdvertisementStatus(id: number, status: string, isActive?: boolean): Promise<Advertisement | undefined>;
   
   getAllInquiries(): Promise<Inquiry[]>;
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
@@ -177,12 +179,35 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(advertisements).where(eq(advertisements.isActive, true));
   }
 
+  async getAllAdvertisementsForAdmin(): Promise<Advertisement[]> {
+    return await db.select().from(advertisements);
+  }
+
   async createAdvertisement(insertAd: InsertAdvertisement): Promise<Advertisement> {
     const [ad] = await db
       .insert(advertisements)
-      .values(insertAd)
+      .values({
+        ...insertAd,
+        status: "pending",
+        paymentStatus: "unpaid",
+        isActive: false
+      })
       .returning();
     return ad;
+  }
+
+  async updateAdvertisementStatus(id: number, status: string, isActive?: boolean): Promise<Advertisement | undefined> {
+    const updateData: any = { status };
+    if (isActive !== undefined) {
+      updateData.isActive = isActive;
+    }
+    
+    const [ad] = await db
+      .update(advertisements)
+      .set(updateData)
+      .where(eq(advertisements.id, id))
+      .returning();
+    return ad || undefined;
   }
 
   async getAllInquiries(): Promise<Inquiry[]> {
@@ -519,6 +544,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.advertisements.values()).filter(ad => ad.isActive);
   }
 
+  async getAllAdvertisementsForAdmin(): Promise<Advertisement[]> {
+    return Array.from(this.advertisements.values());
+  }
+
   async createAdvertisement(insertAd: InsertAdvertisement): Promise<Advertisement> {
     const id = this.currentAdId++;
     const ad: Advertisement = {
@@ -532,11 +561,26 @@ export class MemStorage implements IStorage {
       contactEmail: insertAd.contactEmail || null,
       contactPhone: insertAd.contactPhone || null,
       budget: insertAd.budget || null,
-      isActive: insertAd.isActive ?? true,
+      status: "pending",
+      paymentStatus: "unpaid",
+      isActive: false,
       createdAt: new Date()
     };
     this.advertisements.set(id, ad);
     return ad;
+  }
+
+  async updateAdvertisementStatus(id: number, status: string, isActive?: boolean): Promise<Advertisement | undefined> {
+    const ad = this.advertisements.get(id);
+    if (ad) {
+      ad.status = status;
+      if (isActive !== undefined) {
+        ad.isActive = isActive;
+      }
+      this.advertisements.set(id, ad);
+      return ad;
+    }
+    return undefined;
   }
 
   async getAllInquiries(): Promise<Inquiry[]> {

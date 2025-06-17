@@ -121,6 +121,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint to get all advertisements including pending ones
+  app.get("/api/admin/advertisements", async (req, res) => {
+    try {
+      const ads = await storage.getAllAdvertisementsForAdmin();
+      res.json(ads);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch advertisements" });
+    }
+  });
+
+  // Admin endpoint to update advertisement status
+  app.patch("/api/advertisements/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status, isActive } = req.body;
+      
+      if (!["pending", "active", "inactive"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
+      
+      const advertisement = await storage.updateAdvertisementStatus(id, status, isActive);
+      if (!advertisement) {
+        return res.status(404).json({ error: "Advertisement not found" });
+      }
+      res.json(advertisement);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update advertisement status" });
+    }
+  });
+
   // Inquiry routes
   app.get("/api/inquiries", async (req, res) => {
     try {

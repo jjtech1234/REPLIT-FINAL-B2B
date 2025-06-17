@@ -49,7 +49,9 @@ export const advertisements = pgTable("advertisements", {
   contactEmail: text("contact_email"),
   contactPhone: text("contact_phone"),
   budget: text("budget"),
-  isActive: boolean("is_active").default(true),
+  status: text("status").default("pending"), // pending, active, inactive
+  paymentStatus: text("payment_status").default("unpaid"), // unpaid, paid, refunded
+  isActive: boolean("is_active").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
