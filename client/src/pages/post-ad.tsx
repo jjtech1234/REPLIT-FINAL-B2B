@@ -22,7 +22,8 @@ export default function PostAd() {
     contactEmail: "",
     contactPhone: "",
     company: "",
-    budget: ""
+    budget: "",
+    package: ""
   });
 
   const submitMutation = useMutation({
@@ -32,7 +33,7 @@ export default function PostAd() {
     onSuccess: () => {
       toast({
         title: "Advertisement Submitted Successfully",
-        description: "Your ad has been submitted for review and will be published within 24 hours.",
+        description: "Your ad has been submitted and is now active on our platform.",
       });
       setAdForm({
         title: "",
@@ -42,7 +43,8 @@ export default function PostAd() {
         contactEmail: "",
         contactPhone: "",
         company: "",
-        budget: ""
+        budget: "",
+        package: ""
       });
     },
     onError: () => {
@@ -56,10 +58,10 @@ export default function PostAd() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adForm.title || !adForm.contactEmail) {
+    if (!adForm.title || !adForm.contactEmail || !adForm.package) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all required fields including advertisement package selection.",
         variant: "destructive",
       });
       return;
@@ -70,6 +72,12 @@ export default function PostAd() {
       imageUrl: adForm.imageUrl || "https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
       targetUrl: adForm.targetUrl || "#",
       isActive: true,
+      package: adForm.package,
+      company: adForm.company,
+      contactEmail: adForm.contactEmail,
+      contactPhone: adForm.contactPhone,
+      budget: adForm.budget,
+      description: adForm.description
     };
     
     submitMutation.mutate(formData);
@@ -205,37 +213,67 @@ export default function PostAd() {
                 </div>
 
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-gray-800 mb-2">Advertisement Packages</h3>
+                  <h3 className="font-semibold text-gray-800 mb-4">Select Advertisement Package *</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white p-4 rounded border">
-                      <h4 className="font-semibold text-gray-800">Basic</h4>
-                      <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$100/month</p>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Homepage display</li>
-                        <li>• 1,000 impressions</li>
-                        <li>• Basic analytics</li>
-                      </ul>
-                    </div>
-                    <div className="bg-white p-4 rounded border border-[hsl(var(--b2b-blue))]">
-                      <h4 className="font-semibold text-gray-800">Premium</h4>
-                      <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$250/month</p>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Featured placement</li>
-                        <li>• 5,000 impressions</li>
-                        <li>• Advanced analytics</li>
-                        <li>• Email support</li>
-                      </ul>
-                    </div>
-                    <div className="bg-white p-4 rounded border">
-                      <h4 className="font-semibold text-gray-800">Enterprise</h4>
-                      <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$500/month</p>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Premium placement</li>
-                        <li>• 15,000 impressions</li>
-                        <li>• Full analytics suite</li>
-                        <li>• Priority support</li>
-                      </ul>
-                    </div>
+                    <label className={`cursor-pointer ${adForm.package === 'basic' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
+                      <input
+                        type="radio"
+                        name="package"
+                        value="basic"
+                        checked={adForm.package === 'basic'}
+                        onChange={(e) => setAdForm(prev => ({ ...prev, package: e.target.value }))}
+                        className="sr-only"
+                      />
+                      <div className="bg-white p-4 rounded border hover:border-[hsl(var(--b2b-blue))] transition-colors">
+                        <h4 className="font-semibold text-gray-800">Basic</h4>
+                        <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$100/month</p>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          <li>• Homepage display</li>
+                          <li>• 1,000 impressions</li>
+                          <li>• Basic analytics</li>
+                        </ul>
+                      </div>
+                    </label>
+                    <label className={`cursor-pointer ${adForm.package === 'premium' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
+                      <input
+                        type="radio"
+                        name="package"
+                        value="premium"
+                        checked={adForm.package === 'premium'}
+                        onChange={(e) => setAdForm(prev => ({ ...prev, package: e.target.value }))}
+                        className="sr-only"
+                      />
+                      <div className="bg-white p-4 rounded border border-[hsl(var(--b2b-blue))] hover:border-[hsl(var(--b2b-blue))] transition-colors">
+                        <h4 className="font-semibold text-gray-800">Premium</h4>
+                        <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$250/month</p>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          <li>• Featured placement</li>
+                          <li>• 5,000 impressions</li>
+                          <li>• Advanced analytics</li>
+                          <li>• Email support</li>
+                        </ul>
+                      </div>
+                    </label>
+                    <label className={`cursor-pointer ${adForm.package === 'enterprise' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
+                      <input
+                        type="radio"
+                        name="package"
+                        value="enterprise"
+                        checked={adForm.package === 'enterprise'}
+                        onChange={(e) => setAdForm(prev => ({ ...prev, package: e.target.value }))}
+                        className="sr-only"
+                      />
+                      <div className="bg-white p-4 rounded border hover:border-[hsl(var(--b2b-blue))] transition-colors">
+                        <h4 className="font-semibold text-gray-800">Enterprise</h4>
+                        <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$500/month</p>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          <li>• Premium placement</li>
+                          <li>• 15,000 impressions</li>
+                          <li>• Full analytics suite</li>
+                          <li>• Priority support</li>
+                        </ul>
+                      </div>
+                    </label>
                   </div>
                 </div>
 
@@ -251,7 +289,7 @@ export default function PostAd() {
 
                 <div className="text-center text-sm text-gray-500 mt-4">
                   <p>By submitting this form, you agree to our advertising terms and conditions.</p>
-                  <p>Your advertisement will be reviewed and published within 24 hours.</p>
+                  <p>Your advertisement will be published immediately after submission.</p>
                 </div>
               </form>
             </CardContent>

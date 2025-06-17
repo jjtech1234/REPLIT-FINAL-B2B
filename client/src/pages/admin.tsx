@@ -348,6 +348,34 @@ export default function Admin() {
                         </div>
                       )}
                       
+                      {(ad as any).package && (
+                        <div className="text-sm text-gray-600">
+                          <strong>Package:</strong> {(ad as any).package} 
+                          {(ad as any).package === 'basic' && ' ($100/month)'}
+                          {(ad as any).package === 'premium' && ' ($250/month)'}
+                          {(ad as any).package === 'enterprise' && ' ($500/month)'}
+                        </div>
+                      )}
+                      
+                      {(ad as any).company && (
+                        <div className="text-sm text-gray-600">
+                          <strong>Company:</strong> {(ad as any).company}
+                        </div>
+                      )}
+                      
+                      {(ad as any).contactEmail && (
+                        <div className="text-sm text-gray-600">
+                          <strong>Contact:</strong> {(ad as any).contactEmail}
+                        </div>
+                      )}
+                      
+                      {(ad as any).description && (
+                        <div className="bg-gray-50 p-3 rounded-lg">
+                          <strong className="text-sm text-gray-800">Description:</strong>
+                          <p className="text-sm text-gray-600 mt-1">{(ad as any).description}</p>
+                        </div>
+                      )}
+                      
                       <div className="flex gap-2">
                         <Button 
                           size="sm" 
