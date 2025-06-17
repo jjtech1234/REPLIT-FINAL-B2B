@@ -168,19 +168,17 @@ export default function About() {
             {team.map((member, index) => (
               <Card key={index} className="text-center">
                 <CardHeader>
-                  <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 border-2 border-gray-300">
+                  <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 border border-gray-200 shadow-sm">
                     <img 
                       src={member.image} 
                       alt={member.name}
                       className="w-full h-full object-cover"
                       style={{
                         objectPosition: member.name === "John Thomas" 
-                          ? "center 10%" 
-                          : "center 20%",
-                        transform: member.name === "John Thomas" 
-                          ? "scale(2.5)" 
-                          : "scale(2.0)",
-                        filter: "brightness(1.1) contrast(1.1)"
+                          ? "center 20%" 
+                          : "center 30%",
+                        transform: "scale(1.2)",
+                        filter: "brightness(1.05)"
                       }}
                     />
                   </div>
