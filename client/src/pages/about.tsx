@@ -168,16 +168,22 @@ export default function About() {
             {team.map((member, index) => (
               <Card key={index} className="text-center">
                 <CardHeader>
-                  <img 
-                    src={member.image} 
-                    alt={member.name}
-                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                    style={{
-                      objectPosition: member.name === "John Thomas" ? "center 30%" : "center 20%",
-                      transform: member.name === "John Thomas" ? "scale(2.2)" : "scale(1.5)",
-                      clipPath: "circle(48px at center)"
-                    }}
-                  />
+                  <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 border-2 border-gray-300">
+                    <img 
+                      src={member.image} 
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      style={{
+                        objectPosition: member.name === "John Thomas" 
+                          ? "center 10%" 
+                          : "center 20%",
+                        transform: member.name === "John Thomas" 
+                          ? "scale(2.5)" 
+                          : "scale(2.0)",
+                        filter: "brightness(1.1) contrast(1.1)"
+                      }}
+                    />
+                  </div>
                   <CardTitle className="text-lg text-gray-800">{member.name}</CardTitle>
                   <p className="text-[hsl(var(--b2b-blue))] font-medium">{member.role}</p>
                 </CardHeader>
