@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import HeroSearch from "@/components/HeroSearch";
 import FranchiseShowcase from "@/components/FranchiseShowcase";
 import Footer from "@/components/Footer";
+import type { Advertisement } from "@shared/schema";
 
 interface SearchFilters {
   category: string;
@@ -14,6 +16,10 @@ interface SearchFilters {
 export default function Home() {
   const [searchFilters, setSearchFilters] = useState<SearchFilters | undefined>(undefined);
   const [searchType, setSearchType] = useState<"franchise" | "business">("franchise");
+
+  const { data: advertisements = [], isLoading: adsLoading } = useQuery<Advertisement[]>({
+    queryKey: ['/api/advertisements'],
+  });
 
   const handleSearch = (filters: SearchFilters, type: "franchise" | "business") => {
     setSearchFilters(filters);
@@ -34,23 +40,40 @@ export default function Home() {
             <p className="text-gray-600">* Click on the image to enquire</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <img 
-              src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" 
-              alt="Business Meeting Advertisement" 
-              className="rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-            />
-            <img 
-              src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" 
-              alt="Corporate Partnership Advertisement" 
-              className="rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-            />
-            <img 
-              src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" 
-              alt="Business Strategy Advertisement" 
-              className="rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-            />
-          </div>
+          {adsLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin w-8 h-8 border-4 border-[hsl(var(--b2b-blue))] border-t-transparent rounded-full"></div>
+            </div>
+          ) : advertisements.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {advertisements.map((ad) => (
+                <div key={ad.id} className="relative group">
+                  <img 
+                    src={ad.imageUrl} 
+                    alt={ad.title} 
+                    className="w-full h-64 object-cover rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                    onClick={() => {
+                      if (ad.targetUrl && ad.targetUrl !== '#') {
+                        window.open(ad.targetUrl, '_blank');
+                      }
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 rounded-lg flex items-end">
+                    <div className="w-full p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <h4 className="font-semibold text-lg">{ad.title}</h4>
+                      {(ad as any).company && (
+                        <p className="text-sm">{(ad as any).company}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No advertisements available at the moment.</p>
+            </div>
+          )}
         </div>
       </section>
 
