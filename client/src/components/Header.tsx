@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Phone, Mail, HandHeart } from "lucide-react";
+import { Menu, X, Mail, HandHeart } from "lucide-react";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -10,10 +10,6 @@ export default function Header() {
       <div className="b2b-cyan-bg text-white py-2 px-4">
         <div className="container mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center space-x-4">
-            <span className="flex items-center">
-              <Phone className="w-4 h-4 mr-2" />
-              214-310-7674
-            </span>
             <span className="flex items-center">
               <Mail className="w-4 h-4 mr-2" />
               btwobmarket@gmail.com

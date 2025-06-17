@@ -1,4 +1,4 @@
-import { HandHeart, Facebook, Twitter, Linkedin, Youtube, Phone, Mail, Globe } from "lucide-react";
+import { HandHeart, Facebook, Twitter, Linkedin, Youtube, Mail, Globe } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -70,10 +70,6 @@ export default function Footer() {
             <h5 className="font-bold mb-4">Contact Info</h5>
             <div className="space-y-2 text-gray-400">
               <p className="flex items-center">
-                <Phone className="w-4 h-4 mr-2" />
-                214-310-7674
-              </p>
-              <p className="flex items-center">
                 <Mail className="w-4 h-4 mr-2" />
                 btwobmarket@gmail.com
               </p>
@@ -87,7 +83,7 @@ export default function Footer() {
         
         {/* Copyright */}
         <div className="border-t border-gray-700 pt-8 mt-8 text-center text-gray-400">
-          <p>&copy; 2024 B2B Market. All rights reserved. | A Single Unified International Platform</p>
+          <p>&copy; 2024 B2B Market. All rights reserved. | A single Integrated platform for your business buying and selling needs</p>
         </div>
       </div>
     </footer>
