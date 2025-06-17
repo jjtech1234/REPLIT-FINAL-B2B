@@ -58,7 +58,14 @@ export default function PostAd() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submission started", adForm);
+    
     if (!adForm.title || !adForm.contactEmail || !adForm.package) {
+      console.log("Validation failed:", { 
+        title: adForm.title, 
+        contactEmail: adForm.contactEmail, 
+        package: adForm.package 
+      });
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields including advertisement package selection.",
@@ -80,6 +87,7 @@ export default function PostAd() {
       description: adForm.description
     };
     
+    console.log("Submitting form data:", formData);
     submitMutation.mutate(formData);
   };
 
