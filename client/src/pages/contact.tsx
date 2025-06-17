@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 
 export default function Contact() {
   const { toast } = useToast();
+  const [pageTitle, setPageTitle] = useState("Contact Us");
   
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -22,6 +23,20 @@ export default function Contact() {
     message: "",
     inquiryType: ""
   });
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromServices = urlParams.get('from') === 'services';
+    
+    if (fromServices) {
+      setPageTitle("Get Started with Our Services");
+      setContactForm(prev => ({
+        ...prev,
+        inquiryType: "Service Inquiry",
+        subject: "Service Inquiry from Services Page"
+      }));
+    }
+  }, []);
 
   const inquiryTypes = [
     "General Inquiry",
@@ -89,9 +104,12 @@ export default function Contact() {
         </Button>
 
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Contact Us</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">{pageTitle}</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Get in touch with our team for any questions about buying, selling, or franchising your business
+            {pageTitle === "Get Started with Our Services" 
+              ? "Ready to take your business to the next level? Contact our expert team to discuss how our services can help you achieve your goals."
+              : "Get in touch with our team for any questions about buying, selling, or franchising your business"
+            }
           </p>
         </div>
 

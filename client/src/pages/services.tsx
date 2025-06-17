@@ -106,7 +106,7 @@ export default function Services() {
                     <p className="text-lg font-bold text-[hsl(var(--b2b-blue))] mb-3">{service.price}</p>
                     <Button 
                       className="w-full b2b-button-primary"
-                      onClick={() => setLocation('/contact')}
+                      onClick={() => setLocation('/contact?from=services')}
                     >
                       Get Started
                     </Button>
@@ -163,7 +163,7 @@ export default function Services() {
           </div>
           <Button 
             className="mt-6 bg-[hsl(var(--b2b-orange))] hover:bg-[hsl(var(--b2b-orange-dark))] text-white px-8 py-3"
-            onClick={() => setLocation('/contact')}
+            onClick={() => setLocation('/contact?from=services')}
           >
             Contact Us Today
           </Button>
