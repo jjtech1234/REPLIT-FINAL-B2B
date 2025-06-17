@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Users, TrendingUp, FileText, Shield, Briefcase, Calculator, Globe, Phone } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, FileText, Shield, Briefcase, Calculator, Globe } from "lucide-react";
+import { useLocation } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function Services() {
+  const [, setLocation] = useLocation();
   const services = [
     {
       icon: Calculator,
@@ -102,7 +104,10 @@ export default function Services() {
                   
                   <div className="border-t pt-4">
                     <p className="text-lg font-bold text-[hsl(var(--b2b-blue))] mb-3">{service.price}</p>
-                    <Button className="w-full b2b-button-primary">
+                    <Button 
+                      className="w-full b2b-button-primary"
+                      onClick={() => setLocation('/contact')}
+                    >
                       Get Started
                     </Button>
                   </div>
@@ -152,11 +157,6 @@ export default function Services() {
           <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-xl mb-6">Contact our team to discuss your specific needs and get a customized service package.</p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <div className="flex items-center">
-              <Phone className="w-5 h-5 mr-2" />
-              <span>214-310-7674</span>
-            </div>
-            <span className="hidden sm:block">•</span>
             <div className="flex items-center">
               <span>btwobmarket@gmail.com</span>
             </div>
