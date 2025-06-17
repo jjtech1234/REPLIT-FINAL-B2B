@@ -6,17 +6,17 @@ import Footer from "@/components/Footer";
 
 export default function About() {
   const stats = [
-    { number: "10,000+", label: "Businesses Listed" },
-    { number: "50+", label: "Countries Served" },
-    { number: "5,000+", label: "Successful Transactions" },
-    { number: "15+", label: "Years Experience" }
+    { number: "", label: "Global Reach" },
+    { number: "", label: "International Platform" },
+    { number: "", label: "Business Marketplace" },
+    { number: "", label: "Franchise Opportunities" }
   ];
 
   const team = [
     {
       name: "Michael Chen",
       role: "CEO & Founder",
-      description: "15+ years in business brokerage and M&A",
+      description: "Extensive experience in business brokerage and M&A",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
     },
     {

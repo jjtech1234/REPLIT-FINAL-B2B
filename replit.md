@@ -108,8 +108,14 @@ RESTful API design with endpoints for:
 
 ## Changelog
 
-Changelog:
-- June 17, 2025. Initial setup
+Recent Changes:
+- June 17, 2025: Updated scrolling banner to show text only once in continuous loop
+- June 17, 2025: Removed all phone numbers from website, keeping only email contact
+- June 17, 2025: Updated About Us page content with user-provided text about B2B Market
+- June 17, 2025: Implemented price range filtering functionality for franchise search
+- June 17, 2025: Limited countries dropdown to USA, Australia, India, UK, Europe only
+- June 17, 2025: Removed all numerical statistics from About Us page
+- June 17, 2025: Initial setup
 
 ## User Preferences
 
