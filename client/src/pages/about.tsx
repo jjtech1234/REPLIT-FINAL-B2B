@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users, Globe, TrendingUp, Award, Target, Heart } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import sarahGeorgeImage from "@assets/486035237_4592209034398804_6866392456188871337_n_1750192689489.jpg";
 
 export default function About() {
   const stats = [
@@ -14,28 +15,10 @@ export default function About() {
 
   const team = [
     {
-      name: "Michael Chen",
+      name: "Sarah George",
       role: "CEO & Founder",
-      description: "Extensive experience in business brokerage and M&A",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
-    },
-    {
-      name: "Sarah Johnson",
-      role: "Head of Operations",
-      description: "Expert in franchise development and consulting",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b332c73b?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
-    },
-    {
-      name: "David Rodriguez",
-      role: "Business Development Director",
-      description: "International business expansion specialist",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
-    },
-    {
-      name: "Lisa Wang",
-      role: "Client Relations Manager",
-      description: "Dedicated to exceptional customer service",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
+      description: "Leading B2B Market's mission to connect businesses globally",
+      image: sarahGeorgeImage
     }
   ];
 
@@ -182,6 +165,11 @@ export default function About() {
                     src={member.image} 
                     alt={member.name}
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                    style={{
+                      objectPosition: "center 20%",
+                      transform: "scale(1.5)",
+                      clipPath: "circle(50px at center)"
+                    }}
                   />
                   <CardTitle className="text-lg text-gray-800">{member.name}</CardTitle>
                   <p className="text-[hsl(var(--b2b-blue))] font-medium">{member.role}</p>
