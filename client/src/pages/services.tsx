@@ -161,7 +161,10 @@ export default function Services() {
               <span>btwobmarket@gmail.com</span>
             </div>
           </div>
-          <Button className="mt-6 bg-[hsl(var(--b2b-orange))] hover:bg-[hsl(var(--b2b-orange-dark))] text-white px-8 py-3">
+          <Button 
+            className="mt-6 bg-[hsl(var(--b2b-orange))] hover:bg-[hsl(var(--b2b-orange-dark))] text-white px-8 py-3"
+            onClick={() => setLocation('/contact')}
+          >
             Contact Us Today
           </Button>
         </div>

@@ -134,17 +134,6 @@ export default function Contact() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={contactForm.phone}
-                      onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                      placeholder="Enter your phone number"
-                    />
-                  </div>
-
-                  <div>
                     <Label htmlFor="inquiryType">Inquiry Type</Label>
                     <Select value={contactForm.inquiryType} onValueChange={(value) => setContactForm(prev => ({ ...prev, inquiryType: value }))}>
                       <SelectTrigger>
@@ -203,16 +192,7 @@ export default function Contact() {
                 <CardTitle className="text-xl text-gray-800">Get in Touch</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-[hsl(var(--b2b-blue))] rounded-full p-3">
-                    <Phone className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800">Phone</h3>
-                    <p className="text-gray-600">214-310-7674</p>
-                    <p className="text-sm text-gray-500">Monday - Friday, 9 AM - 6 PM EST</p>
-                  </div>
-                </div>
+
 
                 <div className="flex items-start space-x-4">
                   <div className="bg-[hsl(var(--b2b-blue))] rounded-full p-3">
