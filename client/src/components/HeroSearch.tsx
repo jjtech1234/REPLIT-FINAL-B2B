@@ -121,9 +121,9 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
         </div>
 
         {/* Search Form */}
-        <div className="bg-white bg-opacity-95 rounded-lg p-8 max-w-6xl mx-auto shadow-2xl">
+        <div className="bg-white bg-opacity-95 rounded-lg p-8 max-w-4xl mx-auto shadow-2xl">
           <form 
-            className="grid grid-cols-1 md:grid-cols-4 gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
             onSubmit={(e) => {
               e.preventDefault();
               handleSearch();
@@ -150,32 +150,6 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
                 {countries.map((country) => (
                   <SelectItem key={country} value={country}>
                     {country}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filters.state} onValueChange={(value) => setFilters(prev => ({ ...prev, state: value }))}>
-              <SelectTrigger className="search-select">
-                <SelectValue placeholder="Any State" />
-              </SelectTrigger>
-              <SelectContent>
-                {states.map((state) => (
-                  <SelectItem key={state} value={state}>
-                    {state}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filters.priceRange} onValueChange={(value) => setFilters(prev => ({ ...prev, priceRange: value }))}>
-              <SelectTrigger className="search-select">
-                <SelectValue placeholder="Price Range" />
-              </SelectTrigger>
-              <SelectContent>
-                {priceRanges.map((range) => (
-                  <SelectItem key={range} value={range}>
-                    {range}
                   </SelectItem>
                 ))}
               </SelectContent>
