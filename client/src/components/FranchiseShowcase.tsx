@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, DollarSign, MessageCircle, Eye } from "lucide-react";
 import { useLocation } from "wouter";
-import type { Franchise } from "@shared/schema";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import InquiryModal from "@/components/InquiryModal";
+import type { Franchise, Business } from "@shared/schema";
 
 interface SearchFilters {
   category: string;
@@ -19,6 +22,8 @@ interface FranchiseShowcaseProps {
 export default function FranchiseShowcase({ searchFilters, searchType }: FranchiseShowcaseProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [, setLocation] = useLocation();
+  const [selectedItem, setSelectedItem] = useState<Franchise | Business | null>(null);
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
 
   // Build query key and URL based on whether we're searching or not
   const hasSearchFilters = searchFilters && (
@@ -153,11 +158,38 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
                   </div>
                 )}
                 
-                {franchise.priceRange && (
+                {franchise.investmentRange && (
                   <p className="text-sm text-center text-[hsl(var(--b2b-blue))] font-medium mt-2">
-                    {franchise.priceRange}
+                    {franchise.investmentRange}
                   </p>
                 )}
+
+                <div className="mt-3 flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 text-xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFranchiseClick(franchise);
+                    }}
+                  >
+                    <Eye className="w-3 h-3 mr-1" />
+                    View
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="flex-1 text-xs b2b-button-primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedItem(franchise);
+                      setIsInquiryModalOpen(true);
+                    }}
+                  >
+                    <MessageCircle className="w-3 h-3 mr-1" />
+                    Inquire
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
@@ -181,6 +213,13 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
           </button>
         </div>
       </div>
+
+      <InquiryModal
+        isOpen={isInquiryModalOpen}
+        onClose={() => setIsInquiryModalOpen(false)}
+        item={selectedItem}
+        type={searchType || "franchise"}
+      />
     </section>
   );
 }
