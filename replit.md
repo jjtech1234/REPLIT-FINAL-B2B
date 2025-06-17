@@ -109,9 +109,11 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 17, 2025: Enhanced admin dashboard with tabbed interface to view both business inquiries and submitted advertisements
+- June 17, 2025: Added advertisements management section showing all ads submitted via "Post An Ad" form
+- June 17, 2025: Implemented dynamic contact page titles when accessed from services page
 - June 17, 2025: Created comprehensive admin dashboard at /admin to view and manage business inquiries
 - June 17, 2025: Added inquiry status management system (pending, replied, closed) with database updates
-- June 17, 2025: Implemented admin navigation links in header for easy access to inquiry management
 - June 17, 2025: Fixed all "Get Started" button navigation in services page to properly route to contact
 - June 17, 2025: Completely removed phone number fields from contact forms and contact information
 - June 17, 2025: Updated scrolling banner to show text only once in continuous loop
