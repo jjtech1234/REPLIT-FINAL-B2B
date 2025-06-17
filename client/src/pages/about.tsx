@@ -4,6 +4,7 @@ import { ArrowLeft, Users, Globe, TrendingUp, Award, Target, Heart } from "lucid
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import sarahGeorgeImage from "@assets/486035237_4592209034398804_6866392456188871337_n_1750192689489.jpg";
+import johnThomasImage from "@assets/500257174_4654995984786775_4873222664145973918_n_1750192909652.jpg";
 
 export default function About() {
   const stats = [
@@ -19,6 +20,12 @@ export default function About() {
       role: "CEO & Founder",
       description: "Leading B2B Market's mission to connect businesses globally",
       image: sarahGeorgeImage
+    },
+    {
+      name: "John Thomas",
+      role: "CIO",
+      description: "Overseeing technology infrastructure and digital innovation",
+      image: johnThomasImage
     }
   ];
 
@@ -166,9 +173,9 @@ export default function About() {
                     alt={member.name}
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                     style={{
-                      objectPosition: "center 20%",
-                      transform: "scale(1.5)",
-                      clipPath: "circle(50px at center)"
+                      objectPosition: member.name === "John Thomas" ? "center 30%" : "center 20%",
+                      transform: member.name === "John Thomas" ? "scale(2.2)" : "scale(1.5)",
+                      clipPath: "circle(48px at center)"
                     }}
                   />
                   <CardTitle className="text-lg text-gray-800">{member.name}</CardTitle>
