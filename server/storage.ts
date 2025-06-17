@@ -524,8 +524,14 @@ export class MemStorage implements IStorage {
     const ad: Advertisement = {
       id,
       title: insertAd.title,
+      description: insertAd.description || null,
       imageUrl: insertAd.imageUrl,
       targetUrl: insertAd.targetUrl || null,
+      package: insertAd.package || null,
+      company: insertAd.company || null,
+      contactEmail: insertAd.contactEmail || null,
+      contactPhone: insertAd.contactPhone || null,
+      budget: insertAd.budget || null,
       isActive: insertAd.isActive ?? true,
       createdAt: new Date()
     };

@@ -28,9 +28,18 @@ export default function PostAd() {
 
   const submitMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("POST", "/api/advertisements", data);
+      console.log("Making API request with data:", data);
+      try {
+        const response = await apiRequest("POST", "/api/advertisements", data);
+        console.log("API response:", response);
+        return response;
+      } catch (error) {
+        console.error("API request failed:", error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Success callback triggered with:", data);
       toast({
         title: "Advertisement Submitted Successfully",
         description: "Your ad has been submitted and is now active on our platform.",
@@ -47,7 +56,8 @@ export default function PostAd() {
         package: ""
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Error callback triggered:", error);
       toast({
         title: "Error",
         description: "Failed to submit advertisement. Please try again.",
