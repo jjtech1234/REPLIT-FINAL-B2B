@@ -5,12 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, Calendar, User, MessageSquare, Search, Filter } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Mail, Calendar, User, MessageSquare, Search, Filter, Image, ExternalLink, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import type { Inquiry } from "@shared/schema";
+import type { Inquiry, Advertisement } from "@shared/schema";
 
 export default function Admin() {
   const { toast } = useToast();
@@ -18,8 +19,12 @@ export default function Admin() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
 
-  const { data: inquiries = [], isLoading } = useQuery<Inquiry[]>({
+  const { data: inquiries = [], isLoading: inquiriesLoading } = useQuery<Inquiry[]>({
     queryKey: ['/api/inquiries'],
+  });
+
+  const { data: advertisements = [], isLoading: adsLoading } = useQuery<Advertisement[]>({
+    queryKey: ['/api/advertisements'],
   });
 
   const updateStatusMutation = useMutation({
@@ -78,12 +83,12 @@ export default function Admin() {
     }
   };
 
-  if (isLoading) {
+  if (inquiriesLoading || adsLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center">Loading inquiries...</div>
+          <div className="text-center">Loading dashboard...</div>
         </div>
         <Footer />
       </div>
@@ -170,32 +175,36 @@ export default function Admin() {
               <div className="text-2xl font-bold text-yellow-600">
                 {inquiries.filter(i => i.status === "pending").length}
               </div>
-              <div className="text-sm text-gray-600">Pending</div>
+              <div className="text-sm text-gray-600">Pending Inquiries</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-[hsl(var(--b2b-orange))]">{advertisements.length}</div>
+              <div className="text-sm text-gray-600">Total Ads</div>
             </CardContent>
           </Card>
           
           <Card>
             <CardContent className="p-4">
               <div className="text-2xl font-bold text-green-600">
-                {inquiries.filter(i => i.status === "replied").length}
+                {advertisements.filter(ad => ad.isActive).length}
               </div>
-              <div className="text-sm text-gray-600">Replied</div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold text-gray-600">
-                {inquiries.filter(i => i.status === "closed").length}
-              </div>
-              <div className="text-sm text-gray-600">Closed</div>
+              <div className="text-sm text-gray-600">Active Ads</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Inquiries List */}
-        <div className="space-y-4">
-          {filteredInquiries.length === 0 ? (
+        {/* Tabs for Inquiries and Advertisements */}
+        <Tabs defaultValue="inquiries" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="inquiries">Business Inquiries</TabsTrigger>
+            <TabsTrigger value="advertisements">Submitted Ads</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="inquiries" className="space-y-4">
+            {filteredInquiries.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center">
                 <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -281,7 +290,95 @@ export default function Admin() {
               </Card>
             ))
           )}
-        </div>
+          </TabsContent>
+
+          <TabsContent value="advertisements" className="space-y-4">
+            {advertisements.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Image className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">No advertisements found</h3>
+                  <p className="text-gray-500">No ads have been submitted yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              advertisements.map((ad) => (
+                <Card key={ad.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg">{ad.title}</CardTitle>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {new Date(ad.createdAt!).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Badge className={ad.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                          {ad.isActive ? "Active" : "Inactive"}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {ad.imageUrl && (
+                      <div className="mb-4">
+                        <img 
+                          src={ad.imageUrl} 
+                          alt={ad.title}
+                          className="w-full h-48 object-cover rounded-lg"
+                        />
+                      </div>
+                    )}
+                    
+                    <div className="space-y-4">
+                      {ad.targetUrl && (
+                        <div className="text-sm text-gray-600">
+                          <strong>Target URL:</strong>{" "}
+                          <a 
+                            href={ad.targetUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[hsl(var(--b2b-blue))] hover:underline inline-flex items-center gap-1"
+                          >
+                            {ad.targetUrl} <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+                      )}
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          className="bg-[hsl(var(--b2b-blue))] hover:bg-[hsl(var(--b2b-blue-dark))]"
+                          onClick={() => window.open(ad.targetUrl || '#', '_blank')}
+                          disabled={!ad.targetUrl}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          Preview
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            // Toggle active status
+                            toast({
+                              title: "Feature Coming Soon",
+                              description: "Ad status management will be available soon.",
+                            });
+                          }}
+                        >
+                          {ad.isActive ? "Deactivate" : "Activate"}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
       
       <Footer />
