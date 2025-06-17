@@ -109,6 +109,13 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 17, 2025: Implemented complete admin approval system for advertisements with activate/deactivate controls
+- June 17, 2025: Added advertisement status tracking (pending, active, inactive) and payment status (unpaid, paid, refunded)
+- June 17, 2025: Created admin endpoints for advertisement management with status update functionality
+- June 17, 2025: Updated Post Ad form to submit advertisements as "pending" for admin approval
+- June 17, 2025: Enhanced admin dashboard to show advertisement status, payment status, and activation controls
+- June 17, 2025: Fixed advertisement package selection functionality with interactive radio buttons
+- June 17, 2025: Added complete advertisement database schema with package, company, and contact fields
 - June 17, 2025: Enhanced admin dashboard with tabbed interface to view both business inquiries and submitted advertisements
 - June 17, 2025: Added advertisements management section showing all ads submitted via "Post An Ad" form
 - June 17, 2025: Implemented dynamic contact page titles when accessed from services page
