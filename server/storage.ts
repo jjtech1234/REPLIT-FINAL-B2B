@@ -1,9 +1,10 @@
 import { 
-  users, franchises, businesses, advertisements,
+  users, franchises, businesses, advertisements, inquiries,
   type User, type InsertUser,
   type Franchise, type InsertFranchise,
   type Business, type InsertBusiness,
-  type Advertisement, type InsertAdvertisement
+  type Advertisement, type InsertAdvertisement,
+  type Inquiry, type InsertInquiry
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
@@ -35,6 +36,10 @@ export interface IStorage {
   
   getAllAdvertisements(): Promise<Advertisement[]>;
   createAdvertisement(ad: InsertAdvertisement): Promise<Advertisement>;
+  
+  getAllInquiries(): Promise<Inquiry[]>;
+  createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
+  getInquiryById(id: number): Promise<Inquiry | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {

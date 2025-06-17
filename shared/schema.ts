@@ -15,8 +15,9 @@ export const franchises = pgTable("franchises", {
   category: text("category").notNull(),
   country: text("country").notNull(),
   state: text("state"),
-  priceRange: text("price_range"),
+  investmentRange: text("investment_range"),
   imageUrl: text("image_url"),
+  contactEmail: text("contact_email"),
   investmentMin: integer("investment_min"),
   investmentMax: integer("investment_max"),
   isActive: boolean("is_active").default(true),
@@ -46,6 +47,19 @@ export const advertisements = pgTable("advertisements", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const inquiries = pgTable("inquiries", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  subject: text("subject").notNull(),
+  message: text("message").notNull(),
+  franchiseId: integer("franchise_id"),
+  businessId: integer("business_id"),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -66,6 +80,11 @@ export const insertAdvertisementSchema = createInsertSchema(advertisements).omit
   createdAt: true,
 });
 
+export const insertInquirySchema = createInsertSchema(inquiries).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertFranchise = z.infer<typeof insertFranchiseSchema>;
@@ -74,3 +93,5 @@ export type InsertBusiness = z.infer<typeof insertBusinessSchema>;
 export type Business = typeof businesses.$inferSelect;
 export type InsertAdvertisement = z.infer<typeof insertAdvertisementSchema>;
 export type Advertisement = typeof advertisements.$inferSelect;
+export type InsertInquiry = z.infer<typeof insertInquirySchema>;
+export type Inquiry = typeof inquiries.$inferSelect;
