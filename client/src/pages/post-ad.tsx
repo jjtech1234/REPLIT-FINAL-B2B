@@ -42,7 +42,7 @@ export default function PostAd() {
       console.log("Success callback triggered with:", data);
       toast({
         title: "Advertisement Submitted Successfully",
-        description: "Your ad has been submitted and is now active on our platform.",
+        description: "Your ad has been submitted for review. It will be activated once approved by our team.",
       });
       setAdForm({
         title: "",
@@ -88,7 +88,9 @@ export default function PostAd() {
       title: adForm.title,
       imageUrl: adForm.imageUrl || "https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
       targetUrl: adForm.targetUrl || "#",
-      isActive: true,
+      isActive: false,
+      status: "pending",
+      paymentStatus: "unpaid",
       package: adForm.package,
       company: adForm.company,
       contactEmail: adForm.contactEmail,

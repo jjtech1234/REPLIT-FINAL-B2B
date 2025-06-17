@@ -23,8 +23,8 @@ export default function Admin() {
     queryKey: ['/api/inquiries'],
   });
 
-  const { data: advertisements = [], isLoading: adsLoading } = useQuery<Advertisement[]>({
-    queryKey: ['/api/advertisements'],
+  const { data: advertisements = [], isLoading: adsLoading, refetch: refetchAds } = useQuery<Advertisement[]>({
+    queryKey: ['/api/admin/advertisements'],
   });
 
   const updateStatusMutation = useMutation({
@@ -48,6 +48,32 @@ export default function Admin() {
       toast({
         title: "Error",
         description: "Failed to update inquiry status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateAdStatusMutation = useMutation({
+    mutationFn: async ({ id, status, isActive }: { id: number; status: string; isActive: boolean }) => {
+      const response = await fetch(`/api/advertisements/${id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, isActive }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) throw new Error('Failed to update advertisement status');
+      return response.json();
+    },
+    onSuccess: () => {
+      refetchAds();
+      toast({
+        title: "Advertisement Updated",
+        description: "Advertisement status has been updated successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update advertisement status.",
         variant: "destructive",
       });
     },
@@ -375,8 +401,41 @@ export default function Admin() {
                           <p className="text-sm text-gray-600 mt-1">{(ad as any).description}</p>
                         </div>
                       )}
+
+                      {/* Status and Payment Information */}
+                      <div className="bg-blue-50 p-3 rounded-lg space-y-2">
+                        <div className="flex items-center gap-2">
+                          <strong className="text-sm text-gray-800">Status:</strong>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            (ad as any).status === 'active' ? 'bg-green-100 text-green-800' :
+                            (ad as any).status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {(ad as any).status || 'pending'}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <strong className="text-sm text-gray-800">Payment:</strong>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            (ad as any).paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {(ad as any).paymentStatus || 'unpaid'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <strong className="text-sm text-gray-800">Active:</strong>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            ad.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {ad.isActive ? 'Yes' : 'No'}
+                          </span>
+                        </div>
+                      </div>
                       
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         <Button 
                           size="sm" 
                           className="bg-[hsl(var(--b2b-blue))] hover:bg-[hsl(var(--b2b-blue-dark))]"
@@ -386,18 +445,50 @@ export default function Admin() {
                           <Eye className="w-4 h-4 mr-1" />
                           Preview
                         </Button>
+                        
+                        {!ad.isActive && (
+                          <Button 
+                            size="sm" 
+                            className="text-xs bg-green-600 hover:bg-green-700"
+                            onClick={() => updateAdStatusMutation.mutate({ 
+                              id: ad.id, 
+                              status: 'active', 
+                              isActive: true 
+                            })}
+                            disabled={updateAdStatusMutation.isPending}
+                          >
+                            Activate
+                          </Button>
+                        )}
+                        
+                        {ad.isActive && (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="text-xs border-red-300 text-red-600 hover:bg-red-50"
+                            onClick={() => updateAdStatusMutation.mutate({ 
+                              id: ad.id, 
+                              status: 'inactive', 
+                              isActive: false 
+                            })}
+                            disabled={updateAdStatusMutation.isPending}
+                          >
+                            Deactivate
+                          </Button>
+                        )}
+                        
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => {
-                            // Toggle active status
-                            toast({
-                              title: "Feature Coming Soon",
-                              description: "Ad status management will be available soon.",
-                            });
-                          }}
+                          className="text-xs"
+                          onClick={() => updateAdStatusMutation.mutate({ 
+                            id: ad.id, 
+                            status: 'pending', 
+                            isActive: false 
+                          })}
+                          disabled={updateAdStatusMutation.isPending}
                         >
-                          {ad.isActive ? "Deactivate" : "Activate"}
+                          Set Pending
                         </Button>
                       </div>
                     </div>
