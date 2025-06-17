@@ -230,32 +230,7 @@ export default function Contact() {
               </CardContent>
             </Card>
 
-            {/* Quick Help */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl text-gray-800">Quick Help</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-gray-800">Frequently Asked Questions</h4>
-                    <p className="text-sm text-gray-600">Find answers to common questions about our platform</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">Business Valuation</h4>
-                    <p className="text-sm text-gray-600">Get help determining your business worth</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">Franchise Information</h4>
-                    <p className="text-sm text-gray-600">Learn about available franchise opportunities</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">Technical Support</h4>
-                    <p className="text-sm text-gray-600">Need help with our platform? We're here to assist</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+
 
             {/* Emergency Contact */}
             <div className="bg-[hsl(var(--b2b-orange))] rounded-lg p-6 text-white">
