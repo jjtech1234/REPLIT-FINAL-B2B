@@ -22,8 +22,8 @@ export default function B2BLogo({ className = "", size = "md" }: B2BLogoProps) {
         cx="60" 
         cy="60" 
         r="55" 
-        fill="hsl(var(--b2b-blue))" 
-        stroke="hsl(var(--b2b-blue))" 
+        fill="#2563eb" 
+        stroke="#2563eb" 
         strokeWidth="2"
       />
       
@@ -32,8 +32,10 @@ export default function B2BLogo({ className = "", size = "md" }: B2BLogoProps) {
         x="60" 
         y="45" 
         textAnchor="middle" 
-        className="fill-white text-2xl font-bold"
-        style={{ fontSize: '24px', fontFamily: 'Arial, sans-serif' }}
+        fill="white"
+        fontSize="24"
+        fontFamily="Arial, sans-serif"
+        fontWeight="bold"
       >
         B2B
       </text>
@@ -43,8 +45,10 @@ export default function B2BLogo({ className = "", size = "md" }: B2BLogoProps) {
         x="60" 
         y="68" 
         textAnchor="middle" 
-        className="fill-white text-sm font-medium"
-        style={{ fontSize: '12px', fontFamily: 'Arial, sans-serif' }}
+        fill="white"
+        fontSize="12"
+        fontFamily="Arial, sans-serif"
+        fontWeight="500"
       >
         MARKET
       </text>
