@@ -109,6 +109,7 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 18, 2025: Added custom B2B Market logo with brand colors and professional design throughout header and footer
 - June 18, 2025: Updated leadership team - added Shubham Dubey as CTO, Thomas Jacob as President, removed photos for all except Sarah George
 - June 18, 2025: Added unique images to all business and advertisement listings for visual consistency
 - June 18, 2025: Created multiple sample businesses with different images (TechFlow Solutions, Downtown Restaurant, Auto Repair Shop, Coffee Shop & Bakery, Fitness Center & Gym)

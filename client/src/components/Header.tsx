@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X, Mail, HandHeart } from "lucide-react";
+import B2BLogo from "./B2BLogo";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,9 +30,7 @@ export default function Header() {
           <div className="flex items-center justify-between py-4">
             {/* Logo */}
             <div className="flex items-center">
-              <div className="bg-[hsl(var(--b2b-orange))] rounded-full p-2 mr-3">
-                <HandHeart className="text-white text-xl w-6 h-6" />
-              </div>
+              <B2BLogo size="lg" className="mr-3" />
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">B2B MARKET</h1>
                 <p className="text-sm text-gray-600">Bringing People and Business Together!</p>

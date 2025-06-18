@@ -1,4 +1,5 @@
 import { HandHeart, Facebook, Twitter, Linkedin, Youtube, Mail, Globe } from "lucide-react";
+import B2BLogo from "./B2BLogo";
 
 export default function Footer() {
   return (
@@ -8,9 +9,7 @@ export default function Footer() {
           {/* Brand Section */}
           <div>
             <div className="flex items-center mb-4">
-              <div className="bg-[hsl(var(--b2b-orange))] rounded-full p-2 mr-3">
-                <HandHeart className="text-white w-5 h-5" />
-              </div>
+              <B2BLogo size="md" className="mr-3" />
               <div>
                 <h4 className="text-xl font-bold">B2B MARKET</h4>
                 <p className="text-sm text-gray-400">Global Business Platform</p>
