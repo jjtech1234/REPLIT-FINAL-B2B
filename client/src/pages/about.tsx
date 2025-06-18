@@ -28,6 +28,12 @@ export default function About() {
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"
     },
     {
+      name: "John Thomas",
+      role: "CIO",
+      description: "Overseeing technology infrastructure and digital innovation",
+      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"
+    },
+    {
       name: "Shubham Dubey",
       role: "CTO",
       description: "Leading technology innovation and engineering excellence",
