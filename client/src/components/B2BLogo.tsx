@@ -22,7 +22,7 @@ export default function B2BLogo({ className = "", size = "md" }: B2BLogoProps) {
         cx="60" 
         cy="60" 
         r="55" 
-        fill="url(#gradient)" 
+        fill="hsl(var(--b2b-blue))" 
         stroke="hsl(var(--b2b-blue))" 
         strokeWidth="2"
       />
