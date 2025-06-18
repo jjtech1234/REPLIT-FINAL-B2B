@@ -187,9 +187,17 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
               }}
             >
               <img 
-                src={item.imageUrl || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250"} 
+                src={item.imageUrl || (searchType === "business" 
+                  ? "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250"
+                  : "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250")} 
                 alt={item.name} 
                 className="w-full h-48 object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = searchType === "business" 
+                    ? "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250"
+                    : "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250";
+                }}
               />
               <div className="p-4">
                 <h4 className="font-bold text-gray-800 text-center mb-1">{item.name}</h4>

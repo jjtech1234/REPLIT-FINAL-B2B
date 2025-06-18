@@ -57,9 +57,6 @@ export default function Footer() {
                 <a href="/services" className="hover:text-white transition-colors">Franchise Consulting</a>
               </li>
               <li>
-                <a href="/services" className="hover:text-white transition-colors">Legal Services</a>
-              </li>
-              <li>
                 <a href="/contact" className="hover:text-white transition-colors">Contact Us</a>
               </li>
             </ul>

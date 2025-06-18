@@ -91,16 +91,16 @@ export default function BuyBusiness() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredBusinesses.map((business) => (
                 <Card key={business.id} className="overflow-hidden hover:shadow-xl transition-shadow">
-                  <div className="h-48 bg-gradient-to-br from-blue-100 to-orange-100 flex items-center justify-center">
-                    {business.imageUrl ? (
-                      <img 
-                        src={business.imageUrl} 
-                        alt={business.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Building className="h-16 w-16 text-gray-400" />
-                    )}
+                  <div className="h-48 bg-gradient-to-br from-blue-100 to-orange-100 overflow-hidden">
+                    <img 
+                      src={business.imageUrl || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250"} 
+                      alt={business.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250";
+                      }}
+                    />
                   </div>
                   <CardHeader>
                     <CardTitle className="text-xl">{business.name}</CardTitle>

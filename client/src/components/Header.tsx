@@ -43,11 +43,11 @@ export default function Header() {
               <a href="/" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Home
               </a>
-              <a href="/buy-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
-                Buy a Business
-              </a>
               <a href="/buy-franchise" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Buy a Franchise
+              </a>
+              <a href="/buy-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Buy a Business
               </a>
               <a href="/sell-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Sell Your Business
@@ -89,11 +89,11 @@ export default function Header() {
                 <a href="/" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Home
                 </a>
-                <a href="/buy-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
-                  Buy a Business
-                </a>
                 <a href="/buy-franchise" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Buy a Franchise
+                </a>
+                <a href="/buy-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Buy a Business
                 </a>
                 <a href="/sell-business" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Sell Your Business
