@@ -25,6 +25,7 @@ export interface IStorage {
   createFranchise(franchise: InsertFranchise): Promise<Franchise>;
   
   getAllBusinesses(): Promise<Business[]>;
+  getAllBusinessesForAdmin(): Promise<Business[]>;
   getBusinessById(id: number): Promise<Business | undefined>;
   searchBusinesses(filters: {
     category?: string;
@@ -33,6 +34,7 @@ export interface IStorage {
     maxPrice?: number;
   }): Promise<Business[]>;
   createBusiness(business: InsertBusiness): Promise<Business>;
+  updateBusinessStatus(id: number, status: string, isActive?: boolean): Promise<Business | undefined>;
   
   getAllAdvertisements(): Promise<Advertisement[]>;
   getAllAdvertisementsForAdmin(): Promise<Advertisement[]>;
@@ -138,6 +140,10 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(businesses).where(eq(businesses.isActive, true));
   }
 
+  async getAllBusinessesForAdmin(): Promise<Business[]> {
+    return await db.select().from(businesses);
+  }
+
   async getBusinessById(id: number): Promise<Business | undefined> {
     const [business] = await db.select().from(businesses).where(eq(businesses.id, id));
     return business || undefined;
@@ -170,9 +176,28 @@ export class DatabaseStorage implements IStorage {
   async createBusiness(insertBusiness: InsertBusiness): Promise<Business> {
     const [business] = await db
       .insert(businesses)
-      .values(insertBusiness)
+      .values({
+        ...insertBusiness,
+        status: "pending",
+        paymentStatus: "unpaid",
+        isActive: false
+      })
       .returning();
     return business;
+  }
+
+  async updateBusinessStatus(id: number, status: string, isActive?: boolean): Promise<Business | undefined> {
+    const updateData: any = { status };
+    if (isActive !== undefined) {
+      updateData.isActive = isActive;
+    }
+    
+    const [business] = await db
+      .update(businesses)
+      .set(updateData)
+      .where(eq(businesses.id, id))
+      .returning();
+    return business || undefined;
   }
 
   async getAllAdvertisements(): Promise<Advertisement[]> {

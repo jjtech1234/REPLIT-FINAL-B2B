@@ -34,7 +34,15 @@ export const businesses = pgTable("businesses", {
   price: integer("price"),
   imageUrl: text("image_url"),
   contactEmail: text("contact_email"),
-  isActive: boolean("is_active").default(true),
+  package: text("package"),
+  yearEstablished: text("year_established"),
+  employees: text("employees"),
+  revenue: text("revenue"),
+  reason: text("reason"),
+  assets: text("assets"),
+  status: text("status").default("pending"),
+  paymentStatus: text("payment_status").default("unpaid"),
+  isActive: boolean("is_active").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
