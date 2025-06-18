@@ -29,7 +29,8 @@ export default function SellBusiness() {
     revenue: "",
     reason: "",
     assets: "",
-    imageUrl: ""
+    imageUrl: "",
+    package: ""
   });
 
   const businessCategories = [
@@ -52,24 +53,29 @@ export default function SellBusiness() {
 
   const countries = [
     "USA",
-    "Canada",
-    "UK",
-    "Australia",
-    "Germany",
-    "France",
+    "Australia", 
     "India",
-    "China",
-    "Other"
+    "UK",
+    "Europe"
   ];
 
   const submitMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("POST", "/api/businesses", data);
+      console.log("Making API request with data:", data);
+      try {
+        const response = await apiRequest("POST", "/api/businesses", data);
+        console.log("API response:", response);
+        return response;
+      } catch (error) {
+        console.error("API request failed:", error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Success callback triggered with:", data);
       toast({
         title: "Business Listed Successfully",
-        description: "Your business has been submitted for review and will be listed within 24 hours.",
+        description: "Your business has been submitted for review. It will be activated once approved by our team.",
       });
       setBusinessForm({
         name: "",
@@ -85,10 +91,12 @@ export default function SellBusiness() {
         revenue: "",
         reason: "",
         assets: "",
-        imageUrl: ""
+        imageUrl: "",
+        package: ""
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Error callback triggered:", error);
       toast({
         title: "Error",
         description: "Failed to submit business listing. Please try again.",
@@ -99,10 +107,19 @@ export default function SellBusiness() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!businessForm.name || !businessForm.description || !businessForm.category || !businessForm.contactEmail) {
+    console.log("Form submission started", businessForm);
+    
+    if (!businessForm.name || !businessForm.description || !businessForm.category || !businessForm.contactEmail || !businessForm.package) {
+      console.log("Validation failed:", { 
+        name: businessForm.name, 
+        description: businessForm.description,
+        category: businessForm.category,
+        contactEmail: businessForm.contactEmail, 
+        package: businessForm.package 
+      });
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all required fields including listing package selection.",
         variant: "destructive",
       });
       return;
@@ -116,10 +133,19 @@ export default function SellBusiness() {
       state: businessForm.state,
       price: businessForm.price ? parseInt(businessForm.price) : null,
       contactEmail: businessForm.contactEmail,
-      imageUrl: businessForm.imageUrl || null,
-      isActive: true,
+      imageUrl: businessForm.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+      isActive: false,
+      status: "pending",
+      paymentStatus: "unpaid",
+      package: businessForm.package,
+      yearEstablished: businessForm.yearEstablished,
+      employees: businessForm.employees,
+      revenue: businessForm.revenue,
+      reason: businessForm.reason,
+      assets: businessForm.assets
     };
     
+    console.log("Submitting form data:", formData);
     submitMutation.mutate(formData);
   };
 
@@ -346,6 +372,72 @@ export default function SellBusiness() {
                   </div>
                 </div>
 
+                {/* Listing Package Selection */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-4">Select Listing Package *</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label className={`cursor-pointer ${businessForm.package === 'basic' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
+                      <input
+                        type="radio"
+                        name="package"
+                        value="basic"
+                        checked={businessForm.package === 'basic'}
+                        onChange={(e) => setBusinessForm(prev => ({ ...prev, package: e.target.value }))}
+                        className="sr-only"
+                      />
+                      <div className="bg-white p-4 rounded border hover:border-[hsl(var(--b2b-blue))] transition-colors">
+                        <h4 className="font-semibold text-gray-800">Basic Listing</h4>
+                        <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$150/month</p>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          <li>• Standard listing display</li>
+                          <li>• Basic search visibility</li>
+                          <li>• Contact form inquiries</li>
+                        </ul>
+                      </div>
+                    </label>
+                    <label className={`cursor-pointer ${businessForm.package === 'premium' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
+                      <input
+                        type="radio"
+                        name="package"
+                        value="premium"
+                        checked={businessForm.package === 'premium'}
+                        onChange={(e) => setBusinessForm(prev => ({ ...prev, package: e.target.value }))}
+                        className="sr-only"
+                      />
+                      <div className="bg-white p-4 rounded border border-[hsl(var(--b2b-blue))] hover:border-[hsl(var(--b2b-blue))] transition-colors">
+                        <h4 className="font-semibold text-gray-800">Premium Listing</h4>
+                        <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$300/month</p>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          <li>• Featured listing placement</li>
+                          <li>• Enhanced search visibility</li>
+                          <li>• Priority support</li>
+                          <li>• Detailed analytics</li>
+                        </ul>
+                      </div>
+                    </label>
+                    <label className={`cursor-pointer ${businessForm.package === 'enterprise' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
+                      <input
+                        type="radio"
+                        name="package"
+                        value="enterprise"
+                        checked={businessForm.package === 'enterprise'}
+                        onChange={(e) => setBusinessForm(prev => ({ ...prev, package: e.target.value }))}
+                        className="sr-only"
+                      />
+                      <div className="bg-white p-4 rounded border hover:border-[hsl(var(--b2b-blue))] transition-colors">
+                        <h4 className="font-semibold text-gray-800">Enterprise Listing</h4>
+                        <p className="text-2xl font-bold text-[hsl(var(--b2b-blue))] mb-2">$500/month</p>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          <li>• Top listing placement</li>
+                          <li>• Maximum exposure</li>
+                          <li>• Dedicated account manager</li>
+                          <li>• Full marketing support</li>
+                        </ul>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
                 <div className="flex justify-center pt-6">
                   <Button 
                     type="submit" 
@@ -358,7 +450,7 @@ export default function SellBusiness() {
 
                 <div className="text-center text-sm text-gray-500 mt-4">
                   <p>By submitting this form, you agree to our terms of service and privacy policy.</p>
-                  <p>Your listing will be reviewed and published within 24 hours.</p>
+                  <p>Your listing will be reviewed and activated once approved by our team.</p>
                 </div>
               </form>
             </CardContent>
