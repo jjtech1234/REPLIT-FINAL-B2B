@@ -79,7 +79,7 @@ export default function BuyBusiness() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-800">
-              Available Businesses ({filteredFranchises.length})
+              Available Businesses ({filteredBusinesses.length})
             </h2>
           </div>
 
@@ -89,13 +89,13 @@ export default function BuyBusiness() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredFranchises.map((franchise) => (
-                <Card key={franchise.id} className="overflow-hidden hover:shadow-xl transition-shadow">
+              {filteredBusinesses.map((business) => (
+                <Card key={business.id} className="overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="h-48 bg-gradient-to-br from-blue-100 to-orange-100 flex items-center justify-center">
-                    {franchise.imageUrl ? (
+                    {business.imageUrl ? (
                       <img 
-                        src={franchise.imageUrl} 
-                        alt={franchise.name}
+                        src={business.imageUrl} 
+                        alt={business.name}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -103,43 +103,55 @@ export default function BuyBusiness() {
                     )}
                   </div>
                   <CardHeader>
-                    <CardTitle className="text-xl">{franchise.name}</CardTitle>
+                    <CardTitle className="text-xl">{business.name}</CardTitle>
                     <CardDescription className="flex items-center text-gray-600">
                       <MapPin className="h-4 w-4 mr-1" />
-                      {franchise.country}{franchise.state ? `, ${franchise.state}` : ''}
+                      {business.country}{business.state ? `, ${business.state}` : ''}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-700 mb-4 line-clamp-3">
-                      {franchise.description || 'No description available'}
+                      {business.description || 'No description available'}
                     </p>
                     
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Investment:</span>
+                        <span className="text-sm text-gray-600">Price:</span>
                         <span className="font-semibold text-[hsl(var(--b2b-blue))]">
-                          {franchise.investmentRange || 'Contact for details'}
+                          {business.price ? `$${business.price.toLocaleString()}` : 'Contact for details'}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Category:</span>
                         <span className="font-semibold">
-                          {franchise.category}
+                          {business.category}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Contact:</span>
                         <span className="font-semibold text-sm">
-                          {franchise.contactEmail || 'Available on inquiry'}
+                          {business.contactEmail || 'Available on inquiry'}
                         </span>
                       </div>
                     </div>
 
                     <div className="flex gap-2">
-                      <Button className="flex-1 bg-[hsl(var(--b2b-blue))] hover:bg-blue-600">
+                      <Button 
+                        className="flex-1 bg-[hsl(var(--b2b-blue))] hover:bg-blue-600"
+                        onClick={() => setLocation(`/business/${business.id}`)}
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
                         View Details
                       </Button>
-                      <Button variant="outline" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => {
+                          setSelectedBusiness(business);
+                          setIsInquiryModalOpen(true);
+                        }}
+                      >
+                        <MessageCircle className="w-4 h-4 mr-1" />
                         Contact Seller
                       </Button>
                     </div>
@@ -149,7 +161,7 @@ export default function BuyBusiness() {
             </div>
           )}
 
-          {!isLoading && filteredFranchises.length === 0 && (
+          {!isLoading && filteredBusinesses.length === 0 && (
             <div className="text-center py-12">
               <Building className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No businesses found</h3>
@@ -160,6 +172,13 @@ export default function BuyBusiness() {
       </section>
 
       <Footer />
+      
+      <InquiryModal
+        isOpen={isInquiryModalOpen}
+        onClose={() => setIsInquiryModalOpen(false)}
+        item={selectedBusiness}
+        type="business"
+      />
     </div>
   );
 }

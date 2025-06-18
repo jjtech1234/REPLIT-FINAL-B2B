@@ -37,13 +37,7 @@ export default function Services() {
       features: ["Buyer screening", "Confidential matching", "Negotiation support", "Deal facilitation"],
       price: "3% of transaction value"
     },
-    {
-      icon: Shield,
-      title: "Transaction Security",
-      description: "Secure transaction management with escrow services and legal protection.",
-      features: ["Escrow management", "Document security", "Payment protection", "Legal oversight"],
-      price: "1% of transaction value"
-    }
+
   ];
 
   return (
