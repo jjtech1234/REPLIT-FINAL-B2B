@@ -268,11 +268,12 @@ export default function Admin() {
           </Card>
         </div>
 
-        {/* Tabs for Inquiries and Advertisements */}
+        {/* Tabs for Inquiries, Advertisements, and Businesses */}
         <Tabs defaultValue="inquiries" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="inquiries">Business Inquiries</TabsTrigger>
             <TabsTrigger value="advertisements">Submitted Ads</TabsTrigger>
+            <TabsTrigger value="businesses">Business Listings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="inquiries" className="space-y-4">
@@ -533,6 +534,176 @@ export default function Admin() {
                             isActive: false 
                           })}
                           disabled={updateAdStatusMutation.isPending}
+                        >
+                          Set Pending
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </TabsContent>
+
+          <TabsContent value="businesses" className="space-y-4">
+            {businessesLoading ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+                  <p className="text-gray-600">Loading business listings...</p>
+                </CardContent>
+              </Card>
+            ) : businesses.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">No business listings found</h3>
+                  <p className="text-gray-500">No business listings have been submitted yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              businesses.map((business) => (
+                <Card key={business.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <CardTitle className="text-lg font-semibold text-gray-800">
+                          {business.name}
+                        </CardTitle>
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <span className="flex items-center gap-1">
+                            <User className="w-4 h-4" />
+                            {business.contactEmail}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {business.createdAt ? new Date(business.createdAt as string | Date).toLocaleDateString() : 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <Badge 
+                          variant={
+                            business.status === 'active' ? 'default' : 
+                            business.status === 'pending' ? 'secondary' : 
+                            'destructive'
+                          }
+                          className={
+                            business.status === 'active' ? 'bg-green-100 text-green-800' :
+                            business.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }
+                        >
+                          {(business.status || 'pending').charAt(0).toUpperCase() + (business.status || 'pending').slice(1)}
+                        </Badge>
+                        {business.package && (
+                          <Badge variant="outline" className="text-xs">
+                            {business.package} Package
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium text-gray-700">Category:</span>
+                          <span className="ml-2 text-gray-600">{business.category}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-700">Location:</span>
+                          <span className="ml-2 text-gray-600">{business.country}{business.state ? `, ${business.state}` : ''}</span>
+                        </div>
+                        {business.price && (
+                          <div>
+                            <span className="font-medium text-gray-700">Price:</span>
+                            <span className="ml-2 text-gray-600">${business.price.toLocaleString()}</span>
+                          </div>
+                        )}
+                        {business.yearEstablished && (
+                          <div>
+                            <span className="font-medium text-gray-700">Established:</span>
+                            <span className="ml-2 text-gray-600">{business.yearEstablished}</span>
+                          </div>
+                        )}
+                        {business.employees && (
+                          <div>
+                            <span className="font-medium text-gray-700">Employees:</span>
+                            <span className="ml-2 text-gray-600">{business.employees}</span>
+                          </div>
+                        )}
+                        {business.revenue && (
+                          <div>
+                            <span className="font-medium text-gray-700">Revenue:</span>
+                            <span className="ml-2 text-gray-600">{business.revenue}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {business.description && (
+                        <div>
+                          <span className="font-medium text-gray-700">Description:</span>
+                          <p className="mt-1 text-gray-600">{business.description}</p>
+                        </div>
+                      )}
+                      
+                      {business.reason && (
+                        <div>
+                          <span className="font-medium text-gray-700">Reason for Sale:</span>
+                          <p className="mt-1 text-gray-600">{business.reason}</p>
+                        </div>
+                      )}
+                      
+                      {business.assets && (
+                        <div>
+                          <span className="font-medium text-gray-700">Assets Included:</span>
+                          <p className="mt-1 text-gray-600">{business.assets}</p>
+                        </div>
+                      )}
+
+                      <div className="flex flex-wrap gap-2 pt-2 border-t">
+                        {!business.isActive && (
+                          <Button 
+                            size="sm" 
+                            className="text-xs bg-green-600 hover:bg-green-700"
+                            onClick={() => updateBusinessStatusMutation.mutate({ 
+                              id: business.id, 
+                              status: 'active', 
+                              isActive: true 
+                            })}
+                            disabled={updateBusinessStatusMutation.isPending}
+                          >
+                            Activate
+                          </Button>
+                        )}
+                        
+                        {business.isActive && (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="text-xs border-red-300 text-red-600 hover:bg-red-50"
+                            onClick={() => updateBusinessStatusMutation.mutate({ 
+                              id: business.id, 
+                              status: 'inactive', 
+                              isActive: false 
+                            })}
+                            disabled={updateBusinessStatusMutation.isPending}
+                          >
+                            Deactivate
+                          </Button>
+                        )}
+                        
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="text-xs"
+                          onClick={() => updateBusinessStatusMutation.mutate({ 
+                            id: business.id, 
+                            status: 'pending', 
+                            isActive: false 
+                          })}
+                          disabled={updateBusinessStatusMutation.isPending}
                         >
                           Set Pending
                         </Button>

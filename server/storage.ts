@@ -558,9 +558,34 @@ export class MemStorage implements IStorage {
       price: insertBusiness.price || null,
       imageUrl: insertBusiness.imageUrl || null,
       contactEmail: insertBusiness.contactEmail || null,
-      isActive: insertBusiness.isActive ?? true,
+      package: insertBusiness.package || null,
+      yearEstablished: insertBusiness.yearEstablished || null,
+      employees: insertBusiness.employees || null,
+      revenue: insertBusiness.revenue || null,
+      reason: insertBusiness.reason || null,
+      assets: insertBusiness.assets || null,
+      status: "pending",
+      paymentStatus: "unpaid",
+      isActive: false,
       createdAt: new Date()
     };
+    this.businesses.set(id, business);
+    return business;
+  }
+
+  async getAllBusinessesForAdmin(): Promise<Business[]> {
+    return Array.from(this.businesses.values());
+  }
+
+  async updateBusinessStatus(id: number, status: string, isActive?: boolean): Promise<Business | undefined> {
+    const business = this.businesses.get(id);
+    if (!business) return undefined;
+    
+    business.status = status;
+    if (isActive !== undefined) {
+      business.isActive = isActive;
+    }
+    
     this.businesses.set(id, business);
     return business;
   }
