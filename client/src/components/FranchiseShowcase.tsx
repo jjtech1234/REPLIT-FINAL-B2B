@@ -33,7 +33,7 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
     (searchFilters.priceRange && searchFilters.priceRange !== "Price Range")
   );
 
-  const { data: franchises, isLoading } = useQuery<Franchise[]>({
+  const { data: franchises, isLoading: franchisesLoading } = useQuery<Franchise[]>({
     queryKey: hasSearchFilters 
       ? ["/api/franchises/search", searchFilters]
       : ["/api/franchises"],
@@ -61,21 +61,58 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
         if (!response.ok) throw new Error('Failed to fetch franchises');
         return response.json();
       }
-    }
+    },
+    enabled: !searchType || searchType === "franchise"
   });
+
+  const { data: businesses, isLoading: businessesLoading } = useQuery<Business[]>({
+    queryKey: hasSearchFilters 
+      ? ["/api/businesses/search", searchFilters]
+      : ["/api/businesses"],
+    queryFn: async () => {
+      if (hasSearchFilters) {
+        const params = new URLSearchParams();
+        if (searchFilters!.category && searchFilters!.category !== "All Business Categories") {
+          params.append('category', searchFilters!.category);
+        }
+        if (searchFilters!.country && searchFilters!.country !== "Any Country") {
+          params.append('country', searchFilters!.country);
+        }
+        if (searchFilters!.state && searchFilters!.state !== "Any State") {
+          params.append('state', searchFilters!.state);
+        }
+        
+        const response = await fetch(`/api/businesses/search?${params.toString()}`);
+        if (!response.ok) throw new Error('Failed to search businesses');
+        return response.json();
+      } else {
+        const response = await fetch('/api/businesses');
+        if (!response.ok) throw new Error('Failed to fetch businesses');
+        return response.json();
+      }
+    },
+    enabled: searchType === "business"
+  });
+
+  const isLoading = franchisesLoading || businessesLoading;
+  const displayData = searchType === "business" ? businesses : franchises;
 
   const handlePrevSlide = () => {
     setCurrentSlide(prev => Math.max(0, prev - 4));
   };
 
   const handleNextSlide = () => {
-    if (franchises) {
-      setCurrentSlide(prev => Math.min(franchises.length - 4, prev + 4));
+    if (displayData) {
+      setCurrentSlide(prev => Math.min(displayData.length - 4, prev + 4));
     }
   };
 
   const handleFranchiseClick = (franchise: Franchise) => {
     setLocation(`/franchise/${franchise.id}`);
+  };
+
+  const handleBusinessClick = (business: Business) => {
+    setLocation(`/business/${business.id}`);
   };
 
   if (isLoading) {
@@ -104,15 +141,19 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
     );
   }
 
-  if (!franchises || franchises.length === 0) {
+  if (!displayData || displayData.length === 0) {
     return (
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h3 className="text-3xl font-bold text-gray-800 mb-4">
-              Showcase <span className="text-[hsl(var(--b2b-blue))]">Franchises</span>
+              Showcase <span className="text-[hsl(var(--b2b-blue))]">
+                {searchType === "business" ? "Businesses" : "Franchises"}
+              </span>
             </h3>
-            <p className="text-gray-600">No franchise opportunities available at the moment.</p>
+            <p className="text-gray-600">
+              No {searchType === "business" ? "business" : "franchise"} opportunities available at the moment.
+            </p>
           </div>
         </div>
       </section>
@@ -124,43 +165,60 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold text-gray-800 mb-4">
-            Showcase <span className="text-[hsl(var(--b2b-blue))]">Franchises</span>
+            Showcase <span className="text-[hsl(var(--b2b-blue))]">
+              {searchType === "business" ? "Businesses" : "Franchises"}
+            </span>
           </h3>
           <p className="text-gray-600">* Click on the image to enquire</p>
         </div>
 
-        {/* Franchise Grid */}
+        {/* Display Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {franchises.slice(currentSlide, currentSlide + 8).map((franchise) => (
+          {displayData.slice(currentSlide, currentSlide + 8).map((item) => (
             <div 
-              key={franchise.id} 
+              key={item.id} 
               className="franchise-card"
-              onClick={() => handleFranchiseClick(franchise)}
+              onClick={() => {
+                if (searchType === "business") {
+                  handleBusinessClick(item as Business);
+                } else {
+                  handleFranchiseClick(item as Franchise);
+                }
+              }}
             >
               <img 
-                src={franchise.imageUrl || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250"} 
-                alt={franchise.name} 
+                src={item.imageUrl || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250"} 
+                alt={item.name} 
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
-                <h4 className="font-bold text-gray-800 text-center mb-1">{franchise.name}</h4>
-                <p className="text-sm text-gray-600 text-center mb-2">{franchise.category}</p>
+                <h4 className="font-bold text-gray-800 text-center mb-1">{item.name}</h4>
+                <p className="text-sm text-gray-600 text-center mb-2">{item.category}</p>
                 
-                {franchise.investmentMin && franchise.investmentMax && (
+                {searchType === "business" && (item as Business).price && (
                   <div className="text-center">
                     <div className="investment-text investment-min">
-                      ${franchise.investmentMin.toLocaleString()}
+                      ${(item as Business).price!.toLocaleString()}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Asking Price</p>
+                  </div>
+                )}
+                
+                {searchType === "franchise" && (item as Franchise).investmentMin && (item as Franchise).investmentMax && (
+                  <div className="text-center">
+                    <div className="investment-text investment-min">
+                      ${(item as Franchise).investmentMin!.toLocaleString()}
                     </div>
                     <div className="investment-text investment-max">
-                      ${franchise.investmentMax.toLocaleString()}
+                      ${(item as Franchise).investmentMax!.toLocaleString()}
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Investment Range</p>
                   </div>
                 )}
                 
-                {franchise.investmentRange && (
+                {searchType === "franchise" && (item as Franchise).investmentRange && (
                   <p className="text-sm text-center text-[hsl(var(--b2b-blue))] font-medium mt-2">
-                    {franchise.investmentRange}
+                    {(item as Franchise).investmentRange}
                   </p>
                 )}
 
@@ -171,7 +229,11 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
                     className="flex-1 text-xs"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleFranchiseClick(franchise);
+                      if (searchType === "business") {
+                        handleBusinessClick(item as Business);
+                      } else {
+                        handleFranchiseClick(item as Franchise);
+                      }
                     }}
                   >
                     <Eye className="w-3 h-3 mr-1" />
@@ -182,7 +244,7 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
                     className="flex-1 text-xs b2b-button-primary"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedItem(franchise);
+                      setSelectedItem(item);
                       setIsInquiryModalOpen(true);
                     }}
                   >
