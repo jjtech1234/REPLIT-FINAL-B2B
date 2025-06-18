@@ -22,10 +22,16 @@ export default function About() {
       image: sarahGeorgeImage
     },
     {
-      name: "John Thomas",
-      role: "CIO",
-      description: "Overseeing technology infrastructure and digital innovation",
-      image: johnThomasImage
+      name: "Thomas Jacob",
+      role: "President",
+      description: "Driving strategic growth and business development initiatives",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"
+    },
+    {
+      name: "Shubham Dubey",
+      role: "CTO",
+      description: "Leading technology innovation and engineering excellence",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"
     }
   ];
 
@@ -174,9 +180,7 @@ export default function About() {
                       alt={member.name}
                       className="w-full h-full object-cover"
                       style={{
-                        objectPosition: member.name === "John Thomas" 
-                          ? "center 20%" 
-                          : "center 30%",
+                        objectPosition: "center 30%",
                         transform: "scale(1.2)",
                         filter: "brightness(1.05)"
                       }}

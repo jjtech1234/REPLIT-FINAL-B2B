@@ -109,6 +109,7 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 18, 2025: Updated leadership team - added Shubham Dubey as CTO, Thomas Jacob as President, removed John Thomas
 - June 18, 2025: Added unique images to all business and advertisement listings for visual consistency
 - June 18, 2025: Created multiple sample businesses with different images (TechFlow Solutions, Downtown Restaurant, Auto Repair Shop, Coffee Shop & Bakery, Fitness Center & Gym)
 - June 18, 2025: Added sample advertisements with professional images (Digital Marketing Agency, Professional Accounting Services)
