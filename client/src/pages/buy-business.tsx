@@ -4,46 +4,39 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Building } from "lucide-react";
-
-interface Franchise {
-  id: number;
-  name: string;
-  description: string | null;
-  category: string;
-  country: string;
-  state: string | null;
-  investmentRange: string | null;
-  contactEmail: string | null;
-  imageUrl: string | null;
-  isActive: boolean;
-}
+import { MapPin, Building, DollarSign, MessageCircle, Eye } from "lucide-react";
+import { useLocation } from "wouter";
+import InquiryModal from "@/components/InquiryModal";
+import type { Business } from "@shared/schema";
 
 export default function BuyBusiness() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [franchises, setFranchises] = useState<Franchise[]>([]);
+  const [businesses, setBusinesses] = useState<Business[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [, setLocation] = useLocation();
+  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
 
   useEffect(() => {
-    async function fetchFranchises() {
+    async function fetchBusinesses() {
       try {
-        const response = await fetch('/api/franchises');
+        const response = await fetch('/api/businesses');
         const data = await response.json();
-        setFranchises(data);
+        setBusinesses(data);
       } catch (error) {
-        console.error('Error fetching franchises:', error);
+        console.error('Error fetching businesses:', error);
       } finally {
         setIsLoading(false);
       }
     }
     
-    fetchFranchises();
+    fetchBusinesses();
   }, []);
 
-  const filteredFranchises = franchises.filter((franchise) => {
+  const filteredBusinesses = businesses.filter((business) => {
     if (!searchTerm) return true;
-    return franchise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           (franchise.description && franchise.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    return business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (business.description && business.description.toLowerCase().includes(searchTerm.toLowerCase()));
   });
 
   return (
