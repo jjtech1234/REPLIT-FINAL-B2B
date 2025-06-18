@@ -25,19 +25,19 @@ export default function About() {
       name: "Thomas Jacob",
       role: "President",
       description: "Driving strategic growth and business development initiatives",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"
+      image: null
     },
     {
       name: "John Thomas",
       role: "CIO",
       description: "Overseeing technology infrastructure and digital innovation",
-      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"
+      image: null
     },
     {
       name: "Shubham Dubey",
       role: "CTO",
       description: "Leading technology innovation and engineering excellence",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"
+      image: null
     }
   ];
 
@@ -180,17 +180,23 @@ export default function About() {
             {team.map((member, index) => (
               <Card key={index} className="text-center">
                 <CardHeader>
-                  <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 border border-gray-200 shadow-sm">
-                    <img 
-                      src={member.image} 
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                      style={{
-                        objectPosition: "center 30%",
-                        transform: "scale(1.2)",
-                        filter: "brightness(1.05)"
-                      }}
-                    />
+                  <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 border border-gray-200 shadow-sm flex items-center justify-center">
+                    {member.image ? (
+                      <img 
+                        src={member.image} 
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                        style={{
+                          objectPosition: "center 30%",
+                          transform: "scale(1.2)",
+                          filter: "brightness(1.05)"
+                        }}
+                      />
+                    ) : (
+                      <div className="text-2xl font-bold text-gray-400">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                    )}
                   </div>
                   <CardTitle className="text-lg text-gray-800">{member.name}</CardTitle>
                   <p className="text-[hsl(var(--b2b-blue))] font-medium">{member.role}</p>
