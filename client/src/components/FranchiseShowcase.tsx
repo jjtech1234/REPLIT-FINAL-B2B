@@ -269,7 +269,7 @@ export default function FranchiseShowcase({ searchFilters, searchType }: Franchi
           <button 
             className="bg-gray-300 hover:bg-gray-400 rounded-full p-2 transition-colors disabled:opacity-50"
             onClick={handleNextSlide}
-            disabled={!franchises || currentSlide >= franchises.length - 8}
+            disabled={!displayData || currentSlide >= displayData.length - 8}
           >
             <ChevronRight className="w-5 h-5 text-gray-700" />
           </button>

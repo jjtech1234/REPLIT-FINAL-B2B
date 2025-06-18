@@ -22,13 +22,7 @@ export default function Services() {
       features: ["Franchise selection", "Due diligence", "Legal compliance", "Training support"],
       price: "Starting at $1,500"
     },
-    {
-      icon: FileText,
-      title: "Legal Services",
-      description: "Comprehensive legal support for business transactions, contracts, and compliance.",
-      features: ["Contract review", "Transaction support", "Compliance guidance", "Documentation"],
-      price: "Starting at $300/hour"
-    },
+
     {
       icon: TrendingUp,
       title: "Marketing Support",
