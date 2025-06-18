@@ -109,6 +109,13 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 18, 2025: Added unique images to all business and advertisement listings for visual consistency
+- June 18, 2025: Created multiple sample businesses with different images (TechFlow Solutions, Downtown Restaurant, Auto Repair Shop, Coffee Shop & Bakery, Fitness Center & Gym)
+- June 18, 2025: Added sample advertisements with professional images (Digital Marketing Agency, Professional Accounting Services)
+- June 18, 2025: Fixed business listing image consistency between homepage and dedicated business pages
+- June 18, 2025: Moved "Buy a Franchise" before "Buy a Business" in navigation menu
+- June 18, 2025: Removed legal services from footer as requested
+- June 18, 2025: Added "Buy a Franchise" page to menu bar with complete franchise listings and search functionality
 - June 17, 2025: Implemented complete admin approval system for advertisements with activate/deactivate controls
 - June 17, 2025: Added advertisement status tracking (pending, active, inactive) and payment status (unpaid, paid, refunded)
 - June 17, 2025: Created admin endpoints for advertisement management with status update functionality
