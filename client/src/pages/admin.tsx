@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import type { Inquiry, Advertisement } from "@shared/schema";
+import type { Inquiry, Advertisement, Business } from "@shared/schema";
 
 export default function Admin() {
   const { toast } = useToast();
@@ -25,6 +25,10 @@ export default function Admin() {
 
   const { data: advertisements = [], isLoading: adsLoading, refetch: refetchAds } = useQuery<Advertisement[]>({
     queryKey: ['/api/admin/advertisements'],
+  });
+
+  const { data: businesses = [], isLoading: businessesLoading, refetch: refetchBusinesses } = useQuery<Business[]>({
+    queryKey: ['/api/admin/businesses'],
   });
 
   const updateStatusMutation = useMutation({
@@ -74,6 +78,32 @@ export default function Admin() {
       toast({
         title: "Error",
         description: "Failed to update advertisement status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateBusinessStatusMutation = useMutation({
+    mutationFn: async ({ id, status, isActive }: { id: number; status: string; isActive: boolean }) => {
+      const response = await fetch(`/api/businesses/${id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, isActive }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) throw new Error('Failed to update business status');
+      return response.json();
+    },
+    onSuccess: () => {
+      refetchBusinesses();
+      toast({
+        title: "Business Updated",
+        description: "Business status has been updated successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update business status.",
         variant: "destructive",
       });
     },
@@ -188,7 +218,7 @@ export default function Admin() {
         </Card>
 
         {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
           <Card>
             <CardContent className="p-4">
               <div className="text-2xl font-bold text-[hsl(var(--b2b-blue))]">{inquiries.length}</div>
@@ -218,6 +248,22 @@ export default function Admin() {
                 {advertisements.filter(ad => ad.isActive).length}
               </div>
               <div className="text-sm text-gray-600">Active Ads</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-purple-600">{businesses.length}</div>
+              <div className="text-sm text-gray-600">Total Businesses</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-blue-600">
+                {businesses.filter(b => b.isActive).length}
+              </div>
+              <div className="text-sm text-gray-600">Active Businesses</div>
             </CardContent>
           </Card>
         </div>
