@@ -34,7 +34,9 @@ export default function PostAd() {
       try {
         const response = await apiRequest("POST", "/api/advertisements", data);
         console.log("API response:", response);
-        return response;
+        const result = await response.json();
+        console.log("Parsed response:", result);
+        return result;
       } catch (error) {
         console.error("API request failed:", error);
         throw error;

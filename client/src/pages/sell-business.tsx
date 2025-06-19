@@ -9,11 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Building, DollarSign, MapPin, Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useLocation } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function SellBusiness() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   
   const [businessForm, setBusinessForm] = useState({
     name: "",
@@ -65,7 +67,9 @@ export default function SellBusiness() {
       try {
         const response = await apiRequest("POST", "/api/businesses", data);
         console.log("API response:", response);
-        return response;
+        const result = await response.json();
+        console.log("Parsed response:", result);
+        return result;
       } catch (error) {
         console.error("API request failed:", error);
         throw error;
@@ -73,27 +77,26 @@ export default function SellBusiness() {
     },
     onSuccess: (data) => {
       console.log("Success callback triggered with:", data);
+      
+      // Get package pricing
+      const packagePricing = {
+        'basic': 100,
+        'premium': 250,
+        'enterprise': 500
+      };
+      
+      const amount = packagePricing[businessForm.package as keyof typeof packagePricing] || 100;
+      const description = `${businessForm.package.charAt(0).toUpperCase() + businessForm.package.slice(1)} Business Listing Package`;
+      
       toast({
         title: "Business Listed Successfully",
-        description: "Your business has been submitted for review. It will be activated once approved by our team.",
+        description: "Redirecting to secure payment to activate your listing.",
       });
-      setBusinessForm({
-        name: "",
-        description: "",
-        category: "",
-        country: "",
-        state: "",
-        price: "",
-        contactEmail: "",
-        contactPhone: "",
-        yearEstablished: "",
-        employees: "",
-        revenue: "",
-        reason: "",
-        assets: "",
-        imageUrl: "",
-        package: ""
-      });
+      
+      // Redirect to checkout with payment details
+      setTimeout(() => {
+        setLocation(`/checkout?amount=${amount}&description=${encodeURIComponent(description)}`);
+      }, 1500);
     },
     onError: (error) => {
       console.error("Error callback triggered:", error);
