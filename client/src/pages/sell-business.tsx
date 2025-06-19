@@ -80,6 +80,7 @@ export default function SellBusiness() {
       
       // Get package pricing
       const packagePricing = {
+        'test': 1,
         'basic': 100,
         'premium': 250,
         'enterprise': 500
@@ -378,7 +379,26 @@ export default function SellBusiness() {
                 {/* Listing Package Selection */}
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-gray-800 mb-4">Select Listing Package *</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <label className={`cursor-pointer ${businessForm.package === 'test' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
+                      <input
+                        type="radio"
+                        name="package"
+                        value="test"
+                        checked={businessForm.package === 'test'}
+                        onChange={(e) => setBusinessForm(prev => ({ ...prev, package: e.target.value }))}
+                        className="sr-only"
+                      />
+                      <div className="bg-white p-4 rounded border hover:border-[hsl(var(--b2b-blue))] transition-colors">
+                        <h4 className="font-semibold text-gray-800">Test Listing</h4>
+                        <p className="text-2xl font-bold text-green-600 mb-2">$1</p>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          <li>• Test payment</li>
+                          <li>• Instant activation</li>
+                          <li>• Basic features</li>
+                        </ul>
+                      </div>
+                    </label>
                     <label className={`cursor-pointer ${businessForm.package === 'basic' ? 'ring-2 ring-[hsl(var(--b2b-blue))]' : ''}`}>
                       <input
                         type="radio"

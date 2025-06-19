@@ -8,6 +8,20 @@ import Footer from "@/components/Footer";
 
 const plans = [
   {
+    id: 'test',
+    name: 'Test',
+    price: 1,
+    description: 'For testing payment functionality',
+    features: [
+      'Test listing placement',
+      'Email support',
+      'Basic features',
+      '1 test listing',
+      'Immediate activation'
+    ],
+    popular: false
+  },
+  {
     id: 'basic',
     name: 'Basic',
     price: 100,
