@@ -109,12 +109,15 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 19, 2025: Added $1 Test package for easy payment testing across all forms (Post Ad, Sell Business, Pricing page)
+- June 19, 2025: Fixed payment integration for both Post Ad and Sell Business forms - now properly redirect to checkout
+- June 19, 2025: Updated server to accept minimum $1 payments for testing purposes
+- June 19, 2025: Enhanced package selection with 4-column grid layout including Test ($1), Basic ($100), Premium ($250), Enterprise ($500)
 - June 19, 2025: Implemented complete Stripe payment system with secure checkout and subscription functionality
 - June 19, 2025: Added payment routes for one-time payments (/api/create-payment-intent) and subscriptions (/api/create-subscription)
 - June 19, 2025: Created comprehensive payment pages: /checkout, /subscribe, /payment-success, /subscription-success, /pricing
 - June 19, 2025: Integrated payment workflow into Post Ad form - ads redirect to payment after submission
-- June 19, 2025: Added Pricing page with three subscription tiers: Basic ($100), Premium ($250), Enterprise ($500)
-- June 19, 2025: Added Pricing navigation link to both desktop and mobile menus
+- June 19, 2025: Added Pricing page with subscription tiers and added Pricing navigation link to both desktop and mobile menus
 - June 18, 2025: Added custom B2B Market logo with brand colors and professional design throughout header and footer
 - June 18, 2025: Updated leadership team - added Shubham Dubey as CTO, Thomas Jacob as President, removed photos for all except Sarah George
 - June 18, 2025: Added unique images to all business and advertisement listings for visual consistency

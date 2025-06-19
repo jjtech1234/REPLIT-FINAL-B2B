@@ -331,7 +331,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { amount, description = "B2B Market Service" } = req.body;
       
-      if (!amount || amount < 50) {
+      if (!amount || amount < 1) {
         return res.status(400).json({ error: "Invalid amount" });
       }
       
