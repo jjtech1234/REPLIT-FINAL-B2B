@@ -3,6 +3,15 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema } from "@shared/schema";
 
+// Stripe setup
+let stripe: any = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  const Stripe = require('stripe');
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2023-10-16",
+  });
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Franchise routes
   app.get("/api/franchises", async (req, res) => {
@@ -307,6 +316,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to send message" });
+    }
+  });
+
+  // Stripe payment routes
+  app.post("/api/create-payment-intent", async (req, res) => {
+    if (!stripe) {
+      return res.status(503).json({ error: "Payment service not configured" });
+    }
+    
+    try {
+      const { amount, description = "B2B Market Service" } = req.body;
+      
+      if (!amount || amount < 50) {
+        return res.status(400).json({ error: "Invalid amount" });
+      }
+      
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: "usd",
+        description,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+      
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error: any) {
+      console.error("Payment intent creation failed:", error);
+      res.status(500).json({ error: "Failed to create payment intent" });
+    }
+  });
+
+  app.post("/api/create-subscription", async (req, res) => {
+    if (!stripe) {
+      return res.status(503).json({ error: "Payment service not configured" });
+    }
+
+    try {
+      const { priceId, customerEmail, customerName } = req.body;
+      
+      if (!priceId || !customerEmail) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      // Create customer
+      const customer = await stripe.customers.create({
+        email: customerEmail,
+        name: customerName,
+      });
+
+      // Create subscription
+      const subscription = await stripe.subscriptions.create({
+        customer: customer.id,
+        items: [{ price: priceId }],
+        payment_behavior: 'default_incomplete',
+        payment_settings: { save_default_payment_method: 'on_subscription' },
+        expand: ['latest_invoice.payment_intent'],
+      });
+
+      res.json({
+        subscriptionId: subscription.id,
+        clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+      });
+    } catch (error: any) {
+      console.error("Subscription creation failed:", error);
+      res.status(500).json({ error: "Failed to create subscription" });
     }
   });
 
