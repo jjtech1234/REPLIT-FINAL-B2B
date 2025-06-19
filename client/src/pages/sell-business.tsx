@@ -80,8 +80,8 @@ export default function SellBusiness() {
       
       // Get package pricing
       const packagePricing = {
-        'basic': 100,
-        'premium': 250,
+        'basic': 150,
+        'premium': 300,
         'enterprise': 500
       };
       
