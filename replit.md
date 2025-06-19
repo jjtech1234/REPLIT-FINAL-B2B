@@ -109,6 +109,10 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 19, 2025: Fixed payment validation issues - cash payments now properly fail instead of showing false success
+- June 19, 2025: Implemented functional receipt download system generating text receipts with payment details
+- June 19, 2025: Enhanced payment success page with proper validation of payment intent and client secret parameters
+- June 19, 2025: Updated checkout flow to store payment details in localStorage for receipt generation
 - June 19, 2025: Added $1 Test package for easy payment testing across all forms (Post Ad, Sell Business, Pricing page)
 - June 19, 2025: Fixed payment integration for both Post Ad and Sell Business forms - now properly redirect to checkout
 - June 19, 2025: Updated server to accept minimum $1 payments for testing purposes
