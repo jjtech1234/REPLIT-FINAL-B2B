@@ -3,14 +3,16 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema } from "@shared/schema";
 
-// Stripe setup
-let stripe: any = null;
-if (process.env.STRIPE_SECRET_KEY) {
-  const { default: Stripe } = await import('stripe');
-  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2023-10-16",
-  });
+// Initialize Stripe
+async function initializeStripe() {
+  if (process.env.STRIPE_SECRET_KEY) {
+    const { default: Stripe } = await import('stripe');
+    return new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return null;
 }
+
+const stripePromise = initializeStripe();
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Franchise routes
@@ -321,6 +323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Stripe payment routes
   app.post("/api/create-payment-intent", async (req, res) => {
+    const stripe = await stripePromise;
     if (!stripe) {
       return res.status(503).json({ error: "Payment service not configured" });
     }
@@ -349,6 +352,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/create-subscription", async (req, res) => {
+    const stripe = await stripePromise;
     if (!stripe) {
       return res.status(503).json({ error: "Payment service not configured" });
     }
@@ -377,7 +381,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         subscriptionId: subscription.id,
-        clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+        clientSecret: (subscription.latest_invoice as any)?.payment_intent?.client_secret,
       });
     } catch (error: any) {
       console.error("Subscription creation failed:", error);

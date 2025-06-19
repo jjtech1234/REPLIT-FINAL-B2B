@@ -57,6 +57,9 @@ export default function Header() {
               <a href="/services" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Services
               </a>
+              <a href="/pricing" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
+                Pricing
+              </a>
               <a href="/contact" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Contact
               </a>
@@ -102,6 +105,9 @@ export default function Header() {
                 </a>
                 <a href="/services" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Services
+                </a>
+                <a href="/pricing" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
+                  Pricing
                 </a>
                 <a href="/contact" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Contact
