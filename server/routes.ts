@@ -6,7 +6,7 @@ import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, inser
 // Stripe setup
 let stripe: any = null;
 if (process.env.STRIPE_SECRET_KEY) {
-  const Stripe = require('stripe');
+  const { default: Stripe } = await import('stripe');
   stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2023-10-16",
   });

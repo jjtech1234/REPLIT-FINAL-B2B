@@ -14,6 +14,11 @@ import Services from "@/pages/services";
 import Contact from "@/pages/contact";
 import About from "@/pages/about";
 import Admin from "@/pages/admin";
+import Checkout from "@/pages/checkout";
+import Subscribe from "@/pages/subscribe";
+import PaymentSuccess from "@/pages/payment-success";
+import SubscriptionSuccess from "@/pages/subscription-success";
+import Pricing from "@/pages/pricing";
 
 function Router() {
   return (
@@ -28,6 +33,11 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
       <Route path="/admin" component={Admin} />
+      <Route path="/checkout" component={Checkout} />
+      <Route path="/subscribe" component={Subscribe} />
+      <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/subscription-success" component={SubscriptionSuccess} />
+      <Route path="/pricing" component={Pricing} />
       <Route component={NotFound} />
     </Switch>
   );

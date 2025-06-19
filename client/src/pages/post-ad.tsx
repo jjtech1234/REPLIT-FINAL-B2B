@@ -8,11 +8,13 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Camera, Link as LinkIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useLocation } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function PostAd() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   
   const [adForm, setAdForm] = useState({
     title: "",
@@ -40,21 +42,26 @@ export default function PostAd() {
     },
     onSuccess: (data) => {
       console.log("Success callback triggered with:", data);
+      
+      // Get package pricing
+      const packagePricing = {
+        'basic': 100,
+        'premium': 250,
+        'enterprise': 500
+      };
+      
+      const amount = packagePricing[adForm.package as keyof typeof packagePricing] || 100;
+      const description = `${adForm.package.charAt(0).toUpperCase() + adForm.package.slice(1)} Advertisement Package`;
+      
       toast({
         title: "Advertisement Submitted Successfully",
-        description: "Your ad has been submitted for review. It will be activated once approved by our team.",
+        description: "Redirecting to secure payment to activate your ad.",
       });
-      setAdForm({
-        title: "",
-        description: "",
-        imageUrl: "",
-        targetUrl: "",
-        contactEmail: "",
-        contactPhone: "",
-        company: "",
-        budget: "",
-        package: ""
-      });
+      
+      // Redirect to checkout with payment details
+      setTimeout(() => {
+        setLocation(`/checkout?amount=${amount}&description=${encodeURIComponent(description)}`);
+      }, 1500);
     },
     onError: (error) => {
       console.error("Error callback triggered:", error);
