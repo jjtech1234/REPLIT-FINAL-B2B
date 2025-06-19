@@ -29,23 +29,29 @@ const CheckoutForm = ({ amount, description }: { amount: number; description: st
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/payment-success?type=subscription`,
       },
+      redirect: 'if_required',
     });
 
     if (error) {
+      // Payment failed or was cancelled
       toast({
         title: "Payment Failed",
-        description: error.message,
+        description: error.message || "Payment was not completed",
         variant: "destructive",
       });
+    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+      // Payment succeeded, redirect manually
+      window.location.href = `${window.location.origin}/payment-success?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&type=subscription`;
     } else {
+      // Payment requires additional action or is processing
       toast({
-        title: "Payment Successful",
-        description: "Thank you for your purchase!",
+        title: "Payment Processing",
+        description: "Your payment is being processed. Please wait...",
       });
     }
 
@@ -98,6 +104,10 @@ export default function Checkout() {
 
     setAmount(paymentAmount);
     setDescription(paymentDescription);
+
+    // Store payment details for success page
+    localStorage.setItem('payment_amount', paymentAmount.toString());
+    localStorage.setItem('payment_description', paymentDescription);
 
     // Create PaymentIntent
     apiRequest("POST", "/api/create-payment-intent", { 
