@@ -32,7 +32,7 @@ const CheckoutForm = ({ amount, description }: { amount: number; description: st
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/payment-success`,
+        return_url: `${window.location.origin}/payment-success?type=subscription`,
       },
     });
 

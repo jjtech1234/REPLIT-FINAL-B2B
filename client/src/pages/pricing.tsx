@@ -105,7 +105,7 @@ export default function Pricing() {
                     ))}
                   </ul>
                   
-                  <Link href={`/subscribe?plan=${plan.id}`}>
+                  <Link href={`/checkout?amount=${plan.price}&description=${encodeURIComponent(plan.name + ' Plan - B2B Market Subscription')}`}>
                     <Button 
                       className={`w-full ${plan.popular ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
                       size="lg"

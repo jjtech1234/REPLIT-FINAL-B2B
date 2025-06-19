@@ -14,7 +14,7 @@ export default function PaymentSuccess() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentIntent = urlParams.get('payment_intent');
-    const paymentIntentClientSecret = urlParams.get('payment_intent_client_secret');
+    const paymentType = urlParams.get('type');
     
     // Extract payment details from URL or localStorage
     const amount = localStorage.getItem('payment_amount') || 'N/A';
@@ -22,7 +22,7 @@ export default function PaymentSuccess() {
     
     setPaymentDetails({
       amount,
-      description,
+      description: paymentType === 'subscription' ? description.replace('Package', 'Subscription') : description,
       paymentId: paymentIntent || 'N/A'
     });
 
