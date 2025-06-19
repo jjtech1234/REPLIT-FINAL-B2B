@@ -109,14 +109,14 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 19, 2025: Reverted to original pricing packages - removed $1 test package as requested
+- June 19, 2025: Updated package selection to 3-column grid layout with Basic ($100), Premium ($250), Enterprise ($500)
 - June 19, 2025: Fixed payment validation issues - cash payments now properly fail instead of showing false success
 - June 19, 2025: Implemented functional receipt download system generating text receipts with payment details
 - June 19, 2025: Enhanced payment success page with proper validation of payment intent and client secret parameters
 - June 19, 2025: Updated checkout flow to store payment details in localStorage for receipt generation
-- June 19, 2025: Added $1 Test package for easy payment testing across all forms (Post Ad, Sell Business, Pricing page)
 - June 19, 2025: Fixed payment integration for both Post Ad and Sell Business forms - now properly redirect to checkout
 - June 19, 2025: Updated server to accept minimum $1 payments for testing purposes
-- June 19, 2025: Enhanced package selection with 4-column grid layout including Test ($1), Basic ($100), Premium ($250), Enterprise ($500)
 - June 19, 2025: Implemented complete Stripe payment system with secure checkout and subscription functionality
 - June 19, 2025: Added payment routes for one-time payments (/api/create-payment-intent) and subscriptions (/api/create-subscription)
 - June 19, 2025: Created comprehensive payment pages: /checkout, /subscribe, /payment-success, /subscription-success, /pricing
