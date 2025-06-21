@@ -109,6 +109,7 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- June 19, 2025: Fixed sell business form pricing mismatch - Basic now correctly charges $150, Premium $300, Enterprise $500
 - June 19, 2025: Reverted to original pricing packages - removed $1 test package as requested
 - June 19, 2025: Updated package selection to 3-column grid layout with Basic ($100), Premium ($250), Enterprise ($500)
 - June 19, 2025: Fixed payment validation issues - cash payments now properly fail instead of showing false success
