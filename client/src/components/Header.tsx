@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Mail, HandHeart, User, LogOut, Settings } from "lucide-react";
 import B2BLogo from "./B2BLogo";
 import SimpleAuth from "./SimpleAuth";
-import { useLogout } from "@/hooks/useAuth";
+import { useAuth, useLogout } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,10 +15,38 @@ import {
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  
-  const { user, isAuthenticated, isLoading } = useAuth();
   const logoutMutation = useLogout();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          setCurrentUser(userData);
+        } else {
+          localStorage.removeItem("auth_token");
+        }
+      } catch (error) {
+        localStorage.removeItem("auth_token");
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, []);
 
 
 
@@ -34,14 +62,14 @@ export default function Header() {
             </span>
           </div>
           <div>
-            {isLoading ? (
+            {loading ? (
               <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
-            ) : isAuthenticated && user ? (
+            ) : currentUser ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="text-white hover:bg-white/10 py-1 px-4 text-sm">
                     <User className="w-4 h-4 mr-2" />
-                    {user.firstName || user.email}
+                    {currentUser.firstName || currentUser.email}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
@@ -57,7 +85,10 @@ export default function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
-                    onClick={() => logoutMutation.mutate()}
+                    onClick={() => {
+                      localStorage.removeItem("auth_token");
+                      window.location.reload();
+                    }}
                     className="text-red-600 focus:text-red-600"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
