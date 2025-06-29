@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Menu, X, Mail, HandHeart, User, LogOut, Settings } from "lucide-react";
 import B2BLogo from "./B2BLogo";
-import AuthModal from "./AuthModal";
+import SimpleAuth from "./SimpleAuth";
 import { useAuth, useLogout } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +15,7 @@ import {
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
+
   
   const { user, isAuthenticated, isLoading } = useAuth();
   const logoutMutation = useLogout();
@@ -68,7 +68,6 @@ export default function Header() {
             ) : (
               <button 
                 onClick={() => {
-                  setAuthModalTab("login");
                   setAuthModalOpen(true);
                 }}
                 style={{
@@ -209,10 +208,9 @@ export default function Header() {
       </header>
 
       {/* Authentication Modal */}
-      <AuthModal 
+      <SimpleAuth 
         isOpen={authModalOpen} 
         onClose={() => setAuthModalOpen(false)}
-        defaultTab={authModalTab}
       />
     </>
   );
