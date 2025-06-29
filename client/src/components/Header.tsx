@@ -15,37 +15,48 @@ import {
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const logoutMutation = useLogout();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch("/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
-        if (response.ok) {
-          const userData = await response.json();
-          setCurrentUser(userData);
-        } else {
-          localStorage.removeItem("auth_token");
-        }
-      } catch (error) {
-        localStorage.removeItem("auth_token");
-      }
+  const checkAuth = async () => {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      setCurrentUser(null);
       setLoading(false);
-    };
+      return;
+    }
 
+    try {
+      const response = await fetch("/api/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setCurrentUser(userData);
+      } else {
+        localStorage.removeItem("auth_token");
+        setCurrentUser(null);
+      }
+    } catch (error) {
+      localStorage.removeItem("auth_token");
+      setCurrentUser(null);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
     checkAuth();
+    
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener('authChanged', handleAuthChange);
+    return () => window.removeEventListener('authChanged', handleAuthChange);
   }, []);
 
 
@@ -67,9 +78,11 @@ export default function Header() {
             ) : currentUser ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-white hover:bg-white/10 py-1 px-4 text-sm">
-                    <User className="w-4 h-4 mr-2" />
-                    {currentUser.firstName || currentUser.email}
+                  <Button variant="ghost" className="text-white hover:bg-white/10 py-1 px-4 text-sm border border-white">
+                    <User className="w-4 h-4 mr-2 text-white" />
+                    <span className="text-white font-medium">
+                      {currentUser.firstName || currentUser.email}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
