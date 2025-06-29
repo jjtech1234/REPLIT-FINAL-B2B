@@ -42,8 +42,12 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
     e.preventDefault();
     registerMutation.mutate(signupData, {
       onSuccess: () => {
-        onClose();
         setSignupData({ email: "", password: "", firstName: "", lastName: "" });
+        // Wait for state to update before closing modal
+        setTimeout(() => {
+          onClose();
+          window.location.reload(); // Force page reload to ensure state consistency
+        }, 500);
       },
     });
   };

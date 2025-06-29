@@ -18,16 +18,21 @@ interface AuthResponse {
 }
 
 export function useAuth() {
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading, refetch } = useQuery({
     queryKey: ["/api/auth/me"],
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // Always fetch fresh data
     queryFn: async () => {
       const token = localStorage.getItem("auth_token");
       if (!token) return null;
       
-      const response = await apiRequest("GET", "/api/auth/me");
-      return response.json();
+      try {
+        const response = await apiRequest("GET", "/api/auth/me");
+        return response.json();
+      } catch (error) {
+        localStorage.removeItem("auth_token");
+        return null;
+      }
     },
   });
 
@@ -35,6 +40,7 @@ export function useAuth() {
     user,
     isLoading,
     isAuthenticated: !!user,
+    refetch,
   };
 }
 
@@ -90,14 +96,13 @@ export function useRegister() {
       // Store token in localStorage
       localStorage.setItem("auth_token", data.token);
       
-      // Update auth query cache immediately
+      // Immediately set user data
       queryClient.setQueryData(["/api/auth/me"], data.user);
       
-      // Force refresh of auth query
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
-      
-      // Refresh all other queries
-      queryClient.invalidateQueries();
+      // Force a fresh fetch to ensure state consistency
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      }, 100);
       
       toast({
         title: "Registration Successful",
