@@ -66,10 +66,12 @@ export default function Header() {
             ) : (
               <button 
                 onClick={() => {
+                  console.log("Sign In/Up button clicked");
                   setAuthModalTab("login");
                   setAuthModalOpen(true);
                 }}
-                className="b2b-button-primary py-1 px-4 text-sm"
+                className="bg-[hsl(var(--b2b-blue))] hover:bg-[hsl(var(--b2b-blue))]/90 text-white px-4 py-1 rounded text-sm font-medium"
+                style={{ display: 'block', visibility: 'visible' }}
               >
                 Sign In/Up
               </button>
