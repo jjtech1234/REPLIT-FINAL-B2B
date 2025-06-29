@@ -28,28 +28,46 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
   const loginMutation = useLogin();
   const registerMutation = useRegister();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate(loginData, {
-      onSuccess: () => {
-        onClose();
-        setLoginData({ email: "", password: "" });
-      },
-    });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginData),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("auth_token", data.token);
+        window.location.reload();
+      } else {
+        alert("Login failed");
+      }
+    } catch (error) {
+      alert("Login failed");
+    }
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    registerMutation.mutate(signupData, {
-      onSuccess: () => {
-        setSignupData({ email: "", password: "", firstName: "", lastName: "" });
-        // Wait for state to update before closing modal
-        setTimeout(() => {
-          onClose();
-          window.location.reload(); // Force page reload to ensure state consistency
-        }, 500);
-      },
-    });
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(signupData),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("auth_token", data.token);
+        window.location.reload();
+      } else {
+        alert("Registration failed");
+      }
+    } catch (error) {
+      alert("Registration failed");
+    }
   };
 
   const resetForms = () => {
