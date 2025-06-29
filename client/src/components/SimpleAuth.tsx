@@ -32,8 +32,9 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("auth_token", data.token);
-        alert(isLogin ? "Login successful!" : "Registration successful!");
-        window.location.reload();
+        onClose();
+        // Trigger a custom event to update header
+        window.dispatchEvent(new CustomEvent('authChanged'));
       } else {
         const error = await response.json();
         alert(error.error || "Authentication failed");
