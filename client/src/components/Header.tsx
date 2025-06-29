@@ -1,6 +1,16 @@
 import { useState } from "react";
-import { Menu, X, Mail, HandHeart } from "lucide-react";
+import { Menu, X, Mail, HandHeart, User, LogOut, Settings } from "lucide-react";
 import B2BLogo from "./B2BLogo";
+import AuthModal from "./AuthModal";
+import { useAuth, useLogout } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

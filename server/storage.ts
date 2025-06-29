@@ -11,8 +11,12 @@ import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  
+  // User-specific content management
+  getUserBusinesses(userId: number): Promise<Business[]>;
+  getUserAdvertisements(userId: number): Promise<Advertisement[]>;
   
   getAllFranchises(): Promise<Franchise[]>;
   getFranchiseById(id: number): Promise<Franchise | undefined>;
@@ -72,9 +76,17 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
     return user || undefined;
+  }
+
+  async getUserBusinesses(userId: number): Promise<Business[]> {
+    return await db.select().from(businesses).where(eq(businesses.userId, userId));
+  }
+
+  async getUserAdvertisements(userId: number): Promise<Advertisement[]> {
+    return await db.select().from(advertisements).where(eq(advertisements.userId, userId));
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {

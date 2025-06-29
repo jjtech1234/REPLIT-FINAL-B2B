@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema } from "@shared/schema";
+import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema, loginSchema, registerSchema } from "@shared/schema";
+import { getSessionConfig, hashPassword, verifyPassword, generateToken, requireAuth, optionalAuth } from "./auth";
 
 // Initialize Stripe
 async function initializeStripe() {
@@ -15,6 +16,119 @@ async function initializeStripe() {
 const stripePromise = initializeStripe();
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup session middleware
+  app.use(getSessionConfig());
+
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const validatedData = registerSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(validatedData.email);
+      if (existingUser) {
+        return res.status(400).json({ error: "User already exists with this email" });
+      }
+
+      // Hash password and create user
+      const hashedPassword = await hashPassword(validatedData.password);
+      const newUser = await storage.createUser({
+        email: validatedData.email,
+        password: hashedPassword,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+      });
+
+      // Generate token and set session
+      const token = generateToken(newUser.id);
+      (req.session as any).userId = newUser.id;
+
+      // Return user info (without password)
+      const { password, ...userWithoutPassword } = newUser;
+      res.json({ 
+        user: userWithoutPassword, 
+        token,
+        message: "Registration successful" 
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(400).json({ error: "Registration failed" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const validatedData = loginSchema.parse(req.body);
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(validatedData.email);
+      if (!user) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+
+      // Verify password
+      const isValidPassword = await verifyPassword(validatedData.password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+
+      if (!user.isActive) {
+        return res.status(401).json({ error: "Account is inactive" });
+      }
+
+      // Generate token and set session
+      const token = generateToken(user.id);
+      (req.session as any).userId = user.id;
+
+      // Return user info (without password)
+      const { password, ...userWithoutPassword } = user;
+      res.json({ 
+        user: userWithoutPassword, 
+        token,
+        message: "Login successful" 
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(400).json({ error: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Could not log out" });
+      }
+      res.json({ message: "Logout successful" });
+    });
+  });
+
+  app.get("/api/auth/me", requireAuth, (req, res) => {
+    const user = (req as any).user;
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  });
+
+  // User dashboard routes
+  app.get("/api/user/businesses", requireAuth, async (req, res) => {
+    try {
+      const userId = (req as any).user.id;
+      const businesses = await storage.getUserBusinesses(userId);
+      res.json(businesses);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user businesses" });
+    }
+  });
+
+  app.get("/api/user/advertisements", requireAuth, async (req, res) => {
+    try {
+      const userId = (req as any).user.id;
+      const advertisements = await storage.getUserAdvertisements(userId);
+      res.json(advertisements);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user advertisements" });
+    }
+  });
+
   // Franchise routes
   app.get("/api/franchises", async (req, res) => {
     try {
