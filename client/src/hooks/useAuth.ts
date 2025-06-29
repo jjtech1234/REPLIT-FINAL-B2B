@@ -90,10 +90,13 @@ export function useRegister() {
       // Store token in localStorage
       localStorage.setItem("auth_token", data.token);
       
-      // Update auth query cache
+      // Update auth query cache immediately
       queryClient.setQueryData(["/api/auth/me"], data.user);
       
-      // Invalidate all queries to refresh with new auth state
+      // Force refresh of auth query
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      
+      // Refresh all other queries
       queryClient.invalidateQueries();
       
       toast({
