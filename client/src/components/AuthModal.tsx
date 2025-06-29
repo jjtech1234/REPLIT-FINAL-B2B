@@ -73,6 +73,9 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
           </TabsList>
 
           <TabsContent value="login" className="space-y-4">
+            <div style={{ padding: '8px', backgroundColor: '#f0f0f0', border: '1px solid red' }}>
+              DEBUG: Login tab content loaded
+            </div>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="login-email">Email</Label>
@@ -128,7 +131,11 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                   width: '100%',
                   opacity: loginMutation.isPending ? 0.7 : 1,
                   display: 'block',
-                  visibility: 'visible'
+                  visibility: 'visible',
+                  position: 'relative',
+                  zIndex: 10,
+                  margin: '16px 0',
+                  minHeight: '48px'
                 }}
               >
                 {loginMutation.isPending ? "Signing In..." : "Sign In"}
@@ -137,6 +144,9 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
           </TabsContent>
 
           <TabsContent value="signup" className="space-y-4">
+            <div style={{ padding: '8px', backgroundColor: '#f0f0f0', border: '1px solid red' }}>
+              DEBUG: Signup tab content loaded
+            </div>
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -223,7 +233,11 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                   width: '100%',
                   opacity: registerMutation.isPending ? 0.7 : 1,
                   display: 'block',
-                  visibility: 'visible'
+                  visibility: 'visible',
+                  position: 'relative',
+                  zIndex: 10,
+                  margin: '16px 0',
+                  minHeight: '48px'
                 }}
               >
                 {registerMutation.isPending ? "Creating Account..." : "Create Account"}
