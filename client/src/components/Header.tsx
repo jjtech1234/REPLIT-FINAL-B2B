@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, Mail, HandHeart, User, LogOut, Settings } from "lucide-react";
 import B2BLogo from "./B2BLogo";
 import SimpleAuth from "./SimpleAuth";
-import { useAuth, useLogout } from "@/hooks/useAuth";
+import { useLogout } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
