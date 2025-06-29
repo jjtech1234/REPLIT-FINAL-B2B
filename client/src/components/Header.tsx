@@ -78,9 +78,9 @@ export default function Header() {
             ) : currentUser ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-white hover:bg-white/10 py-1 px-4 text-sm border border-white">
-                    <User className="w-4 h-4 mr-2 text-white" />
-                    <span className="text-white font-medium">
+                  <Button variant="ghost" className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 text-sm border border-white rounded">
+                    <User className="w-4 h-4 mr-2" />
+                    <span className="font-medium">
                       {currentUser.firstName || currentUser.email}
                     </span>
                   </Button>
