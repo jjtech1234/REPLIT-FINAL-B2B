@@ -23,7 +23,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
     lastName: "",
   });
 
-  console.log("AuthModal render - isOpen:", isOpen);
+
 
   const loginMutation = useLogin();
   const registerMutation = useRegister();

@@ -20,7 +20,7 @@ export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const logoutMutation = useLogout();
 
-  console.log("Header render - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "user:", user);
+
 
   return (
     <>
@@ -68,7 +68,6 @@ export default function Header() {
             ) : (
               <button 
                 onClick={() => {
-                  console.log("Sign In/Up button clicked");
                   setAuthModalTab("login");
                   setAuthModalOpen(true);
                 }}
