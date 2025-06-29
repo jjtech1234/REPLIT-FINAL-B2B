@@ -20,6 +20,8 @@ export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const logoutMutation = useLogout();
 
+  console.log("Header render - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "user:", user);
+
   return (
     <>
       {/* Top Contact Bar */}
@@ -70,8 +72,23 @@ export default function Header() {
                   setAuthModalTab("login");
                   setAuthModalOpen(true);
                 }}
-                className="bg-[hsl(var(--b2b-blue))] hover:bg-[hsl(var(--b2b-blue))]/90 text-white px-4 py-1 rounded text-sm font-medium"
-                style={{ display: 'block', visibility: 'visible' }}
+                style={{
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  border: '2px solid white',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'block',
+                  visibility: 'visible',
+                  zIndex: 1000,
+                  minWidth: '100px',
+                  textAlign: 'center'
+                }}
+                onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = '#2563eb'}
+                onMouseOut={(e) => (e.target as HTMLElement).style.backgroundColor = '#3b82f6'}
               >
                 Sign In/Up
               </button>
