@@ -47,9 +47,11 @@ export default function Header() {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="w-4 h-4 mr-2" />
-                    My Listings
+                  <DropdownMenuItem asChild>
+                    <a href="/dashboard" className="flex items-center">
+                      <Settings className="w-4 h-4 mr-2" />
+                      My Listings
+                    </a>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 

@@ -19,6 +19,7 @@ import Subscribe from "@/pages/subscribe";
 import PaymentSuccess from "@/pages/payment-success";
 import SubscriptionSuccess from "@/pages/subscription-success";
 import Pricing from "@/pages/pricing";
+import Dashboard from "@/pages/dashboard";
 
 function Router() {
   return (
@@ -33,6 +34,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
       <Route path="/admin" component={Admin} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/subscribe" component={Subscribe} />
       <Route path="/payment-success" component={PaymentSuccess} />

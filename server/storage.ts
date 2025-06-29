@@ -447,17 +447,29 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
+  async getUserByEmail(email: string): Promise<User | undefined> {
     const users = Array.from(this.users.values());
-    return users.find(user => user.username === username);
+    return users.find(user => user.email === email);
+  }
+
+  async getUserBusinesses(userId: number): Promise<Business[]> {
+    return Array.from(this.businesses.values()).filter(business => business.userId === userId);
+  }
+
+  async getUserAdvertisements(userId: number): Promise<Advertisement[]> {
+    return Array.from(this.advertisements.values()).filter(ad => ad.userId === userId);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
     const user: User = { 
-      id, 
-      username: insertUser.username,
-      password: insertUser.password
+      id,
+      email: insertUser.email,
+      password: insertUser.password,
+      firstName: insertUser.firstName || null,
+      lastName: insertUser.lastName || null,
+      isActive: true,
+      createdAt: new Date()
     };
     this.users.set(id, user);
     return user;
@@ -682,4 +694,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
