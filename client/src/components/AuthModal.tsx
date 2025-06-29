@@ -73,9 +73,6 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
           </TabsList>
 
           <TabsContent value="login" className="space-y-4">
-            <div style={{ padding: '8px', backgroundColor: '#f0f0f0', border: '1px solid red' }}>
-              DEBUG: Login tab content loaded
-            </div>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="login-email">Email</Label>
@@ -144,9 +141,6 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
           </TabsContent>
 
           <TabsContent value="signup" className="space-y-4">
-            <div style={{ padding: '8px', backgroundColor: '#f0f0f0', border: '1px solid red' }}>
-              DEBUG: Signup tab content loaded
-            </div>
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
