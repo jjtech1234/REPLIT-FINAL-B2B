@@ -113,13 +113,26 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                 </div>
               </div>
 
-              <Button 
+              <button 
                 type="submit" 
-                className="w-full bg-[hsl(var(--b2b-blue))] hover:bg-[hsl(var(--b2b-blue))]/90"
                 disabled={loginMutation.isPending}
+                style={{
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
+                  width: '100%',
+                  opacity: loginMutation.isPending ? 0.7 : 1,
+                  display: 'block',
+                  visibility: 'visible'
+                }}
               >
                 {loginMutation.isPending ? "Signing In..." : "Sign In"}
-              </Button>
+              </button>
             </form>
           </TabsContent>
 
@@ -195,13 +208,26 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                 </div>
               </div>
 
-              <Button 
+              <button 
                 type="submit" 
-                className="w-full bg-[hsl(var(--b2b-blue))] hover:bg-[hsl(var(--b2b-blue))]/90"
                 disabled={registerMutation.isPending}
+                style={{
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: registerMutation.isPending ? 'not-allowed' : 'pointer',
+                  width: '100%',
+                  opacity: registerMutation.isPending ? 0.7 : 1,
+                  display: 'block',
+                  visibility: 'visible'
+                }}
               >
                 {registerMutation.isPending ? "Creating Account..." : "Create Account"}
-              </Button>
+              </button>
 
               <p className="text-xs text-gray-600 text-center">
                 By creating an account, you agree to our Terms of Service and Privacy Policy.
