@@ -22,6 +22,13 @@ export function useAuth() {
     queryKey: ["/api/auth/me"],
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: async () => {
+      const token = localStorage.getItem("auth_token");
+      if (!token) return null;
+      
+      const response = await apiRequest("GET", "/api/auth/me");
+      return response.json();
+    },
   });
 
   return {

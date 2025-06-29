@@ -14,6 +14,11 @@ import {
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
+  
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const logoutMutation = useLogout();
 
   return (
     <>
@@ -27,9 +32,46 @@ export default function Header() {
             </span>
           </div>
           <div>
-            <button className="b2b-button-primary py-1 px-4 text-sm">
-              Sign In/Up
-            </button>
+            {isLoading ? (
+              <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
+            ) : isAuthenticated && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="text-white hover:bg-white/10 py-1 px-4 text-sm">
+                    <User className="w-4 h-4 mr-2" />
+                    {user.firstName || user.email}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem>
+                    <User className="w-4 h-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="w-4 h-4 mr-2" />
+                    My Listings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => logoutMutation.mutate()}
+                    className="text-red-600 focus:text-red-600"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <button 
+                onClick={() => {
+                  setAuthModalTab("login");
+                  setAuthModalOpen(true);
+                }}
+                className="b2b-button-primary py-1 px-4 text-sm"
+              >
+                Sign In/Up
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -145,6 +187,13 @@ export default function Header() {
           </div>
         </div>
       </header>
+
+      {/* Authentication Modal */}
+      <AuthModal 
+        isOpen={authModalOpen} 
+        onClose={() => setAuthModalOpen(false)}
+        defaultTab={authModalTab}
+      />
     </>
   );
 }
