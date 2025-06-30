@@ -9,15 +9,14 @@ export interface EmailOptions {
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    console.log(`SendGrid API Key available: ${!!process.env.SENDGRID_API_KEY}`);
-    console.log(`API Key length: ${process.env.SENDGRID_API_KEY?.length || 0}`);
-    console.log(`API Key first 10 chars: ${process.env.SENDGRID_API_KEY?.substring(0, 10) || 'none'}`);
+    // Check if we have a valid SendGrid API key
+    const apiKey = process.env.SENDGRID_API_KEY;
     
-    if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY.length > 10) {
+    if (apiKey && apiKey.startsWith('SG.') && apiKey.length > 20) {
       console.log('Attempting to send real email via SendGrid...');
       
       const mailService = new MailService();
-      mailService.setApiKey(process.env.SENDGRID_API_KEY!);
+      mailService.setApiKey(apiKey);
       
       await mailService.send({
         to: options.to,
@@ -40,12 +39,23 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       console.log(`Subject: ${options.subject}`);
       console.log('Content:');
       console.log(options.html);
-      console.log('\n=== TO ENABLE REAL EMAILS: Set SENDGRID_API_KEY environment variable ===\n');
+      
+      if (apiKey && !apiKey.startsWith('SG.')) {
+        console.log('\n=== INVALID SENDGRID API KEY FORMAT ===');
+        console.log('SendGrid API keys must start with "SG." - please check your key');
+        console.log('Get your API key from: https://app.sendgrid.com/settings/api_keys');
+      } else {
+        console.log('\n=== TO ENABLE REAL EMAILS: Set SENDGRID_API_KEY environment variable ===');
+      }
+      console.log('');
       
       return false;
     }
   } catch (error) {
     console.error('SendGrid email sending failed:', error);
+    console.log('\n=== EMAIL SENDING ERROR ===');
+    console.log('Please verify your SendGrid API key and domain settings');
+    console.log('');
     return false;
   }
 }
