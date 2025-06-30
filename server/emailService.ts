@@ -7,25 +7,20 @@ export interface EmailOptions {
   resetToken?: string;
 }
 
-// Create SMTP transporter using Ethereal Email (free testing service)
-async function createTransporter() {
-  // Create test account if needed
-  const testAccount = await nodemailer.createTestAccount();
-  
-  return nodemailer.createTransporter({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
-}
-
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    const transporter = await createTransporter();
+    // Create test account for demo purposes
+    const testAccount = await nodemailer.createTestAccount();
+    
+    const transporter = nodemailer.createTransporter({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      secure: false,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
     
     const info = await transporter.sendMail({
       from: '"B2B Market" <noreply@b2bmarket.com>',
@@ -34,16 +29,16 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       html: options.html,
     });
 
-    console.log('\n=== EMAIL SENT SUCCESSFULLY ===');
-    console.log(`Message ID: ${info.messageId}`);
+    console.log('\n=== REAL EMAIL SENT ===');
     console.log(`To: ${options.to}`);
     console.log(`Subject: ${options.subject}`);
-    console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
-    console.log('=== END EMAIL INFO ===\n');
+    console.log(`Message ID: ${info.messageId}`);
+    console.log(`View email at: ${nodemailer.getTestMessageUrl(info)}`);
+    console.log('=== EMAIL SENT SUCCESSFULLY ===\n');
     
     return true;
   } catch (error) {
-    console.error('Failed to send email:', error);
+    console.error('Email sending failed:', error);
     return false;
   }
 }
