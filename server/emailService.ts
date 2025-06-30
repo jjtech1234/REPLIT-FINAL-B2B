@@ -9,87 +9,81 @@ export interface EmailOptions {
 }
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
-  // Try multiple email methods without SendGrid
+  console.log(`=== EMAIL SEND ATTEMPT ===`);
+  console.log(`To: ${options.to}`);
+  console.log(`Subject: ${options.subject}`);
+  console.log(`EMAIL_USER available: ${!!process.env.EMAIL_USER}`);
+  console.log(`EMAIL_PASS available: ${!!process.env.EMAIL_PASS}`);
   
-  // Method 1: Try Gmail SMTP (most common)
-  try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'b2bmarket.noreply@gmail.com',
-        pass: 'your-gmail-app-password' // User would need to set this
+  // REAL EMAIL DELIVERY - Use user's actual credentials
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    console.log(`Attempting real email delivery with: ${process.env.EMAIL_USER}`);
+    
+    // Try Gmail service method
+    try {
+      const transporter = nodemailer.createTransporter({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS
+        }
+      });
+      
+      const result = await transporter.sendMail({
+        from: `"B2B Market" <${process.env.EMAIL_USER}>`,
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+      });
+      
+      console.log(`🎉 SUCCESS: Real email sent to ${options.to}`);
+      console.log(`Message ID: ${result.messageId}`);
+      console.log(`Response: ${result.response}`);
+      return true;
+      
+    } catch (error: any) {
+      console.log(`Gmail service failed: ${error.message}`);
+      console.log(`Error code: ${error.code}`);
+      
+      // Try different SMTP settings
+      try {
+        const transporter = nodemailer.createTransporter({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+          }
+        });
+        
+        const result = await transporter.sendMail({
+          from: `"B2B Market" <${process.env.EMAIL_USER}>`,
+          to: options.to,
+          subject: options.subject,
+          html: options.html,
+        });
+        
+        console.log(`🎉 SUCCESS: Real email sent via SMTP to ${options.to}`);
+        console.log(`Message ID: ${result.messageId}`);
+        return true;
+        
+      } catch (smtpError: any) {
+        console.log(`SMTP also failed: ${smtpError.message}`);
+        console.log(`SMTP Error code: ${smtpError.code}`);
       }
-    });
-    
-    await transporter.sendMail({
-      from: '"B2B Market" <b2bmarket.noreply@gmail.com>',
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-    });
-    
-    console.log(`✅ Email sent via Gmail to ${options.to}`);
-    return true;
-    
-  } catch (gmailError) {
-    console.log('Gmail SMTP not configured, trying alternative...');
+    }
+  } else {
+    console.log(`❌ CRITICAL: No email credentials provided!`);
+    console.log(`Please set EMAIL_USER and EMAIL_PASS environment variables`);
   }
   
-  // Method 2: Try Outlook/Hotmail SMTP
-  try {
-    const transporter = nodemailer.createTransport({
-      service: 'hotmail',
-      auth: {
-        user: 'b2bmarket@outlook.com',
-        pass: 'your-outlook-password'
-      }
-    });
-    
-    await transporter.sendMail({
-      from: '"B2B Market" <b2bmarket@outlook.com>',
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-    });
-    
-    console.log(`✅ Email sent via Outlook to ${options.to}`);
-    return true;
-    
-  } catch (outlookError) {
-    console.log('Outlook SMTP not configured, trying alternative...');
-  }
-  
-  // Method 3: Try generic SMTP (works with many providers)
-  try {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER || 'your-email@gmail.com',
-        pass: process.env.EMAIL_PASS || 'your-app-password'
-      }
-    });
-    
-    await transporter.sendMail({
-      from: `"B2B Market" <${process.env.EMAIL_USER || 'noreply@b2bmarket.com'}>`,
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-    });
-    
-    console.log(`✅ Email sent via SMTP to ${options.to}`);
-    return true;
-    
-  } catch (smtpError) {
-    console.log('SMTP method failed, trying test service...');
-  }
-  
-  // Method 4: Use Ethereal Email for testing (creates preview links)
+  // FALLBACK - Only for development/testing
+  console.log(`⚠️ Falling back to test email service - NO REAL EMAIL WILL BE SENT`);
   try {
     const testAccount = await nodemailer.createTestAccount();
     
-    const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransporter({
       host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
@@ -107,13 +101,14 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     });
     
     const previewUrl = nodemailer.getTestMessageUrl(info);
-    console.log(`✅ Test email created: ${previewUrl}`);
-    console.log(`Email would be sent to: ${options.to}`);
+    console.log(`📧 Preview email created: ${previewUrl}`);
+    console.log(`❌ WARNING: This is only a preview - no real email sent to ${options.to}`);
     
-    return true;
+    // Return false to indicate no real email was sent
+    return false;
     
-  } catch (etherealError) {
-    console.error('All email methods failed:', etherealError);
+  } catch (error) {
+    console.error('❌ All email methods failed completely:', error);
     return false;
   }
 }
