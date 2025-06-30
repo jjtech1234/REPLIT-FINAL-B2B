@@ -1,7 +1,4 @@
-// Simple email service for password reset
-// In a real production app, you would use SendGrid, AWS SES, or similar
-// For now, we'll simulate sending emails by logging the email content
-// and providing a direct reset link
+import nodemailer from 'nodemailer';
 
 export interface EmailOptions {
   to: string;
@@ -10,20 +7,39 @@ export interface EmailOptions {
   resetToken?: string;
 }
 
+// Create SMTP transporter using Ethereal Email (free testing service)
+async function createTransporter() {
+  // Create test account if needed
+  const testAccount = await nodemailer.createTestAccount();
+  
+  return nodemailer.createTransporter({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+}
+
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    // For testing/development, we'll log the email content
-    console.log('\n=== EMAIL SENT ===');
+    const transporter = await createTransporter();
+    
+    const info = await transporter.sendMail({
+      from: '"B2B Market" <noreply@b2bmarket.com>',
+      to: options.to,
+      subject: options.subject,
+      html: options.html,
+    });
+
+    console.log('\n=== EMAIL SENT SUCCESSFULLY ===');
+    console.log(`Message ID: ${info.messageId}`);
     console.log(`To: ${options.to}`);
     console.log(`Subject: ${options.subject}`);
-    console.log('Content:');
-    console.log(options.html);
-    
-    if (options.resetToken) {
-      const resetUrl = `http://localhost:5000/reset-password?token=${options.resetToken}`;
-      console.log(`\nDirect Reset Link: ${resetUrl}`);
-      console.log('=== END EMAIL ===\n');
-    }
+    console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+    console.log('=== END EMAIL INFO ===\n');
     
     return true;
   } catch (error) {
