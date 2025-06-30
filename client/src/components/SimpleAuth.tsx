@@ -35,13 +35,11 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
         if (response.ok) {
           const data = await response.json();
           console.log("Forgot password response:", data); // Debug log
+          setMessage("Password reset instructions have been sent to your email. Please check your inbox and follow the link to reset your password.");
+          // In a real app, the user would receive an email with a reset link
+          // For testing purposes, we'll log the reset URL that would be sent
           if (data.resetToken) {
-            setMessage(`Password reset instructions sent! Use this token: ${data.resetToken}`);
-            setResetToken(data.resetToken); // Auto-fill for testing
-            setIsForgotPassword(false); // Exit forgot password mode
-            setIsResetPassword(true); // Show reset password form
-          } else {
-            setMessage(data.message || "If an account with that email exists, we've sent reset instructions.");
+            console.log("Reset URL that would be emailed:", `${window.location.origin}/reset-password?token=${data.resetToken}`);
           }
         } else {
           const error = await response.json();
