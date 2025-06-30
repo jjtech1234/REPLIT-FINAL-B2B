@@ -37,8 +37,9 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
           if (data.resetToken) {
             setMessage(`Password reset instructions sent! Use this token: ${data.resetToken}`);
             setResetToken(data.resetToken); // Auto-fill for testing
+            setIsResetPassword(true); // Show reset password form
           } else {
-            setMessage(data.message || "Reset instructions sent to your email");
+            setMessage(data.message || "If an account with that email exists, we've sent reset instructions.");
           }
         } else {
           const error = await response.json();
