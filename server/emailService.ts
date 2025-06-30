@@ -29,36 +29,17 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       console.log(`✅ Email sent successfully to ${options.to}`);
       return true;
     } else {
-      // Try Ethereal Email as fallback for testing
-      console.log('Using Ethereal Email for testing...');
-      
-      // Create test account
-      const testAccount = await nodemailer.createTestAccount();
-      
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass,
-        },
-      });
-      
-      const info = await transporter.sendMail({
-        from: '"B2B Market" <noreply@b2bmarket.com>',
-        to: options.to,
-        subject: options.subject,
-        html: options.html,
-      });
-      
-      console.log('\n=== EMAIL SENT VIA ETHEREAL (TEST) ===');
-      console.log(`To: ${options.to}`);
+      // For now, return false to show demo mode until proper email service is configured
+      console.log('\n=== EMAIL SERVICE NEEDS CONFIGURATION ===');
+      console.log(`Would send to: ${options.to}`);
       console.log(`Subject: ${options.subject}`);
-      console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
-      console.log('=== CHECK THE PREVIEW URL TO SEE THE EMAIL ===\n');
+      console.log('To send real emails, you need:');
+      console.log('1. Valid SendGrid API key (starts with "SG."), OR');
+      console.log('2. Configure Gmail SMTP with app password, OR');
+      console.log('3. Set up another email service provider');
+      console.log('=== CURRENTLY IN DEMO MODE ===\n');
       
-      return true;
+      return false;
     }
   } catch (error) {
     console.error('Email sending failed:', error);
