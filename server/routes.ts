@@ -131,6 +131,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Store reset token
       await storage.createPasswordResetToken(email, resetToken, expiresAt);
+      console.log("Generated reset token for testing:", resetToken);
 
       // Send email with reset link
       const emailContent = createPasswordResetEmail(email, resetToken);
