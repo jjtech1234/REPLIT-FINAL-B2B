@@ -136,16 +136,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Send email with reset link
       const emailContent = createPasswordResetEmail(email, resetToken);
       console.log("Attempting to send email to:", email);
-      const emailSent = await sendEmail(emailContent);
-      console.log("Email sent result:", emailSent);
-
-      if (emailSent) {
+      
+      try {
+        // Force SendGrid email delivery directly
+        const mailService = new MailService();
+        mailService.setApiKey(process.env.SENDGRID_API_KEY!);
+        
+        await mailService.send({
+          to: email,
+          from: 'noreply@b2bmarket.com',
+          subject: emailContent.subject,
+          html: emailContent.html,
+        });
+        
+        console.log(`✅ REAL EMAIL SENT TO: ${email}`);
         res.json({ 
           message: "Password reset email sent successfully! Check your inbox for reset instructions."
         });
-      } else {
+        
+      } catch (emailError) {
+        console.error('SendGrid delivery error:', emailError);
+        
+        // Show honest error with working reset token
         res.json({ 
-          message: "Email service not configured. For testing: use token " + resetToken + " at /reset-password"
+          message: `The password reset system is working but email delivery failed. Use this reset token immediately: ${resetToken} - Go to http://localhost:5000/reset-password?token=${resetToken}`
         });
       }
 
