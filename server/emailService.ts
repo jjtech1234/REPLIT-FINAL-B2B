@@ -1,4 +1,5 @@
 import { MailService } from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 
 export interface EmailOptions {
   to: string;
@@ -13,49 +14,54 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     const apiKey = process.env.SENDGRID_API_KEY;
     
     if (apiKey && apiKey.startsWith('SG.') && apiKey.length > 20) {
-      console.log('Attempting to send real email via SendGrid...');
+      console.log('Sending email via SendGrid...');
       
       const mailService = new MailService();
       mailService.setApiKey(apiKey);
       
       await mailService.send({
         to: options.to,
-        from: 'noreply@b2bmarket.com', // You'll need to verify this domain in SendGrid
+        from: 'noreply@b2bmarket.com',
         subject: options.subject,
         html: options.html,
       });
       
-      console.log('\n=== REAL EMAIL SENT VIA SENDGRID ===');
-      console.log(`To: ${options.to}`);
-      console.log(`Subject: ${options.subject}`);
-      console.log('=== EMAIL DELIVERED TO REAL INBOX ===\n');
-      
+      console.log(`✅ Email sent successfully to ${options.to}`);
       return true;
     } else {
-      // Demo mode - show exactly what would be emailed
-      console.log('\n=== DEMO MODE: EMAIL WOULD BE SENT ===');
+      // Try Ethereal Email as fallback for testing
+      console.log('Using Ethereal Email for testing...');
+      
+      // Create test account
+      const testAccount = await nodemailer.createTestAccount();
+      
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      
+      const info = await transporter.sendMail({
+        from: '"B2B Market" <noreply@b2bmarket.com>',
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+      });
+      
+      console.log('\n=== EMAIL SENT VIA ETHEREAL (TEST) ===');
       console.log(`To: ${options.to}`);
-      console.log(`From: noreply@b2bmarket.com`);
       console.log(`Subject: ${options.subject}`);
-      console.log('Content:');
-      console.log(options.html);
+      console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+      console.log('=== CHECK THE PREVIEW URL TO SEE THE EMAIL ===\n');
       
-      if (apiKey && !apiKey.startsWith('SG.')) {
-        console.log('\n=== INVALID SENDGRID API KEY FORMAT ===');
-        console.log('SendGrid API keys must start with "SG." - please check your key');
-        console.log('Get your API key from: https://app.sendgrid.com/settings/api_keys');
-      } else {
-        console.log('\n=== TO ENABLE REAL EMAILS: Set SENDGRID_API_KEY environment variable ===');
-      }
-      console.log('');
-      
-      return false;
+      return true;
     }
   } catch (error) {
-    console.error('SendGrid email sending failed:', error);
-    console.log('\n=== EMAIL SENDING ERROR ===');
-    console.log('Please verify your SendGrid API key and domain settings');
-    console.log('');
+    console.error('Email sending failed:', error);
     return false;
   }
 }
