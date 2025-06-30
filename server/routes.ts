@@ -138,51 +138,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const emailContent = createPasswordResetEmail(email, resetToken);
       console.log("Attempting to send email to:", email);
       
-      try {
-        // Try using the key as-is first
-        const mailService = new MailService();
-        mailService.setApiKey(process.env.SENDGRID_API_KEY!);
-        
-        await mailService.send({
-          to: email,
-          from: 'noreply@example.com',
-          subject: emailContent.subject,
-          html: emailContent.html,
-        });
-        
-        console.log(`✅ REAL EMAIL SENT TO: ${email}`);
+      // Use the improved email service with multiple fallbacks
+      const emailSent = await sendEmail(emailContent);
+      
+      if (emailSent) {
         res.json({ 
           message: "Password reset email sent successfully! Check your inbox for reset instructions."
         });
-        
-      } catch (sendgridError) {
-        console.log('SendGrid failed, trying alternative method...');
-        
-        try {
-          // Try with SG. prefix
-          const mailService2 = new MailService();
-          mailService2.setApiKey('SG.' + process.env.SENDGRID_API_KEY);
-          
-          await mailService2.send({
-            to: email,
-            from: 'noreply@example.com',
-            subject: emailContent.subject,
-            html: emailContent.html,
-          });
-          
-          console.log(`✅ REAL EMAIL SENT TO: ${email} (with SG. prefix)`);
-          res.json({ 
-            message: "Password reset email sent successfully! Check your inbox for reset instructions."
-          });
-          
-        } catch (alternativeError) {
-          console.error('All email methods failed:', alternativeError);
-          
-          // Provide working reset link
-          res.json({ 
-            message: `Password reset ready! Click this working reset link: http://localhost:5000/reset-password?token=${resetToken}`
-          });
-        }
+      } else {
+        res.json({ 
+          message: `Password reset ready! Click this working reset link: http://localhost:5000/reset-password?token=${resetToken}`
+        });
       }
 
     } catch (error) {
