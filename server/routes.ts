@@ -143,11 +143,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (emailSent) {
         res.json({ 
-          message: "Password reset email sent successfully! Check your inbox for reset instructions."
+          message: "✅ Real email sent successfully! Check your inbox for reset instructions.",
+          success: true
         });
       } else {
-        res.json({ 
-          message: `Password reset ready! Click this working reset link: http://localhost:5000/reset-password?token=${resetToken}`
+        res.status(500).json({ 
+          message: "❌ Email delivery failed. Please contact support or use this direct reset link:",
+          resetLink: `http://localhost:5000/reset-password?token=${resetToken}`,
+          success: false
         });
       }
 

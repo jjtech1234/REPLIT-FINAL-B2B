@@ -21,7 +21,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     
     // Try Gmail service method
     try {
-      const transporter = nodemailer.createTransporter({
+      const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: process.env.EMAIL_USER,
@@ -47,7 +47,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       
       // Try different SMTP settings
       try {
-        const transporter = nodemailer.createTransporter({
+        const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
           port: 587,
           secure: false,
@@ -83,7 +83,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
     const testAccount = await nodemailer.createTestAccount();
     
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
