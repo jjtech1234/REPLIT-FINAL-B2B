@@ -7,40 +7,93 @@ interface SimpleAuthProps {
 
 export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [resetToken, setResetToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setMessage("");
 
     try {
-      const url = isLogin ? "/api/auth/login" : "/api/auth/register";
-      const body = isLogin 
-        ? { email, password }
-        : { email, password, firstName, lastName };
+      if (isForgotPassword) {
+        // Handle forgot password
+        const response = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
 
-      const response = await fetch(url, {
+        if (response.ok) {
+          const data = await response.json();
+          setMessage(`Password reset instructions sent! Use this token: ${data.resetToken}`);
+          setResetToken(data.resetToken); // Auto-fill for testing
+        } else {
+          const error = await response.json();
+          setMessage(error.error || "Failed to send reset email");
+        }
+      } else {
+        // Handle login/register
+        const url = isLogin ? "/api/auth/login" : "/api/auth/register";
+        const body = isLogin 
+          ? { email, password }
+          : { email, password, firstName, lastName };
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem("auth_token", data.token);
+          onClose();
+          // Trigger a custom event to update header
+          window.dispatchEvent(new CustomEvent('authChanged'));
+        } else {
+          const error = await response.json();
+          setMessage(error.error || "Authentication failed");
+        }
+      }
+    } catch (error) {
+      setMessage("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ token: resetToken, password: newPassword }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("auth_token", data.token);
-        onClose();
-        // Trigger a custom event to update header
-        window.dispatchEvent(new CustomEvent('authChanged'));
+        setMessage("Password reset successful! You can now login with your new password.");
+        setIsForgotPassword(false);
+        setIsLogin(true);
+        setResetToken("");
+        setNewPassword("");
       } else {
         const error = await response.json();
-        alert(error.error || "Authentication failed");
+        setMessage(error.error || "Failed to reset password");
       }
     } catch (error) {
-      alert("Network error. Please try again.");
+      setMessage("Network error. Please try again.");
     } finally {
       setLoading(false);
     }

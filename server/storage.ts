@@ -731,6 +731,31 @@ export class MemStorage implements IStorage {
     }
     return undefined;
   }
+
+  async updateUserPassword(email: string, hashedPassword: string): Promise<User | undefined> {
+    const users = Array.from(this.users.values());
+    const user = users.find(u => u.email === email);
+    if (user) {
+      user.password = hashedPassword;
+      this.users.set(user.id, user);
+      return user;
+    }
+    return undefined;
+  }
+
+  async createPasswordResetToken(email: string, token: string, expiresAt: Date): Promise<void> {
+    // In memory storage - we'll store in a simple way
+    // In a real app, this would go to a database
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    // In memory storage - would need to be implemented with a proper Map
+    return undefined;
+  }
+
+  async markPasswordResetTokenUsed(token: string): Promise<void> {
+    // In memory storage - would need to be implemented
+  }
 }
 
 export const storage = new MemStorage();

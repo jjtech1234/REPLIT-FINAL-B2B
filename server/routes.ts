@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema, loginSchema, registerSchema } from "@shared/schema";
+import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema, loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
+import crypto from "crypto";
 import { getSessionConfig, hashPassword, verifyPassword, generateToken, requireAuth, optionalAuth } from "./auth";
 
 // Initialize Stripe
@@ -106,6 +107,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const user = (req as any).user;
     const { password, ...userWithoutPassword } = user;
     res.json(userWithoutPassword);
+  });
+
+  // Forgot password endpoint
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = forgotPasswordSchema.parse(req.body);
+      
+      // Check if user exists
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal whether email exists or not
+        return res.json({ message: "If an account with that email exists, we've sent a password reset link." });
+      }
+
+      // Generate reset token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 3600000); // 1 hour from now
+
+      // Store reset token
+      await storage.createPasswordResetToken(email, resetToken, expiresAt);
+
+      // In a real app, you would send an email here
+      // For now, we'll just return the token (don't do this in production!)
+      res.json({ 
+        message: "Password reset link sent to your email",
+        resetToken // Remove this in production - only for testing
+      });
+
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      res.status(400).json({ error: "Failed to process request" });
+    }
+  });
+
+  // Reset password endpoint
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { token, password } = resetPasswordSchema.parse(req.body);
+      
+      // Get reset token
+      const resetToken = await storage.getPasswordResetToken(token);
+      if (!resetToken || resetToken.used) {
+        return res.status(400).json({ error: "Invalid or expired reset token" });
+      }
+
+      // Check if token has expired
+      if (new Date() > resetToken.expiresAt) {
+        return res.status(400).json({ error: "Reset token has expired" });
+      }
+
+      // Hash new password and update user
+      const hashedPassword = await hashPassword(password);
+      const updatedUser = await storage.updateUserPassword(resetToken.email, hashedPassword);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Mark token as used
+      await storage.markPasswordResetTokenUsed(token);
+
+      res.json({ message: "Password reset successful" });
+
+    } catch (error) {
+      console.error("Reset password error:", error);
+      res.status(400).json({ error: "Failed to reset password" });
+    }
   });
 
   // User dashboard routes
