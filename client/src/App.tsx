@@ -20,6 +20,7 @@ import PaymentSuccess from "@/pages/payment-success";
 import SubscriptionSuccess from "@/pages/subscription-success";
 import Pricing from "@/pages/pricing";
 import Dashboard from "@/pages/dashboard";
+import ResetPassword from "@/pages/ResetPassword";
 
 function Router() {
   return (
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/subscription-success" component={SubscriptionSuccess} />
       <Route path="/pricing" component={Pricing} />
+      <Route path="/reset-password" component={ResetPassword} />
       <Route component={NotFound} />
     </Switch>
   );
