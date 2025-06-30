@@ -5,6 +5,7 @@ import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, inser
 import crypto from "crypto";
 import { getSessionConfig, hashPassword, verifyPassword, generateToken, requireAuth, optionalAuth } from "./auth";
 import { sendEmail, createPasswordResetEmail } from "./emailService";
+import { MailService } from '@sendgrid/mail';
 
 // Initialize Stripe
 async function initializeStripe() {
