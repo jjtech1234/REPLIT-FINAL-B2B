@@ -9,14 +9,13 @@ export interface EmailOptions {
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    // Check if SendGrid API key is available
-    if (process.env.SENDGRID_API_KEY) {
+    if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY.startsWith('SG.')) {
       const mailService = new MailService();
-      mailService.setApiKey(process.env.SENDGRID_API_KEY);
+      mailService.setApiKey(process.env.SENDGRID_API_KEY!);
       
       await mailService.send({
         to: options.to,
-        from: 'noreply@b2bmarket.com',
+        from: 'noreply@b2bmarket.com', // You'll need to verify this domain in SendGrid
         subject: options.subject,
         html: options.html,
       });
@@ -28,17 +27,19 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       
       return true;
     } else {
-      // Fallback to console logging for development
-      console.log('\n=== EMAIL WOULD BE SENT ===');
+      // Demo mode - show exactly what would be emailed
+      console.log('\n=== DEMO MODE: EMAIL WOULD BE SENT ===');
       console.log(`To: ${options.to}`);
+      console.log(`From: noreply@b2bmarket.com`);
       console.log(`Subject: ${options.subject}`);
-      console.log(`Content: ${options.html}`);
-      console.log('=== SENDGRID_API_KEY NEEDED FOR REAL DELIVERY ===\n');
+      console.log('Content:');
+      console.log(options.html);
+      console.log('\n=== TO ENABLE REAL EMAILS: Set SENDGRID_API_KEY environment variable ===\n');
       
       return false;
     }
   } catch (error) {
-    console.error('Email sending failed:', error);
+    console.error('SendGrid email sending failed:', error);
     return false;
   }
 }
