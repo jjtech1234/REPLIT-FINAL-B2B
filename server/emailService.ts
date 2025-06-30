@@ -9,7 +9,13 @@ export interface EmailOptions {
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY.startsWith('SG.')) {
+    console.log(`SendGrid API Key available: ${!!process.env.SENDGRID_API_KEY}`);
+    console.log(`API Key length: ${process.env.SENDGRID_API_KEY?.length || 0}`);
+    console.log(`API Key first 10 chars: ${process.env.SENDGRID_API_KEY?.substring(0, 10) || 'none'}`);
+    
+    if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY.length > 10) {
+      console.log('Attempting to send real email via SendGrid...');
+      
       const mailService = new MailService();
       mailService.setApiKey(process.env.SENDGRID_API_KEY!);
       
