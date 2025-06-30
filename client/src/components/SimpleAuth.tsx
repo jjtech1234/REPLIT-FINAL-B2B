@@ -8,6 +8,7 @@ interface SimpleAuthProps {
 export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -37,6 +38,7 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
           if (data.resetToken) {
             setMessage(`Password reset instructions sent! Use this token: ${data.resetToken}`);
             setResetToken(data.resetToken); // Auto-fill for testing
+            setIsForgotPassword(false); // Exit forgot password mode
             setIsResetPassword(true); // Show reset password form
           } else {
             setMessage(data.message || "If an account with that email exists, we've sent reset instructions.");
@@ -70,7 +72,8 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
         }
       }
     } catch (error) {
-      setMessage("Network error. Please try again.");
+      console.error("Auth network error:", error);
+      setMessage(`Network error: ${error instanceof Error ? error.message : 'Please try again'}`);
     } finally {
       setLoading(false);
     }
