@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import { MailService } from '@sendgrid/mail';
 
 export interface EmailOptions {
   to: string;
@@ -9,34 +9,34 @@ export interface EmailOptions {
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    // Create test account for demo purposes
-    const testAccount = await nodemailer.createTestAccount();
-    
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
-    
-    const info = await transporter.sendMail({
-      from: '"B2B Market" <noreply@b2bmarket.com>',
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-    });
-
-    console.log('\n=== REAL EMAIL SENT ===');
-    console.log(`To: ${options.to}`);
-    console.log(`Subject: ${options.subject}`);
-    console.log(`Message ID: ${info.messageId}`);
-    console.log(`View email at: ${nodemailer.getTestMessageUrl(info)}`);
-    console.log('=== EMAIL SENT SUCCESSFULLY ===\n');
-    
-    return true;
+    // Check if SendGrid API key is available
+    if (process.env.SENDGRID_API_KEY) {
+      const mailService = new MailService();
+      mailService.setApiKey(process.env.SENDGRID_API_KEY);
+      
+      await mailService.send({
+        to: options.to,
+        from: 'noreply@b2bmarket.com',
+        subject: options.subject,
+        html: options.html,
+      });
+      
+      console.log('\n=== REAL EMAIL SENT VIA SENDGRID ===');
+      console.log(`To: ${options.to}`);
+      console.log(`Subject: ${options.subject}`);
+      console.log('=== EMAIL DELIVERED TO REAL INBOX ===\n');
+      
+      return true;
+    } else {
+      // Fallback to console logging for development
+      console.log('\n=== EMAIL WOULD BE SENT ===');
+      console.log(`To: ${options.to}`);
+      console.log(`Subject: ${options.subject}`);
+      console.log(`Content: ${options.html}`);
+      console.log('=== SENDGRID_API_KEY NEEDED FOR REAL DELIVERY ===\n');
+      
+      return false;
+    }
   } catch (error) {
     console.error('Email sending failed:', error);
     return false;
