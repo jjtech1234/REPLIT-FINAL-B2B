@@ -114,11 +114,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/forgot-password", async (req, res) => {
     try {
       const { email } = forgotPasswordSchema.parse(req.body);
+      console.log("Forgot password request for:", email);
       
       // Check if user exists
       const user = await storage.getUserByEmail(email);
+      console.log("User found:", user ? "YES" : "NO");
       if (!user) {
         // Don't reveal whether email exists or not - but still return success message
+        console.log("User not found, returning generic success message");
         return res.json({ message: "If an account with that email exists, we've sent a password reset link." });
       }
 
@@ -131,7 +134,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Send email with reset link
       const emailContent = createPasswordResetEmail(email, resetToken);
+      console.log("Attempting to send email to:", email);
       const emailSent = await sendEmail(emailContent);
+      console.log("Email sent result:", emailSent);
 
       if (emailSent) {
         res.json({ 
