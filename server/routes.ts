@@ -117,7 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if user exists
       const user = await storage.getUserByEmail(email);
       if (!user) {
-        // Don't reveal whether email exists or not
+        // Don't reveal whether email exists or not - but still return success message
         return res.json({ message: "If an account with that email exists, we've sent a password reset link." });
       }
 
@@ -128,11 +128,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store reset token
       await storage.createPasswordResetToken(email, resetToken, expiresAt);
 
-      // In a real app, you would send an email here
-      // For now, we'll just return the token (don't do this in production!)
+      // For testing purposes, return the token
+      // In production, this would be sent via email only
       res.json({ 
-        message: "Password reset link sent to your email",
-        resetToken // Remove this in production - only for testing
+        message: "Password reset instructions sent to your email. Use the token below to reset your password.",
+        resetToken, // For testing - remove in production
+        email: email // So user knows which email to use
       });
 
     } catch (error) {

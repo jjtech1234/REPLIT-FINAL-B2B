@@ -319,11 +319,13 @@ export class MemStorage implements IStorage {
   private businesses: Map<number, Business>;
   private advertisements: Map<number, Advertisement>;
   private inquiries: Map<number, Inquiry>;
+  private passwordResetTokens: Map<string, PasswordResetToken>;
   private currentUserId: number;
   private currentFranchiseId: number;
   private currentBusinessId: number;
   private currentAdId: number;
   private currentInquiryId: number;
+  private currentTokenId: number;
 
   constructor() {
     this.users = new Map();
@@ -331,11 +333,13 @@ export class MemStorage implements IStorage {
     this.businesses = new Map();
     this.advertisements = new Map();
     this.inquiries = new Map();
+    this.passwordResetTokens = new Map();
     this.currentUserId = 1;
     this.currentFranchiseId = 1;
     this.currentBusinessId = 1;
     this.currentAdId = 1;
     this.currentInquiryId = 1;
+    this.currentTokenId = 1;
     
     this.initializeSampleData();
   }
@@ -744,17 +748,28 @@ export class MemStorage implements IStorage {
   }
 
   async createPasswordResetToken(email: string, token: string, expiresAt: Date): Promise<void> {
-    // In memory storage - we'll store in a simple way
-    // In a real app, this would go to a database
+    const id = this.currentTokenId++;
+    const resetToken: PasswordResetToken = {
+      id,
+      email,
+      token,
+      expiresAt,
+      used: false,
+      createdAt: new Date()
+    };
+    this.passwordResetTokens.set(token, resetToken);
   }
 
   async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
-    // In memory storage - would need to be implemented with a proper Map
-    return undefined;
+    return this.passwordResetTokens.get(token);
   }
 
   async markPasswordResetTokenUsed(token: string): Promise<void> {
-    // In memory storage - would need to be implemented
+    const resetToken = this.passwordResetTokens.get(token);
+    if (resetToken) {
+      resetToken.used = true;
+      this.passwordResetTokens.set(token, resetToken);
+    }
   }
 }
 
