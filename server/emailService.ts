@@ -15,47 +15,53 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
   console.log(`EMAIL_USER available: ${!!process.env.EMAIL_USER}`);
   console.log(`EMAIL_PASS available: ${!!process.env.EMAIL_PASS}`);
   
-  // REAL EMAIL DELIVERY - Use user's actual credentials
+  // REAL EMAIL DELIVERY - Try multiple providers
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     console.log(`Attempting real email delivery with: ${process.env.EMAIL_USER}`);
     
-    // Try Gmail service method
-    try {
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
+    // Determine email provider
+    const emailDomain = process.env.EMAIL_USER.toLowerCase();
+    const isGmail = emailDomain.includes('@gmail.com');
+    const isOutlook = emailDomain.includes('@outlook.') || emailDomain.includes('@hotmail.') || emailDomain.includes('@live.');
+    
+    // Try provider-specific configurations
+    const providers = [];
+    
+    if (isGmail) {
+      providers.push(
+        {
+          name: 'Gmail Service',
+          config: { service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }
+        },
+        {
+          name: 'Gmail SMTP',
+          config: { host: 'smtp.gmail.com', port: 587, secure: false, auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }
         }
+      );
+    } else if (isOutlook) {
+      providers.push(
+        {
+          name: 'Outlook Service',
+          config: { service: 'outlook', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }
+        },
+        {
+          name: 'Outlook SMTP',
+          config: { host: 'smtp-mail.outlook.com', port: 587, secure: false, auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }
+        }
+      );
+    } else {
+      // Generic SMTP
+      providers.push({
+        name: 'Generic SMTP',
+        config: { host: 'smtp.gmail.com', port: 587, secure: false, auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }
       });
-      
-      const result = await transporter.sendMail({
-        from: `"B2B Market" <${process.env.EMAIL_USER}>`,
-        to: options.to,
-        subject: options.subject,
-        html: options.html,
-      });
-      
-      console.log(`🎉 SUCCESS: Real email sent to ${options.to}`);
-      console.log(`Message ID: ${result.messageId}`);
-      console.log(`Response: ${result.response}`);
-      return true;
-      
-    } catch (error: any) {
-      console.log(`Gmail service failed: ${error.message}`);
-      console.log(`Error code: ${error.code}`);
-      
-      // Try different SMTP settings
+    }
+    
+    // Try each provider configuration
+    for (const provider of providers) {
       try {
-        const transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
-          port: 587,
-          secure: false,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-          }
-        });
+        console.log(`Trying ${provider.name}...`);
+        const transporter = nodemailer.createTransport(provider.config);
         
         const result = await transporter.sendMail({
           from: `"B2B Market" <${process.env.EMAIL_USER}>`,
@@ -64,15 +70,24 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
           html: options.html,
         });
         
-        console.log(`🎉 SUCCESS: Real email sent via SMTP to ${options.to}`);
+        console.log(`🎉 SUCCESS: Real email sent via ${provider.name} to ${options.to}`);
         console.log(`Message ID: ${result.messageId}`);
+        if (result.response) console.log(`Response: ${result.response}`);
         return true;
         
-      } catch (smtpError: any) {
-        console.log(`SMTP also failed: ${smtpError.message}`);
-        console.log(`SMTP Error code: ${smtpError.code}`);
+      } catch (error: any) {
+        console.log(`${provider.name} failed: ${error.message}`);
+        if (error.code) console.log(`Error code: ${error.code}`);
+        
+        // Provide specific guidance for Gmail app password
+        if (isGmail && error.code === 'EAUTH') {
+          console.log(`🔧 Gmail Fix: Generate an App Password at https://myaccount.google.com/security`);
+          console.log(`🔧 Use the 16-character app password instead of your regular password`);
+        }
       }
     }
+    
+    console.log(`❌ All ${providers.length} email provider(s) failed`);
   } else {
     console.log(`❌ CRITICAL: No email credentials provided!`);
     console.log(`Please set EMAIL_USER and EMAIL_PASS environment variables`);
