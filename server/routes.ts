@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema, loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
 import crypto from "crypto";
 import { getSessionConfig, hashPassword, verifyPassword, generateToken, requireAuth, optionalAuth } from "./auth";
+import { sendEmail, createPasswordResetEmail } from "./emailService";
 
 // Initialize Stripe
 async function initializeStripe() {
@@ -128,13 +129,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store reset token
       await storage.createPasswordResetToken(email, resetToken, expiresAt);
 
-      // For testing purposes, return the token
-      // In production, this would be sent via email only
-      res.json({ 
-        message: "Password reset instructions sent to your email. Use the token below to reset your password.",
-        resetToken, // For testing - remove in production
-        email: email // So user knows which email to use
-      });
+      // Send email with reset link
+      const emailContent = createPasswordResetEmail(email, resetToken);
+      const emailSent = await sendEmail(emailContent);
+
+      if (emailSent) {
+        res.json({ 
+          message: "Password reset instructions have been sent to your email. Please check your inbox and follow the link to reset your password."
+        });
+      } else {
+        res.status(500).json({ error: "Failed to send reset email. Please try again." });
+      }
 
     } catch (error) {
       console.error("Forgot password error:", error);
