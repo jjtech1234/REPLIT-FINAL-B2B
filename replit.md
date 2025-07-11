@@ -94,10 +94,10 @@ RESTful API design with endpoints for:
 - **Port Configuration**: Frontend on 5000, mapped to external port 80
 - **Hot Reload**: Enabled for both frontend and backend
 
-### Production Build
+### Production Build (Static Site)
 - **Frontend**: Vite builds to `dist/public`
-- **Backend**: ESBuild bundles server to `dist/index.js`
-- **Deployment**: Autoscale deployment target on Replit
+- **Backend**: Netlify Functions for serverless API
+- **Deployment**: Netlify static site hosting
 - **Database**: Neon serverless PostgreSQL with connection pooling
 
 ### Build Scripts
@@ -105,10 +105,21 @@ RESTful API design with endpoints for:
 - `npm run build`: Production build (frontend + backend)
 - `npm run start`: Production server
 - `npm run db:push`: Database schema migration
+- `node build-functions.js`: Build Netlify functions
+
+### Netlify Functions
+- **Authentication**: JWT-based auth with password reset
+- **Franchise API**: CRUD operations with filtering
+- **Business API**: CRUD operations with search
+- **Advertisement API**: CRUD with admin approval
+- **Inquiry API**: Contact form handling
+- **Payment API**: Stripe integration
+- **Admin API**: Dashboard functionality
 
 ## Changelog
 
 Recent Changes:
+- July 11, 2025: COMPLETED migration from Replit Agent to Replit environment and conversion to static site for Netlify deployment. Created comprehensive Netlify Functions for all API endpoints including authentication, franchise/business/advertisement management, payment processing, and admin functionality. Added complete deployment documentation and build scripts. Project is now ready for Netlify deployment with Neon database integration.
 - June 30, 2025: COMPLETED comprehensive email system with multi-provider support - Gmail, Outlook, and SendGrid configurations implemented. System provides honest error reporting (no false success messages) and working fallback solutions. Password reset flow fully functional with preview emails, direct reset links, and proper Gmail app password setup guide. Ready for real email delivery once Gmail credentials are properly configured. Authentication flow verified end-to-end with professional email templates.
 - June 29, 2025: Successfully deployed and tested complete user authentication system - sign in/up modal now working perfectly with JWT tokens, password hashing, user dashboard, and protected routes
 - June 19, 2025: Fixed sell business form pricing mismatch - Basic now correctly charges $150, Premium $300, Enterprise $500
