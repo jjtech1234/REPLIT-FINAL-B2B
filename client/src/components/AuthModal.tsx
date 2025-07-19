@@ -115,6 +115,8 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
   const handleDirectPasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("Direct password reset called");
+    
     if (newPassword !== confirmPassword) {
       setForgotPasswordError("Passwords do not match.");
       return;
@@ -129,6 +131,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
     setForgotPasswordError("");
 
     try {
+      console.log("Calling direct password reset API");
       const response = await fetch("/api/auth/reset-password-direct", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -139,16 +142,19 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
       });
 
       const data = await response.json();
+      console.log("Direct password reset response:", data);
 
       if (response.ok) {
         setForgotPasswordMessage("Password updated successfully! You can now sign in with your new password.");
         setShowForgotPassword(false);
         setNewPassword("");
         setConfirmPassword("");
+        setForgotPasswordEmail("");
       } else {
         setForgotPasswordError(data.error || "Failed to update password.");
       }
     } catch (error) {
+      console.error("Direct password reset error:", error);
       setForgotPasswordError("An error occurred. Please try again.");
     } finally {
       setForgotPasswordLoading(false);
