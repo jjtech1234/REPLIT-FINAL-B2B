@@ -177,6 +177,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Direct password reset endpoint (no token required)
+  app.post("/api/auth/reset-password-direct", async (req, res) => {
+    try {
+      const { email, newPassword } = req.body;
+      
+      if (!email || !newPassword) {
+        return res.status(400).json({ error: "Email and new password are required" });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({ error: "Password must be at least 6 characters long" });
+      }
+
+      // Check if user exists
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Hash new password and update user
+      const hashedPassword = await hashPassword(newPassword);
+      const updatedUser = await storage.updateUserPassword(email, hashedPassword);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ error: "Failed to update password" });
+      }
+
+      res.json({ message: "Password updated successfully" });
+
+    } catch (error) {
+      console.error("Direct password reset error:", error);
+      res.status(500).json({ error: "Failed to update password" });
+    }
+  });
+
   // Admin login endpoint
   app.post("/api/admin/login", async (req, res) => {
     try {
