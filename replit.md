@@ -119,6 +119,7 @@ RESTful API design with endpoints for:
 ## Changelog
 
 Recent Changes:
+- July 19, 2025: COMPLETED migration from Replit Agent to standard Replit environment. Project now runs cleanly with PostgreSQL database, all packages installed, and full functionality verified. Ready for continued development and Netlify deployment.
 - July 11, 2025: COMPLETED migration from Replit Agent to Replit environment and conversion to static site for Netlify deployment. Created comprehensive Netlify Functions for all API endpoints including authentication, franchise/business/advertisement management, payment processing, and admin functionality. Added complete deployment documentation and build scripts. Project is now ready for Netlify deployment with Neon database integration.
 - June 30, 2025: COMPLETED comprehensive email system with multi-provider support - Gmail, Outlook, and SendGrid configurations implemented. System provides honest error reporting (no false success messages) and working fallback solutions. Password reset flow fully functional with preview emails, direct reset links, and proper Gmail app password setup guide. Ready for real email delivery once Gmail credentials are properly configured. Authentication flow verified end-to-end with professional email templates.
 - June 29, 2025: Successfully deployed and tested complete user authentication system - sign in/up modal now working perfectly with JWT tokens, password hashing, user dashboard, and protected routes
