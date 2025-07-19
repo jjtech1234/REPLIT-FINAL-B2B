@@ -9,6 +9,7 @@ export const users = pgTable("users", {
   firstName: text("first_name"),
   lastName: text("last_name"),
   isActive: boolean("is_active").default(true),
+  isAdmin: boolean("is_admin").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -128,6 +129,11 @@ export const forgotPasswordSchema = z.object({
 export const resetPasswordSchema = z.object({
   token: z.string(),
   password: z.string().min(6),
+});
+
+export const adminLoginSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(1),
 });
 
 export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTokens).pick({

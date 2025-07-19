@@ -21,6 +21,7 @@ import SubscriptionSuccess from "@/pages/subscription-success";
 import Pricing from "@/pages/pricing";
 import Dashboard from "@/pages/dashboard";
 import ResetPassword from "@/pages/ResetPassword";
+import AdminLogin from "@/pages/AdminLogin";
 
 function Router() {
   return (
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/login" component={AdminLogin} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/subscribe" component={Subscribe} />

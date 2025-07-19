@@ -1,9 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema, loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
+import { insertFranchiseSchema, insertBusinessSchema, insertInquirySchema, insertAdvertisementSchema, loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema, adminLoginSchema } from "@shared/schema";
 import crypto from "crypto";
-import { getSessionConfig, hashPassword, verifyPassword, generateToken, requireAuth, optionalAuth } from "./auth";
+import { getSessionConfig, hashPassword, verifyPassword, generateToken, requireAuth, optionalAuth, requireAdmin } from "./auth";
 import { sendEmail, createPasswordResetEmail } from "./emailService";
 import { MailService } from '@sendgrid/mail';
 
@@ -177,6 +177,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin login endpoint
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = adminLoginSchema.parse(req.body);
+      
+      // Simple admin credentials check - in production, store these securely
+      const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
+      const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+      
+      if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+        return res.status(401).json({ error: "Invalid admin credentials" });
+      }
+      
+      // Set admin session
+      (req.session as any).isAdmin = true;
+      (req.session as any).adminUsername = username;
+      
+      res.json({ 
+        message: "Admin login successful",
+        isAdmin: true 
+      });
+    } catch (error) {
+      console.error("Admin login error:", error);
+      res.status(400).json({ error: "Admin login failed" });
+    }
+  });
+
+  // Admin logout endpoint
+  app.post("/api/admin/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Could not log out" });
+      }
+      res.json({ message: "Admin logout successful" });
+    });
+  });
+
+  // Admin auth check endpoint
+  app.get("/api/admin/me", (req, res) => {
+    const isAdmin = (req.session as any)?.isAdmin;
+    if (!isAdmin) {
+      return res.status(401).json({ error: "Not authenticated as admin" });
+    }
+    res.json({ 
+      isAdmin: true,
+      username: (req.session as any)?.adminUsername 
+    });
+  });
+
   // User dashboard routes
   app.get("/api/user/businesses", requireAuth, async (req, res) => {
     try {
@@ -296,7 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint to get all businesses including pending ones
-  app.get("/api/admin/businesses", async (req, res) => {
+  app.get("/api/admin/businesses", requireAdminSession, async (req, res) => {
     try {
       const businesses = await storage.getAllBusinessesForAdmin();
       res.json(businesses);
@@ -306,7 +355,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint to update business status
-  app.patch("/api/businesses/:id/status", async (req, res) => {
+  app.patch("/api/businesses/:id/status", requireAdminSession, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { status, isActive } = req.body;
@@ -346,8 +395,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin middleware for session-based auth
+  function requireAdminSession(req: any, res: any, next: any) {
+    const isAdmin = req.session?.isAdmin;
+    if (!isAdmin) {
+      return res.status(401).json({ error: "Admin authentication required" });
+    }
+    next();
+  }
+
   // Admin endpoint to get all advertisements including pending ones
-  app.get("/api/admin/advertisements", async (req, res) => {
+  app.get("/api/admin/advertisements", requireAdminSession, async (req, res) => {
     try {
       const ads = await storage.getAllAdvertisementsForAdmin();
       res.json(ads);
@@ -357,7 +415,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint to update advertisement status
-  app.patch("/api/advertisements/:id/status", async (req, res) => {
+  app.patch("/api/advertisements/:id/status", requireAdminSession, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { status, isActive } = req.body;
@@ -377,7 +435,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Inquiry routes
-  app.get("/api/inquiries", async (req, res) => {
+  app.get("/api/inquiries", requireAdminSession, async (req, res) => {
     try {
       const inquiries = await storage.getAllInquiries();
       res.json(inquiries);
@@ -409,7 +467,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/inquiries/:id/status", async (req, res) => {
+  app.patch("/api/inquiries/:id/status", requireAdminSession, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { status } = req.body;

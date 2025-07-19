@@ -18,17 +18,39 @@ export default function Admin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check admin authentication
+  useQuery({
+    queryKey: ['/api/admin/me'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/me');
+      if (response.ok) {
+        setIsAuthenticated(true);
+        return response.json();
+      } else {
+        setIsAuthenticated(false);
+        window.location.href = '/admin/login';
+        throw new Error('Not authenticated');
+      }
+    },
+    onSettled: () => setIsLoading(false)
+  });
 
   const { data: inquiries = [], isLoading: inquiriesLoading } = useQuery<Inquiry[]>({
     queryKey: ['/api/inquiries'],
+    enabled: isAuthenticated,
   });
 
   const { data: advertisements = [], isLoading: adsLoading, refetch: refetchAds } = useQuery<Advertisement[]>({
     queryKey: ['/api/admin/advertisements'],
+    enabled: isAuthenticated,
   });
 
   const { data: businesses = [], isLoading: businessesLoading, refetch: refetchBusinesses } = useQuery<Business[]>({
     queryKey: ['/api/admin/businesses'],
+    enabled: isAuthenticated,
   });
 
   const updateStatusMutation = useMutation({

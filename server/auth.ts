@@ -14,7 +14,7 @@ export function getSessionConfig() {
   return session({
     store: new pgStore({
       conString: process.env.DATABASE_URL,
-      createTableIfMissing: true,
+      createTableIfMissing: false, // Prevent conflicts with existing tables
     }),
     secret: process.env.SESSION_SECRET || 'your-session-secret-change-in-production',
     resave: false,
@@ -87,6 +87,29 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);
+    res.status(500).json({ error: 'Authentication error' });
+  }
+}
+
+// Admin authentication middleware
+export async function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    // First check regular auth
+    await new Promise<void>((resolve, reject) => {
+      requireAuth(req, res, (err: any) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    const user = (req as any).user;
+    if (!user.isAdmin) {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Admin auth error:', error);
     res.status(500).json({ error: 'Authentication error' });
   }
 }

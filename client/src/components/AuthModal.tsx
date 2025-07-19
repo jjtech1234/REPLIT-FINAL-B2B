@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLogin, useRegister } from "@/hooks/useAuth";
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Loader2 } from "lucide-react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -15,6 +16,11 @@ interface AuthModalProps {
 
 export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
+  const [forgotPasswordError, setForgotPasswordError] = useState("");
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({
     email: "",
@@ -70,9 +76,45 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotPasswordLoading(true);
+    setForgotPasswordError("");
+    setForgotPasswordMessage("");
+
+    try {
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotPasswordEmail }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setForgotPasswordMessage(data.message);
+        if (data.resetLink) {
+          setForgotPasswordMessage(
+            data.message + " You can test the reset link in development: " + data.resetLink
+          );
+        }
+      } else {
+        setForgotPasswordError(data.error || "Failed to send reset email");
+      }
+    } catch (error) {
+      setForgotPasswordError("Network error. Please try again.");
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
+
   const resetForms = () => {
     setLoginData({ email: "", password: "" });
     setSignupData({ email: "", password: "", firstName: "", lastName: "" });
+    setShowForgotPassword(false);
+    setForgotPasswordMessage("");
+    setForgotPasswordError("");
+    setForgotPasswordEmail("");
     setShowPassword(false);
   };
 
@@ -135,6 +177,17 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                 </div>
               </div>
 
+              <div className="flex justify-between items-center">
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={() => setShowForgotPassword(true)}
+                  className="text-sm p-0 h-auto"
+                >
+                  Forgot Password?
+                </Button>
+              </div>
+
               <button 
                 type="submit" 
                 disabled={loginMutation.isPending}
@@ -160,6 +213,61 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                 {loginMutation.isPending ? "Signing In..." : "Sign In"}
               </button>
             </form>
+
+            {/* Forgot Password Form */}
+            {showForgotPassword && (
+              <div className="mt-6 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                <h3 className="font-semibold mb-3">Reset Password</h3>
+                
+                {forgotPasswordMessage && (
+                  <Alert className="mb-4">
+                    <AlertDescription className="text-sm">
+                      {forgotPasswordMessage}
+                    </AlertDescription>
+                  </Alert>
+                )}
+                
+                {forgotPasswordError && (
+                  <Alert variant="destructive" className="mb-4">
+                    <AlertDescription className="text-sm">
+                      {forgotPasswordError}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div>
+                    <Label htmlFor="forgot-email">Email Address</Label>
+                    <Input
+                      id="forgot-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={forgotPasswordEmail}
+                      onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      type="submit" 
+                      disabled={forgotPasswordLoading}
+                      className="flex-1"
+                    >
+                      {forgotPasswordLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Send Reset Link
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowForgotPassword(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="signup" className="space-y-4">
