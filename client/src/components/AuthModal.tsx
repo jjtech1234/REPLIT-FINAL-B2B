@@ -162,9 +162,12 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
     setLoginData({ email: "", password: "" });
     setSignupData({ email: "", password: "", firstName: "", lastName: "" });
     setShowForgotPassword(false);
+    setShowDirectReset(false);
     setForgotPasswordMessage("");
     setForgotPasswordError("");
     setForgotPasswordEmail("");
+    setNewPassword("");
+    setConfirmPassword("");
     setShowPassword(false);
   };
 
@@ -317,68 +320,88 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                       </Button>
                     </div>
                     
-                    <div className="text-center">
+                    <div className="text-center pt-2">
+                      <p className="text-sm text-gray-600 mb-2">Or skip email verification:</p>
                       <Button
                         type="button"
-                        variant="link"
+                        variant="outline"
                         onClick={() => setShowDirectReset(true)}
-                        className="text-sm"
+                        className="text-sm w-full"
                       >
-                        Or change password directly here
+                        Change Password Directly Here
                       </Button>
                     </div>
                   </form>
                 ) : (
-                  <form onSubmit={handleDirectPasswordReset} className="space-y-4">
-                    <div>
-                      <Label htmlFor="new-password">New Password</Label>
-                      <Input
-                        id="new-password"
-                        type="password"
-                        placeholder="Enter new password (min 6 characters)"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        minLength={6}
-                        required
-                      />
+                  <div className="space-y-4">
+                    <div className="text-center mb-4">
+                      <h4 className="font-semibold">Change Password Directly</h4>
+                      <p className="text-sm text-gray-600">Enter your email and new password to update it immediately</p>
                     </div>
                     
-                    <div>
-                      <Label htmlFor="confirm-password">Confirm Password</Label>
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        placeholder="Confirm new password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        minLength={6}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        type="submit" 
-                        disabled={forgotPasswordLoading}
-                        className="flex-1"
-                      >
-                        {forgotPasswordLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Update Password
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          setShowDirectReset(false);
-                          setNewPassword("");
-                          setConfirmPassword("");
-                          setForgotPasswordError("");
-                        }}
-                      >
-                        Back
-                      </Button>
-                    </div>
-                  </form>
+                    <form onSubmit={handleDirectPasswordReset} className="space-y-4">
+                      <div>
+                        <Label htmlFor="direct-email">Email Address</Label>
+                        <Input
+                          id="direct-email"
+                          type="email"
+                          placeholder="Enter your email address"
+                          value={forgotPasswordEmail}
+                          onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="new-password">New Password</Label>
+                        <Input
+                          id="new-password"
+                          type="password"
+                          placeholder="Enter new password (min 6 characters)"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          minLength={6}
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="confirm-password">Confirm Password</Label>
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          placeholder="Confirm new password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          minLength={6}
+                          required
+                        />
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          type="submit" 
+                          disabled={forgotPasswordLoading}
+                          className="flex-1 bg-blue-600 hover:bg-blue-700"
+                        >
+                          {forgotPasswordLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                          Update Password Now
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setShowDirectReset(false);
+                            setNewPassword("");
+                            setConfirmPassword("");
+                            setForgotPasswordError("");
+                          }}
+                        >
+                          Back
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
                 )}
               </div>
             )}
