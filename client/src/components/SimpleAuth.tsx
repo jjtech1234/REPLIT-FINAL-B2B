@@ -25,20 +25,21 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
 
     try {
       if (isForgotPassword) {
-        // Handle forgot password
-        const response = await fetch("/api/auth/forgot-password", {
+        // Handle forgot password - direct password reset without email
+        const response = await fetch("/api/auth/reset-password-direct", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, newPassword: password }),
         });
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Forgot password response:", data);
-          setMessage(data.message || "Reset request processed.");
+          setMessage("Password updated successfully! You can now sign in with your new password.");
+          setIsForgotPassword(false);
+          setIsLogin(true);
         } else {
           const error = await response.json();
-          setMessage(error.error || "Failed to send reset email");
+          setMessage(error.error || "Failed to update password");
         }
       } else {
         // Handle login/register
@@ -257,24 +258,22 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
                 }}
               />
 
-              {!isForgotPassword && (
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    marginBottom: "1rem",
-                    boxSizing: "border-box"
-                  }}
-                />
-              )}
+              <input
+                type="password"
+                placeholder={isForgotPassword ? "New Password" : "Password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  marginBottom: "1rem",
+                  boxSizing: "border-box"
+                }}
+              />
 
               <button
                 type="submit"
@@ -292,7 +291,7 @@ export default function SimpleAuth({ isOpen, onClose }: SimpleAuthProps) {
                   marginBottom: "1rem"
                 }}
               >
-                {loading ? "Please wait..." : isForgotPassword ? "Send Reset Link" : isLogin ? "Sign In" : "Create Account"}
+                {loading ? "Please wait..." : isForgotPassword ? "Update Password" : isLogin ? "Sign In" : "Create Account"}
               </button>
             </form>
 
