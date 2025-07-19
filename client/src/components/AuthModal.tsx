@@ -79,41 +79,10 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setForgotPasswordLoading(true);
-    setForgotPasswordError("");
-    setForgotPasswordMessage("");
 
-    try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: forgotPasswordEmail }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setForgotPasswordMessage(data.message);
-        if (data.resetLink) {
-          setForgotPasswordMessage(
-            data.message + " You can test the reset link in development: " + data.resetLink
-          );
-        }
 
-      } else {
-        setForgotPasswordError(data.error || "Failed to send reset email");
-      }
-    } catch (error) {
-      setForgotPasswordError("Network error. Please try again.");
-    } finally {
-      setForgotPasswordLoading(false);
-    }
-  };
-
-  const handleDirectPasswordReset = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleDirectPasswordReset = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     
     console.log("Direct password reset called");
     
@@ -292,7 +261,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                   </Alert>
                 )}
 
-                <form onSubmit={handleDirectPasswordReset} className="space-y-4">
+                <div className="space-y-4">
                   <div>
                     <Label htmlFor="reset-email">Email Address</Label>
                     <Input
@@ -333,7 +302,8 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                   
                   <div className="flex gap-2">
                     <Button 
-                      type="submit" 
+                      type="button"
+                      onClick={handleDirectPasswordReset}
                       disabled={forgotPasswordLoading}
                       className="flex-1 bg-blue-600 hover:bg-blue-700"
                     >
@@ -348,7 +318,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = "login" }: Aut
                       Cancel
                     </Button>
                   </div>
-                </form>
+                </div>
               </div>
             )}
           </TabsContent>
