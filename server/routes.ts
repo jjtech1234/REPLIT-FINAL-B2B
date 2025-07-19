@@ -218,8 +218,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { username, password } = adminLoginSchema.parse(req.body);
       
       // Simple admin credentials check - in production, store these securely
-      const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
-      const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+      const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin@b2bmarket.net";
+      const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "adminsarah";
       
       if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
         return res.status(401).json({ error: "Invalid admin credentials" });
