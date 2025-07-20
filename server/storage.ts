@@ -512,6 +512,7 @@ export class MemStorage implements IStorage {
       firstName: insertUser.firstName || null,
       lastName: insertUser.lastName || null,
       isActive: true,
+      isAdmin: false,
       createdAt: new Date()
     };
     this.users.set(id, user);
@@ -617,6 +618,7 @@ export class MemStorage implements IStorage {
     const id = this.currentBusinessId++;
     const business: Business = {
       id,
+      userId: insertBusiness.userId || null,
       name: insertBusiness.name,
       description: insertBusiness.description || null,
       category: insertBusiness.category,
@@ -669,6 +671,7 @@ export class MemStorage implements IStorage {
     const id = this.currentAdId++;
     const ad: Advertisement = {
       id,
+      userId: insertAd.userId || null,
       title: insertAd.title,
       description: insertAd.description || null,
       imageUrl: insertAd.imageUrl,
@@ -773,4 +776,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
