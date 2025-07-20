@@ -545,20 +545,6 @@ export default function Admin() {
                             Deactivate
                           </Button>
                         )}
-                        
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="text-xs"
-                          onClick={() => updateAdStatusMutation.mutate({ 
-                            id: ad.id, 
-                            status: 'pending', 
-                            isActive: false 
-                          })}
-                          disabled={updateAdStatusMutation.isPending}
-                        >
-                          Set Pending
-                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -715,20 +701,6 @@ export default function Admin() {
                             Deactivate
                           </Button>
                         )}
-                        
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="text-xs"
-                          onClick={() => updateBusinessStatusMutation.mutate({ 
-                            id: business.id, 
-                            status: 'pending', 
-                            isActive: false 
-                          })}
-                          disabled={updateBusinessStatusMutation.isPending}
-                        >
-                          Set Pending
-                        </Button>
                       </div>
                     </div>
                   </CardContent>
