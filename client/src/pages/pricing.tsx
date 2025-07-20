@@ -7,7 +7,20 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const plans = [
-
+  {
+    id: 'test',
+    name: 'Test',
+    price: 1,
+    description: 'Test option for development and demo purposes',
+    features: [
+      'Basic listing placement',
+      'Test mode only',
+      'Limited functionality',
+      '1 business listing',
+      'For testing purposes'
+    ],
+    popular: false
+  },
   {
     id: 'basic',
     name: 'Basic',
@@ -73,7 +86,7 @@ export default function Pricing() {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid md:grid-cols-4 gap-8 mb-16">
             {plans.map((plan) => (
               <Card key={plan.id} className={`relative ${plan.popular ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}>
                 {plan.popular && (

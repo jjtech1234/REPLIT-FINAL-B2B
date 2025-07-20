@@ -169,9 +169,6 @@ export default function Header() {
               <a href="/post-ad" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Post An Ad
               </a>
-              <a href="/services" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
-                Services
-              </a>
               <a href="/pricing" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium transition-colors">
                 Pricing
               </a>
@@ -217,9 +214,6 @@ export default function Header() {
                 </a>
                 <a href="/post-ad" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Post An Ad
-                </a>
-                <a href="/services" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
-                  Services
                 </a>
                 <a href="/pricing" className="text-gray-700 hover:text-[hsl(var(--b2b-blue))] font-medium">
                   Pricing

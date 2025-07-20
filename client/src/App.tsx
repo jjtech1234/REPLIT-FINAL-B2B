@@ -10,7 +10,6 @@ import BuyBusiness from "@/pages/buy-business";
 import BuyFranchise from "@/pages/buy-franchise";
 import SellBusiness from "@/pages/sell-business";
 import PostAd from "@/pages/post-ad";
-import Services from "@/pages/services";
 import Contact from "@/pages/contact";
 import About from "@/pages/about";
 import Admin from "@/pages/admin";
@@ -32,7 +31,6 @@ function Router() {
       <Route path="/buy-franchise" component={BuyFranchise} />
       <Route path="/sell-business" component={SellBusiness} />
       <Route path="/post-ad" component={PostAd} />
-      <Route path="/services" component={Services} />
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
       <Route path="/admin" component={Admin} />

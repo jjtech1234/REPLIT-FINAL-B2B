@@ -45,18 +45,18 @@ export default function Footer() {
             </ul>
           </div>
           
-          {/* Services */}
+          {/* Support */}
           <div>
-            <h5 className="font-bold mb-4">Services</h5>
+            <h5 className="font-bold mb-4">Support</h5>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="/services" className="hover:text-white transition-colors">Business Valuation</a>
-              </li>
-              <li>
-                <a href="/services" className="hover:text-white transition-colors">Franchise Consulting</a>
+                <a href="/pricing" className="hover:text-white transition-colors">Pricing</a>
               </li>
               <li>
                 <a href="/contact" className="hover:text-white transition-colors">Contact Us</a>
+              </li>
+              <li>
+                <a href="/about" className="hover:text-white transition-colors">About Us</a>
               </li>
             </ul>
           </div>

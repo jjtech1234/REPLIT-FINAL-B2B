@@ -171,6 +171,24 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
             <Button 
               className="b2b-button-primary text-lg px-12 py-3"
               onClick={handleSearch}
+              style={{
+                backgroundColor: 'hsl(25, 95%, 53%)',
+                color: 'white',
+                visibility: 'visible',
+                opacity: '1'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'hsl(25, 95%, 45%)';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.visibility = 'visible';
+                e.currentTarget.style.opacity = '1';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'hsl(25, 95%, 53%)';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.visibility = 'visible';
+                e.currentTarget.style.opacity = '1';
+              }}
             >
               GO
             </Button>

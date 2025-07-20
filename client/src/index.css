@@ -67,7 +67,17 @@
 
 @layer components {
   .b2b-button-primary {
-    @apply bg-[hsl(var(--b2b-orange))] hover:bg-[hsl(var(--b2b-orange-dark))] text-white font-semibold px-6 py-3 rounded-lg transition-colors;
+    @apply bg-[hsl(var(--b2b-orange))] hover:bg-[hsl(var(--b2b-orange-dark))] text-white font-semibold px-6 py-3 rounded-lg transition-colors !important;
+    color: white !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .b2b-button-primary:hover {
+    background-color: hsl(var(--b2b-orange-dark)) !important;
+    color: white !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .b2b-button-secondary {
